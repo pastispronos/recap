@@ -348,9 +348,19 @@ async function loadData() {
 }
 
 // ─── JOURNEES ────────────────────────────────────────────────
-// Lit la colonne "Journée" du Calendrier (en-tête exact dans le CSV)
+// Lit la colonne "Journée" du Calendrier — robuste sur toutes les variantes d'en-tête CSV
 function getJourneeKey(m) {
-  return (m['Journ\u00e9e'] || m['Journee'] || m['journée'] || m['journee'] || '').trim();
+  // Cherche parmi toutes les clés la colonne Journée (avec ou sans accent)
+  for (const key of Object.keys(m)) {
+    const norm = key.toLowerCase().replace(/[\u0300-\u036f]/g,'').normalize ? 
+      key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : 
+      key.toLowerCase().replace(/é/g,'e').replace(/è/g,'e').replace(/ê/g,'e');
+    if (norm === 'journee') {
+      const val = (m[key] || '').trim();
+      if (val) return val;
+    }
+  }
+  return '';
 }
 
 function buildJourneesSelector() {
@@ -455,6 +465,8 @@ function renderMatches() {
     const heure   = m['Heure'] || '';
     const date    = m['Date'] || '';
     const isBonus = (m['Match Bonus'] || m['Match_Bonus'] || '').toLowerCase().includes('oui');
+    const phase   = (m['Phase'] || m['phase'] || '').toLowerCase();
+    const isFinale = !phase.includes('poule') && phase !== '';  // TAB seulement hors poules
     const groupe  = m['Groupe'] || '';
     const r       = state.results[id] || {scoreA:'',scoreB:'',tab:''};
     const hasRes  = r.scoreA !== '' && r.scoreB !== '';
@@ -473,7 +485,7 @@ function renderMatches() {
         <span class="score-sep">–</span>
         <input class="score-input" type="number" min="0" max="20" placeholder="–"
           id="sb-${id}" value="${r.scoreB}" oninput="updateResult('${id}','b',this.value)">
-        ${isBonus ? `<select class="tab-select" onchange="updateResult('${id}','tab',this.value)">
+        ${isFinale ? `<select class="tab-select" onchange="updateResult('${id}','tab',this.value)">
           <option value="">TAB ?</option>
           <option value="${equipeA}" ${r.tab===equipeA?'selected':''}>TAB → ${equipeA}</option>
           <option value="${equipeB}" ${r.tab===equipeB?'selected':''}>TAB → ${equipeB}</option>
@@ -571,6 +583,8 @@ function buildContext() {
       id, equipeA: m['Equipe A']||m['Equipe_A']||'', equipeB: m['Equipe B']||m['Equipe_B']||'',
       heure: m['Heure']||'', date: m['Date']||'', groupe: m['Groupe']||'',
       isBonus: (m['Match Bonus']||m['Match_Bonus']||'').toLowerCase().includes('oui'),
+      phase: m['Phase'] || m['phase'] || '',
+      isFinale: !(m['Phase']||m['phase']||'').toLowerCase().includes('poule'),
       tv: m['TV']||'',
       scoreA: r.scoreA !== undefined ? r.scoreA : (m['Score A']||m['Score_A']||''),
       scoreB: r.scoreB !== undefined ? r.scoreB : (m['Score B']||m['Score_B']||''),
@@ -648,7 +662,7 @@ async function generateMail() {
         'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 4000,
         system: buildSystemPrompt(ctx.mailType, ctx.journee, ctx.nextLabel),
         messages: [{ role: 'user', content: buildUserPrompt(ctx) }]
