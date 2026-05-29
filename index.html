@@ -13,12 +13,7 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
-
-  header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem;
-    height: 64px; position: sticky; top: 0; z-index: 100;
-  }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 64px; position: sticky; top: 0; z-index: 100; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
   .logo span { color: var(--text); }
   .header-badge { background: var(--accent2); color: white; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
@@ -26,20 +21,16 @@
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
   .status-dot.ok { background: var(--success); box-shadow: 0 0 6px var(--success); }
   .status-dot.error { background: var(--error); }
-
   .container { max-width: 1100px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
-
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .panel-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
   .panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--accent); }
   .panel-body { padding: 1.2rem; }
-
   label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
   input, select, textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; padding: 0.6rem 0.8rem; transition: border-color 0.2s; outline: none; }
   input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   select option { background: var(--surface2); }
   .field { margin-bottom: 1rem; }
-
   .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 5px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
   .btn-primary { background: var(--accent); color: #000; }
   .btn-primary:hover { background: #ffd84a; transform: translateY(-1px); }
@@ -49,14 +40,10 @@
   .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); }
   .btn-danger:hover { background: var(--error); color: white; }
   .btn-block { width: 100%; justify-content: center; }
-
-  /* JOURNEE SELECTOR */
   .journee-nav { display: flex; align-items: center; gap: 0.5rem; }
   .journee-nav select { flex: 1; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; color: var(--accent); background: var(--surface2); }
   .jnav-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 5px; width: 34px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; flex-shrink: 0; }
   .jnav-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* MATCH CARDS */
   .match-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem; margin-bottom: 0.75rem; }
   .match-card.has-result { border-color: #2d3d2d; background: #141f14; }
   .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.3rem; }
@@ -70,8 +57,6 @@
   .score-input { width: 52px; text-align: center; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; padding: 0.4rem; }
   .score-sep { color: var(--muted); font-weight: 600; font-size: 1rem; }
   .tab-select { flex: 1; font-size: 0.8rem; padding: 0.4rem 0.5rem; }
-
-  /* CLASSEMENT */
   .classement-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
   .classement-table th { text-align: left; padding: 0.4rem 0.5rem; color: var(--muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); }
   .classement-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid #1a1a1a; font-family: 'DM Mono', monospace; }
@@ -79,51 +64,36 @@
   .name { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 500; }
   .pts { color: var(--accent); font-weight: 600; }
   .evo-up { color: var(--success); } .evo-down { color: var(--error); } .evo-eq { color: var(--muted); }
-
-  /* TABS */
   .tabs { display: flex; border-bottom: 1px solid var(--border); }
   .tab { padding: 0.7rem 1.2rem; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab:hover:not(.active) { color: var(--text); }
   .tab-content { display: none; padding: 1.2rem; }
   .tab-content.active { display: block; }
-
-  /* OUTPUT */
   #mail-output { width: 100%; min-height: 500px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.7; padding: 1.2rem; resize: vertical; }
-
-  /* LOADER */
   .loader { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; gap: 1rem; }
   .loader.active { display: flex; }
   .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loader-text { color: var(--muted); font-size: 0.85rem; animation: blink 1.5s ease-in-out infinite; }
   @keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-
-  /* ALERTS */
   .alert { padding: 0.7rem 0.9rem; border-radius: 5px; font-size: 0.82rem; margin-bottom: 1rem; display: none; }
   .alert.show { display: block; }
   .alert-error { background: #2a1010; border: 1px solid var(--error); color: #f08080; }
   .alert-success { background: #0f2a1a; border: 1px solid var(--success); color: #80c090; }
-
-  /* GENERATE BTN */
   .generate-btn { width: 100%; padding: 1rem; font-size: 1rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.12em; border-radius: 6px; margin-top: 1rem; background: var(--accent); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.15s; }
   .generate-btn:hover { background: #ffd84a; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,200,66,0.2); }
   .generate-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
-
   .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.85rem; }
   .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
   .no-matches { color: var(--muted); font-size: 0.82rem; padding: 1rem 0; text-align: center; }
-
   .prono-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 7px; font-size: 0.72rem; font-family: 'DM Mono', monospace; margin: 2px; }
   .prono-chip.joker { border-color: var(--accent2); color: var(--accent2); }
   .match-pronos { margin-top: 0.5rem; display: flex; flex-wrap: wrap; }
-
   .right-col { position: sticky; top: 80px; }
-
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
   @keyframes copyFlash { 0% { background: var(--success); color: #000; } 100% { background: var(--surface2); color: var(--text); } }
   .copy-flash { animation: copyFlash 0.8s ease forwards; }
 </style>
@@ -141,10 +111,7 @@
 </header>
 
 <div class="container">
-
-  <!-- LEFT -->
   <div class="left-col">
-
     <div class="panel" style="margin-bottom:1rem">
       <div class="panel-header"><span>⚙️</span><span class="panel-title">Configuration</span></div>
       <div class="tabs">
@@ -173,8 +140,7 @@
       </div>
       <div id="config-about" class="tab-content">
         <div style="font-size:0.8rem;color:var(--muted);line-height:1.7">
-          <p>Sélectionne une <strong style="color:var(--accent)">Journée (J1, J2...)</strong> — tous les matchs de cette journée s'affichent, même répartis sur 2 jours calendaires.</p>
-          <br>
+          <p>Sélectionne une <strong style="color:var(--accent)">Journée (J1, J2...)</strong> — tous les matchs de cette journée s'affichent, même répartis sur 2 jours calendaires.</p><br>
           <p><strong style="color:var(--text)">Feuilles lues :</strong></p>
           <p>• <code style="color:var(--accent)">Calendrier</code> — colonne Journée (AN) utilisée</p>
           <p>• <code style="color:var(--accent)">Pronostics</code> — tous les pronos</p>
@@ -186,8 +152,6 @@
 
     <div class="panel">
       <div class="panel-header"><span>⚽</span><span class="panel-title">Matchs de la Journée</span></div>
-
-      <!-- JOURNEE NAV -->
       <div style="padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.015)">
         <label style="margin-bottom:0.5rem">Sélectionner la Journée</label>
         <div class="journee-nav">
@@ -199,15 +163,12 @@
         </div>
         <div id="journee-dates" style="font-size:0.7rem;color:var(--muted);margin-top:0.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
       </div>
-
       <div class="panel-body" id="matches-container">
         <div class="empty"><span class="empty-icon">📅</span>Charge les données puis sélectionne une journée</div>
       </div>
     </div>
-
   </div>
 
-  <!-- RIGHT -->
   <div class="right-col">
     <div class="panel">
       <div class="panel-header">
@@ -217,13 +178,11 @@
           <button class="btn btn-danger" onclick="clearOutput()">✕</button>
         </div>
       </div>
-
       <div class="tabs">
         <div class="tab active" onclick="switchTab(event,'output','mail')">📝 Texte</div>
         <div class="tab" onclick="switchTab(event,'output','classement')">📊 Classement</div>
         <div class="tab" onclick="switchTab(event,'output','pronos')">🔮 Pronos</div>
       </div>
-
       <div id="output-mail" class="tab-content active">
         <div id="loader" class="loader">
           <div class="spinner"></div>
@@ -236,80 +195,70 @@
             Configure, charge, sélectionne la journée, puis génère !
           </div>
         </div>
-        <button class="generate-btn" id="generate-btn" onclick="generateMail()" disabled>
-          🚀 GÉNÉRER LE CONTENU
-        </button>
+        <button class="generate-btn" id="generate-btn" onclick="generateMail()" disabled>🚀 GÉNÉRER LE CONTENU</button>
       </div>
-
       <div id="output-classement" class="tab-content">
         <div id="classement-preview" class="empty"><span class="empty-icon">📊</span>Pas encore de données</div>
       </div>
-
       <div id="output-pronos" class="tab-content">
         <div id="pronos-preview" class="empty"><span class="empty-icon">🔮</span>Sélectionne une journée</div>
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
 // ─── STATE ───────────────────────────────────────────────────
 let state = {
-  sheetId: '', apiKey: '',
+  sheetId: "", apiKey: "",
   matches: [], pronostics: [], classementJour: [], joueurs: [],
-  journees: [],        // ["J1","J2","J3"...]
-  selectedJournee: '',
-  dayMatches: [],
-  results: {},         // { matchId: {scoreA, scoreB, tab} }
+  journees: [], selectedJournee: "", dayMatches: [], results: {}
 };
 
 // ─── INIT ────────────────────────────────────────────────────
 window.onload = () => {
-  state.sheetId = localStorage.getItem('pp_sheet_id') || '';
-  state.apiKey  = localStorage.getItem('pp_api_key')  || '';
-  if (state.sheetId) document.getElementById('sheet-id').value = state.sheetId;
-  if (state.apiKey)  document.getElementById('claude-key').value = state.apiKey;
+  state.sheetId = localStorage.getItem("pp_sheet_id") || "";
+  state.apiKey  = localStorage.getItem("pp_api_key")  || "";
+  if (state.sheetId) document.getElementById("sheet-id").value = state.sheetId;
+  if (state.apiKey)  document.getElementById("claude-key").value = state.apiKey;
 };
 
 // ─── TABS ────────────────────────────────────────────────────
 function switchTab(event, group, tabId) {
-  const tabsEl = event.target.closest('.tabs');
-  if (tabsEl) tabsEl.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-
-  const ids = group === 'config'
-    ? ['config-setup','config-about']
-    : ['output-mail','output-classement','output-pronos'];
-  ids.forEach(id => document.getElementById(id)?.classList.remove('active'));
-  document.getElementById(group === 'config' ? `config-${tabId}` : `output-${tabId}`)?.classList.add('active');
+  const tabsEl = event.target.closest(".tabs");
+  if (tabsEl) tabsEl.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+  const ids = group === "config" ? ["config-setup","config-about"] : ["output-mail","output-classement","output-pronos"];
+  ids.forEach(id => document.getElementById(id) && document.getElementById(id).classList.remove("active"));
+  const target = document.getElementById(group === "config" ? "config-"+tabId : "output-"+tabId);
+  if (target) target.classList.add("active");
 }
 
-// ─── GOOGLE SHEETS (CSV, sans clé API) ───────────────────────
+// ─── CSV FETCH ───────────────────────────────────────────────
 async function fetchSheet(sheetId, sheetName) {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  const url = "https://docs.google.com/spreadsheets/d/"+sheetId+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(sheetName);
   const r = await fetch(url);
-  if (!r.ok) throw new Error(`Impossible de lire "${sheetName}" (Sheet partagé en lecture publique ?)`);
+  if (!r.ok) throw new Error("Impossible de lire \""+sheetName+"\" — Sheet bien partagé en lecture publique ?");
   return parseCSV(await r.text());
 }
 
 function parseCSV(text) {
-  const lines = text.split('\n').filter(l => l.trim());
+  const lines = text.split("\n").filter(l => l.trim());
   if (!lines.length) return [];
-  const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/^"|"$/g,''));
+  const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/^"|"$/g,""));
   return lines.slice(1).map(line => {
     const vals = parseCSVLine(line);
     const obj = {};
-    headers.forEach((h,i) => { obj[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
+    headers.forEach((h,i) => { obj[h] = (vals[i]||"").trim().replace(/^"|"$/g,""); });
     return obj;
   });
 }
 
 function parseCSVLine(line) {
-  const res = []; let cur = '', inQ = false;
+  const res = []; let cur = "", inQ = false;
   for (let i = 0; i < line.length; i++) {
-    if (line[i]==='"') { if (inQ && line[i+1]==='"') { cur+='"'; i++; } else inQ=!inQ; }
-    else if (line[i]===',' && !inQ) { res.push(cur); cur=''; }
+    if (line[i] === "\"") { if (inQ && line[i+1] === "\"") { cur += "\""; i++; } else inQ = !inQ; }
+    else if (line[i] === "," && !inQ) { res.push(cur); cur = ""; }
     else cur += line[i];
   }
   res.push(cur); return res;
@@ -317,50 +266,42 @@ function parseCSVLine(line) {
 
 // ─── LOAD DATA ───────────────────────────────────────────────
 async function loadData() {
-  const sheetId = document.getElementById('sheet-id').value.trim();
-  const apiKey  = document.getElementById('claude-key').value.trim();
-  if (!sheetId) { showAlert('config-alert','Renseigne le Sheet ID','error'); return; }
-
+  const sheetId = document.getElementById("sheet-id").value.trim();
+  const apiKey  = document.getElementById("claude-key").value.trim();
+  if (!sheetId) { showAlert("config-alert","Renseigne le Sheet ID","error"); return; }
   state.sheetId = sheetId; state.apiKey = apiKey;
-  localStorage.setItem('pp_sheet_id', sheetId);
-  if (apiKey) localStorage.setItem('pp_api_key', apiKey);
-
-  showLoader(true, 'Lecture du Google Sheet...');
+  localStorage.setItem("pp_sheet_id", sheetId);
+  if (apiKey) localStorage.setItem("pp_api_key", apiKey);
+  showLoader(true, "Lecture du Google Sheet...");
   try {
     const [cal, pronos, cj, joueurs] = await Promise.all([
-      fetchSheet(sheetId,'Calendrier'),
-      fetchSheet(sheetId,'Pronostics'),
-      fetchSheet(sheetId,'Classement_Jour'),
-      fetchSheet(sheetId,'Joueurs'),
+      fetchSheet(sheetId,"Calendrier"), fetchSheet(sheetId,"Pronostics"),
+      fetchSheet(sheetId,"Classement_Jour"), fetchSheet(sheetId,"Joueurs"),
     ]);
     state.matches = cal; state.pronostics = pronos;
     state.classementJour = cj; state.joueurs = joueurs;
-
     buildJourneesSelector();
     renderClassement();
-    setStatus('ok','Connecté');
-    showAlert('config-alert',`✓ ${cal.length} matchs • ${pronos.length} pronos • ${joueurs.length} joueurs`,'success');
+    setStatus("ok","Connecté");
+    showAlert("config-alert","✓ "+cal.length+" matchs • "+pronos.length+" pronos • "+joueurs.length+" joueurs","success");
     showLoader(false);
   } catch(err) {
-    showLoader(false); setStatus('error','Erreur');
-    showAlert('config-alert', err.message, 'error');
+    showLoader(false); setStatus("error","Erreur");
+    showAlert("config-alert", err.message, "error");
   }
 }
 
 // ─── JOURNEES ────────────────────────────────────────────────
-// Lit la colonne "Journée" du Calendrier — robuste sur toutes les variantes d'en-tête CSV
 function getJourneeKey(m) {
-  // Cherche parmi toutes les clés la colonne Journée (avec ou sans accent)
+  // Parcourt toutes les clés et normalise les accents pour trouver "Journée"
   for (const key of Object.keys(m)) {
-    const norm = key.toLowerCase().replace(/[\u0300-\u036f]/g,'').normalize ? 
-      key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : 
-      key.toLowerCase().replace(/é/g,'e').replace(/è/g,'e').replace(/ê/g,'e');
-    if (norm === 'journee') {
-      const val = (m[key] || '').trim();
+    const norm = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    if (norm === "journee") {
+      const val = (m[key] || "").trim();
       if (val) return val;
     }
   }
-  return '';
+  return "";
 }
 
 function buildJourneesSelector() {
@@ -369,441 +310,322 @@ function buildJourneesSelector() {
     const j = getJourneeKey(m);
     if (j && /^J\d+$/i.test(j)) set.add(j.toUpperCase());
   });
-
-  state.journees = Array.from(set).sort((a,b) =>
-    parseInt(a.replace(/\D/g,'')) - parseInt(b.replace(/\D/g,''))
-  );
-
-  const sel = document.getElementById('journee-select');
+  state.journees = Array.from(set).sort((a,b) => parseInt(a.replace(/\D/g,"")) - parseInt(b.replace(/\D/g,"")));
+  const sel = document.getElementById("journee-select");
   if (!state.journees.length) {
-    sel.innerHTML = '<option value="">Aucune journée trouvée — vérif colonne AN "Journée"</option>';
+    sel.innerHTML = "<option value=\"\">Aucune journée trouvée — vérif colonne AN du Calendrier</option>";
     return;
   }
-
-  sel.innerHTML = state.journees.map(j =>
-    `<option value="${j}">${j} — ${getJourneeDates(j)}</option>`
-  ).join('');
-
+  sel.innerHTML = state.journees.map(j => "<option value=\""+j+"\">"+j+" — "+getJourneeDates(j)+"</option>").join("");
   // Auto-select : dernière journée avec au moins 1 match joué
   let def = state.journees[0];
   for (let i = state.journees.length-1; i >= 0; i--) {
     const j = state.journees[i];
-    if (state.matches.some(m =>
-      getJourneeKey(m).toUpperCase() === j &&
-      (m['Score A'] || m['Score_A'] || '') !== ''
-    )) { def = j; break; }
+    if (state.matches.some(m => getJourneeKey(m).toUpperCase() === j && (m["Score A"] || m["Score_A"] || "") !== "")) {
+      def = j; break;
+    }
   }
   sel.value = def;
   filterByJournee();
 }
 
-// Retourne les dates couvertes par une journée sous forme lisible
 function getJourneeDates(journee) {
   const dates = new Set();
-  state.matches
-    .filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase())
-    .forEach(m => { if (m['Date']) dates.add(m['Date']); });
-  return Array.from(dates).join(' + ') || '?';
+  state.matches.filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase())
+    .forEach(m => { if (m["Date"]) dates.add(m["Date"]); });
+  return Array.from(dates).join(" + ") || "?";
 }
 
 function prevJournee() {
-  const sel = document.getElementById('journee-select');
+  const sel = document.getElementById("journee-select");
   const idx = state.journees.indexOf(sel.value);
   if (idx > 0) { sel.value = state.journees[idx-1]; filterByJournee(); }
 }
 
 function nextJournee() {
-  const sel = document.getElementById('journee-select');
+  const sel = document.getElementById("journee-select");
   const idx = state.journees.indexOf(sel.value);
   if (idx < state.journees.length-1) { sel.value = state.journees[idx+1]; filterByJournee(); }
 }
 
 // ─── FILTER BY JOURNEE ───────────────────────────────────────
 function filterByJournee() {
-  const journee = document.getElementById('journee-select').value;
+  const journee = document.getElementById("journee-select").value;
   if (!journee) return;
   state.selectedJournee = journee;
-
-  state.dayMatches = state.matches.filter(m =>
-    getJourneeKey(m).toUpperCase() === journee.toUpperCase()
-  );
-
-  // Pré-remplir résultats depuis le Sheet
+  state.dayMatches = state.matches.filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase());
   state.dayMatches.forEach(m => {
-    const id = m['ID_Match'] || m['ID Match'] || '';
+    const id = m["ID_Match"] || m["ID Match"] || "";
     if (!state.results[id]) {
       state.results[id] = {
-        scoreA: m['Score A'] || m['Score_A'] || '',
-        scoreB: m['Score B'] || m['Score_B'] || '',
-        tab:    m['Vainqueur TAB'] || '',
+        scoreA: m["Score A"] || m["Score_A"] || "",
+        scoreB: m["Score B"] || m["Score_B"] || "",
+        tab: m["Vainqueur TAB"] || ""
       };
     }
   });
-
-  // Afficher les dates couvertes sous le sélecteur
-  const dates = [...new Set(state.dayMatches.map(m => m['Date']).filter(Boolean))];
-  document.getElementById('journee-dates').textContent =
-    dates.length ? `📅 ${dates.join(' → ')} • ${state.dayMatches.length} match(s)` : '';
-
+  const dates = [...new Set(state.dayMatches.map(m => m["Date"]).filter(Boolean))];
+  document.getElementById("journee-dates").textContent =
+    dates.length ? "📅 "+dates.join(" → ")+" • "+state.dayMatches.length+" match(s)" : "";
   renderMatches();
   renderPronostics();
 }
 
 // ─── RENDER MATCHES ──────────────────────────────────────────
 function renderMatches() {
-  const container = document.getElementById('matches-container');
+  const container = document.getElementById("matches-container");
   if (!state.dayMatches.length) {
-    container.innerHTML = '<div class="no-matches">Aucun match pour cette journée</div>';
-    document.getElementById('generate-btn').disabled = true;
+    container.innerHTML = "<div class=\"no-matches\">Aucun match pour cette journée</div>";
+    document.getElementById("generate-btn").disabled = true;
     return;
   }
-
   container.innerHTML = state.dayMatches.map(m => {
-    const id      = m['ID_Match'] || m['ID Match'] || '';
-    const equipeA = m['Equipe A'] || m['Equipe_A'] || '';
-    const equipeB = m['Equipe B'] || m['Equipe_B'] || '';
-    const heure   = m['Heure'] || '';
-    const date    = m['Date'] || '';
-    const isBonus = (m['Match Bonus'] || m['Match_Bonus'] || '').toLowerCase().includes('oui');
-    const phase   = (m['Phase'] || m['phase'] || '').toLowerCase();
-    const isFinale = !phase.includes('poule') && phase !== '';  // TAB seulement hors poules
-    const groupe  = m['Groupe'] || '';
-    const r       = state.results[id] || {scoreA:'',scoreB:'',tab:''};
-    const hasRes  = r.scoreA !== '' && r.scoreB !== '';
-
-    return `<div class="match-card ${hasRes?'has-result':''}" id="card-${id}">
-      <div class="match-header">
-        <span class="match-label">#${id} • ${heure} • ${groupe}</span>
-        <span class="match-date-tag">${date}</span>
-        ${isBonus ? '<span class="match-bonus-badge">⭐ Bonus</span>' : ''}
-        ${hasRes ? `<span class="result-pill">✓ ${r.scoreA}-${r.scoreB}</span>` : ''}
-      </div>
-      <div class="match-teams"><span>${equipeA}</span><span class="match-vs">vs</span><span>${equipeB}</span></div>
-      <div class="score-row">
-        <input class="score-input" type="number" min="0" max="20" placeholder="–"
-          id="sa-${id}" value="${r.scoreA}" oninput="updateResult('${id}','a',this.value)">
-        <span class="score-sep">–</span>
-        <input class="score-input" type="number" min="0" max="20" placeholder="–"
-          id="sb-${id}" value="${r.scoreB}" oninput="updateResult('${id}','b',this.value)">
-        ${isFinale ? `<select class="tab-select" onchange="updateResult('${id}','tab',this.value)">
-          <option value="">TAB ?</option>
-          <option value="${equipeA}" ${r.tab===equipeA?'selected':''}>TAB → ${equipeA}</option>
-          <option value="${equipeB}" ${r.tab===equipeB?'selected':''}>TAB → ${equipeB}</option>
-        </select>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('generate-btn').disabled = false;
+    const id      = m["ID_Match"] || m["ID Match"] || "";
+    const equipeA = m["Equipe A"] || m["Equipe_A"] || "";
+    const equipeB = m["Equipe B"] || m["Equipe_B"] || "";
+    const heure   = m["Heure"] || "";
+    const date    = m["Date"] || "";
+    const phase   = (m["Phase"] || "").toLowerCase();
+    const isBonus = (m["Match Bonus"] || m["Match_Bonus"] || "").toLowerCase().includes("oui");
+    // TAB uniquement hors phase de poules
+    const isFinale = phase !== "" && !phase.includes("poule");
+    const groupe  = m["Groupe"] || "";
+    const r       = state.results[id] || {scoreA:"",scoreB:"",tab:""};
+    const hasRes  = r.scoreA !== "" && r.scoreB !== "";
+    const tabHTML = isFinale
+      ? "<select class=\"tab-select\" onchange=\"updateResult('"+id+"','tab',this.value)\"><option value=\"\">TAB ?</option><option value=\""+equipeA+"\" "+(r.tab===equipeA?"selected":"")+">TAB → "+equipeA+"</option><option value=\""+equipeB+"\" "+(r.tab===equipeB?"selected":"")+">TAB → "+equipeB+"</option></select>"
+      : "";
+    return "<div class=\"match-card "+(hasRes?"has-result":"")+"\" id=\"card-"+id+"\">"
+      +"<div class=\"match-header\">"
+      +"<span class=\"match-label\">#"+id+" • "+heure+" • "+groupe+"</span>"
+      +"<span class=\"match-date-tag\">"+date+"</span>"
+      +(isBonus ? "<span class=\"match-bonus-badge\">⭐ Bonus</span>" : "")
+      +(hasRes ? "<span class=\"result-pill\">✓ "+r.scoreA+"-"+r.scoreB+"</span>" : "")
+      +"</div>"
+      +"<div class=\"match-teams\"><span>"+equipeA+"</span><span class=\"match-vs\">vs</span><span>"+equipeB+"</span></div>"
+      +"<div class=\"score-row\">"
+      +"<input class=\"score-input\" type=\"number\" min=\"0\" max=\"20\" placeholder=\"–\" id=\"sa-"+id+"\" value=\""+r.scoreA+"\" oninput=\"updateResult('"+id+"','a',this.value)\">"
+      +"<span class=\"score-sep\">–</span>"
+      +"<input class=\"score-input\" type=\"number\" min=\"0\" max=\"20\" placeholder=\"–\" id=\"sb-"+id+"\" value=\""+r.scoreB+"\" oninput=\"updateResult('"+id+"','b',this.value)\">"
+      +tabHTML
+      +"</div></div>";
+  }).join("");
+  document.getElementById("generate-btn").disabled = false;
 }
 
 function updateResult(id, field, val) {
-  if (!state.results[id]) state.results[id] = {scoreA:'',scoreB:'',tab:''};
-  if (field==='a') state.results[id].scoreA = val;
-  if (field==='b') state.results[id].scoreB = val;
-  if (field==='tab') state.results[id].tab = val;
+  if (!state.results[id]) state.results[id] = {scoreA:"",scoreB:"",tab:""};
+  if (field==="a") state.results[id].scoreA = val;
+  if (field==="b") state.results[id].scoreB = val;
+  if (field==="tab") state.results[id].tab = val;
 }
 
 // ─── RENDER CLASSEMENT ───────────────────────────────────────
 function renderClassement() {
-  const container = document.getElementById('classement-preview');
-  const rows = state.classementJour.filter(r => (r['Joueur']||'').trim()).slice(0,30);
-  if (!rows.length) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">📊</span>Pas de données</div>';
-    return;
-  }
-  container.innerHTML = `<table class="classement-table">
-    <thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead>
-    <tbody>${rows.map((r,i) => {
-      const evo1 = parseInt(r['Évolution J-1']||r['Evolution J-1']||0)||0;
-      const evo2 = parseInt(r['Évolution J-2']||r['Evolution J-2']||0)||0;
-      const cls1 = evo1>0?'evo-up':evo1<0?'evo-down':'evo-eq';
-      const cls2 = evo2>0?'evo-up':evo2<0?'evo-down':'evo-eq';
-      const fmt = v => v>0?`▲+${v}`:v<0?`▼${v}`:'=';
-      return `<tr>
-        <td style="color:var(--muted)">${i+1}</td>
-        <td class="name">${r['Joueur']||''}</td>
-        <td>${r['Points du Jour']||'0'}</td>
-        <td class="pts">${r['Points Cumulés']||'0'}</td>
-        <td class="${cls1}">${fmt(evo1)}</td>
-        <td class="${cls2}">${fmt(evo2)}</td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table>`;
+  const container = document.getElementById("classement-preview");
+  const rows = state.classementJour.filter(r => (r["Joueur"]||"").trim()).slice(0,30);
+  if (!rows.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">📊</span>Pas de données</div>"; return; }
+  const fmt = v => v>0 ? "▲+"+v : v<0 ? "▼"+v : "=";
+  container.innerHTML = "<table class=\"classement-table\"><thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead><tbody>"
+    + rows.map((r,i) => {
+      const e1 = parseInt(r["Évolution J-1"]||r["Evolution J-1"]||0)||0;
+      const e2 = parseInt(r["Évolution J-2"]||r["Evolution J-2"]||0)||0;
+      return "<tr><td style=\"color:var(--muted)\">"+(i+1)+"</td><td class=\"name\">"+(r["Joueur"]||"")+"</td><td>"+(r["Points du Jour"]||"0")+"</td><td class=\"pts\">"+(r["Points Cumulés"]||"0")+"</td><td class=\""+(e1>0?"evo-up":e1<0?"evo-down":"evo-eq")+"\">"+(fmt(e1))+"</td><td class=\""+(e2>0?"evo-up":e2<0?"evo-down":"evo-eq")+"\">"+(fmt(e2))+"</td></tr>";
+    }).join("") + "</tbody></table>";
 }
 
 // ─── RENDER PRONOSTICS ───────────────────────────────────────
 function renderPronostics() {
-  const container = document.getElementById('pronos-preview');
-  if (!state.dayMatches.length) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Sélectionne une journée</div>';
-    return;
-  }
-  const matchIds = state.dayMatches.map(m => String(m['ID_Match']||m['ID Match']||''));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p['ID_Match']||p['ID Match']||'')));
-
-  if (!dayPronos.length) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Aucun prono pour cette journée</div>';
-    return;
-  }
-
-  let html = `<div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem;font-family:'DM Mono',monospace">
-    ${state.selectedJournee} — ${dayPronos.length} pronos sur ${state.dayMatches.length} matchs</div>`;
-
+  const container = document.getElementById("pronos-preview");
+  if (!state.dayMatches.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Sélectionne une journée</div>"; return; }
+  const matchIds = state.dayMatches.map(m => String(m["ID_Match"]||m["ID Match"]||""));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p["ID_Match"]||p["ID Match"]||"")));
+  if (!dayPronos.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Aucun prono pour cette journée</div>"; return; }
+  let html = "<div style=\"font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem;font-family:'DM Mono',monospace\">"+state.selectedJournee+" — "+dayPronos.length+" pronos sur "+state.dayMatches.length+" matchs</div>";
   state.dayMatches.forEach(m => {
-    const id = String(m['ID_Match']||m['ID Match']||'');
-    const mp = dayPronos.filter(p => String(p['ID_Match']||p['ID Match']||'') === id);
+    const id = String(m["ID_Match"]||m["ID Match"]||"");
+    const mp = dayPronos.filter(p => String(p["ID_Match"]||p["ID Match"]||"") === id);
     if (!mp.length) return;
-    html += `<div style="margin-bottom:1rem">
-      <div style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem">
-        ${m['Equipe A']||m['Equipe_A']||''} vs ${m['Equipe B']||m['Equipe_B']||''}
-      </div>
-      <div class="match-pronos">${mp.map(p => {
-        const joker = (p['Joker']||'').toLowerCase().includes('oui');
-        const pts = p['Points']||'';
-        return `<span class="prono-chip ${joker?'joker':''}" title="${pts?pts+' pts':'en attente'}">
-          ${p['Joueur']||''}: ${p['Prono_Equipe_A']||'?'}-${p['Prono_Equipe_B']||'?'}${joker?' 🃏':''}${pts?' ('+pts+')':''}
-        </span>`;
-      }).join('')}</div>
-    </div>`;
+    html += "<div style=\"margin-bottom:1rem\"><div style=\"font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem\">"+(m["Equipe A"]||m["Equipe_A"]||"")+" vs "+(m["Equipe B"]||m["Equipe_B"]||"")+"</div><div class=\"match-pronos\">";
+    mp.forEach(p => {
+      const joker = (p["Joker"]||"").toLowerCase().includes("oui");
+      const pts = p["Points"]||"";
+      html += "<span class=\"prono-chip "+(joker?"joker":"")+"\" title=\""+(pts?pts+" pts":"en attente")+"\">"+p["Joueur"]+": "+(p["Prono_Equipe_A"]||"?")+"—"+(p["Prono_Equipe_B"]||"?")+(joker?" 🃏":"")+(pts?" ("+pts+")":"")+"</span>";
+    });
+    html += "</div></div>";
   });
   container.innerHTML = html;
 }
 
 // ─── BUILD CONTEXT ───────────────────────────────────────────
 function buildContext() {
-  const mailType = document.getElementById('mail-type').value;
-  const matchIds = state.dayMatches.map(m => String(m['ID_Match']||m['ID Match']||''));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p['ID_Match']||p['ID Match']||'')));
-
+  const mailType = document.getElementById("mail-type").value;
+  const matchIds = state.dayMatches.map(m => String(m["ID_Match"]||m["ID Match"]||""));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p["ID_Match"]||p["ID Match"]||"")));
   const matchesWithResults = state.dayMatches.map(m => {
-    const id = String(m['ID_Match']||m['ID Match']||'');
+    const id = String(m["ID_Match"]||m["ID Match"]||"");
     const r  = state.results[id] || {};
+    const phase = (m["Phase"] || "").toLowerCase();
     return {
-      id, equipeA: m['Equipe A']||m['Equipe_A']||'', equipeB: m['Equipe B']||m['Equipe_B']||'',
-      heure: m['Heure']||'', date: m['Date']||'', groupe: m['Groupe']||'',
-      isBonus: (m['Match Bonus']||m['Match_Bonus']||'').toLowerCase().includes('oui'),
-      phase: m['Phase'] || m['phase'] || '',
-      isFinale: !(m['Phase']||m['phase']||'').toLowerCase().includes('poule'),
-      tv: m['TV']||'',
-      scoreA: r.scoreA !== undefined ? r.scoreA : (m['Score A']||m['Score_A']||''),
-      scoreB: r.scoreB !== undefined ? r.scoreB : (m['Score B']||m['Score_B']||''),
-      tab: r.tab || m['Vainqueur TAB']||'',
+      id, equipeA: m["Equipe A"]||m["Equipe_A"]||"", equipeB: m["Equipe B"]||m["Equipe_B"]||"",
+      heure: m["Heure"]||"", date: m["Date"]||"", groupe: m["Groupe"]||"",
+      phase: m["Phase"]||"",
+      isBonus: (m["Match Bonus"]||m["Match_Bonus"]||"").toLowerCase().includes("oui"),
+      isFinale: phase !== "" && !phase.includes("poule"),
+      tv: m["TV"]||"",
+      scoreA: (r.scoreA !== undefined && r.scoreA !== "") ? r.scoreA : (m["Score A"]||m["Score_A"]||""),
+      scoreB: (r.scoreB !== undefined && r.scoreB !== "") ? r.scoreB : (m["Score B"]||m["Score_B"]||""),
+      tab: r.tab || m["Vainqueur TAB"]||""
     };
   });
-
-  // Journée suivante
-  const curNum = parseInt(state.selectedJournee.replace(/\D/g,'')) || 0;
-  const nextLabel = `J${curNum+1}`;
-  const nextMatches = state.matches
-    .filter(m => getJourneeKey(m).toUpperCase() === nextLabel.toUpperCase())
+  const curNum = parseInt(state.selectedJournee.replace(/\D/g,"")) || 0;
+  const nextLabel = "J"+(curNum+1);
+  const nextMatches = state.matches.filter(m => getJourneeKey(m).toUpperCase() === nextLabel.toUpperCase())
     .map(m => ({
-      id: m['ID_Match']||m['ID Match']||'',
-      equipeA: m['Equipe A']||m['Equipe_A']||'', equipeB: m['Equipe B']||m['Equipe_B']||'',
-      heure: m['Heure']||'', date: m['Date']||'', groupe: m['Groupe']||'',
-      isBonus: (m['Match Bonus']||m['Match_Bonus']||'').toLowerCase().includes('oui'),
-      tv: m['TV']||'',
+      id: m["ID_Match"]||m["ID Match"]||"",
+      equipeA: m["Equipe A"]||m["Equipe_A"]||"", equipeB: m["Equipe B"]||m["Equipe_B"]||"",
+      heure: m["Heure"]||"", date: m["Date"]||"", groupe: m["Groupe"]||"",
+      isBonus: (m["Match Bonus"]||m["Match_Bonus"]||"").toLowerCase().includes("oui"),
+      tv: m["TV"]||""
     }));
-
-  // Classement du jour
-  const classData = state.classementJour
-    .filter(r => (r['Joueur']||'').trim()).slice(0,30)
-    .map(r => ({
-      joueur:   r['Joueur']||'',
-      ptsJour:  r['Points du Jour']||'0',
-      ptsCumul: r['Points Cumulés']||'0',
-      classement: r['Classement']||'',
-      evoJ1: r['Évolution J-1']||r['Evolution J-1']||'=',
-      evoJ2: r['Évolution J-2']||r['Evolution J-2']||'=',
-    }));
-
-  const joueursInfo = state.joueurs
-    .filter(j => (j['Joueur']||j['joueur']||'').trim())
-    .map(j => ({ joueur: j['Joueur']||j['joueur']||'', vainqueur: j['Vainqueur']||'', finaliste: j['Finaliste']||'' }));
-
+  const classData = state.classementJour.filter(r => (r["Joueur"]||"").trim()).slice(0,30).map(r => ({
+    joueur: r["Joueur"]||"", ptsJour: r["Points du Jour"]||"0", ptsCumul: r["Points Cumulés"]||"0",
+    classement: r["Classement"]||"",
+    evoJ1: r["Évolution J-1"]||r["Evolution J-1"]||"=",
+    evoJ2: r["Évolution J-2"]||r["Evolution J-2"]||"="
+  }));
+  const joueursInfo = state.joueurs.filter(j => (j["Joueur"]||j["joueur"]||"").trim())
+    .map(j => ({ joueur: j["Joueur"]||j["joueur"]||"", vainqueur: j["Vainqueur"]||"", finaliste: j["Finaliste"]||"" }));
   const pronosParMatch = {};
   matchIds.forEach(id => {
-    pronosParMatch[id] = dayPronos
-      .filter(p => String(p['ID_Match']||p['ID Match']||'') === id)
-      .map(p => ({
-        joueur: p['Joueur']||'', pronoA: p['Prono_Equipe_A']||'', pronoB: p['Prono_Equipe_B']||'',
-        pronoTAB: p['Prono_Vainqueur_TAB']||'',
-        joker: (p['Joker']||'').toLowerCase().includes('oui'),
-        points: p['Points']||'', pointsTexte: p['Points_Texte']||'', performance: p['Performance']||'',
-      }));
+    pronosParMatch[id] = dayPronos.filter(p => String(p["ID_Match"]||p["ID Match"]||"") === id).map(p => ({
+      joueur: p["Joueur"]||"", pronoA: p["Prono_Equipe_A"]||"", pronoB: p["Prono_Equipe_B"]||"",
+      pronoTAB: p["Prono_Vainqueur_TAB"]||"",
+      joker: (p["Joker"]||"").toLowerCase().includes("oui"),
+      points: p["Points"]||"", pointsTexte: p["Points_Texte"]||"", performance: p["Performance"]||""
+    }));
   });
-
   return { mailType, journee: state.selectedJournee, matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, nextLabel };
 }
 
 // ─── GENERATE ────────────────────────────────────────────────
 async function generateMail() {
-  const apiKey = document.getElementById('claude-key').value.trim();
-  if (!apiKey) { alert('Renseigne ta clé API Anthropic'); return; }
-
+  const apiKey = document.getElementById("claude-key").value.trim();
+  if (!apiKey) { alert("Renseigne ta clé API Anthropic"); return; }
   const ctx = buildContext();
-  const missing = ctx.matchesWithResults.filter(m => m.scoreA===''||m.scoreB==='');
+  const missing = ctx.matchesWithResults.filter(m => m.scoreA===""||m.scoreB==="");
   if (missing.length) {
-    const go = confirm(`${missing.length} match(s) sans résultat :\n${missing.map(m=>`${m.equipeA} vs ${m.equipeB}`).join('\n')}\n\nContinuer ?`);
+    const go = confirm(missing.length+" match(s) sans résultat :\n"+missing.map(m=>m.equipeA+" vs "+m.equipeB).join("\n")+"\n\nContinuer ?");
     if (!go) return;
   }
-
-  document.getElementById('generate-btn').disabled = true;
-  showLoader(true, 'Composition via Claude en cours...');
-  document.getElementById('output-content').innerHTML = '';
-
+  document.getElementById("generate-btn").disabled = true;
+  showLoader(true, "Composition via Claude en cours...");
+  document.getElementById("output-content").innerHTML = "";
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: "claude-sonnet-4-6",
         max_tokens: 4000,
         system: buildSystemPrompt(ctx.mailType, ctx.journee, ctx.nextLabel),
-        messages: [{ role: 'user', content: buildUserPrompt(ctx) }]
+        messages: [{ role: "user", content: buildUserPrompt(ctx) }]
       })
     });
-
     const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error?.message || `Erreur API ${resp.status}`);
-    const text = data.content?.map(c=>c.text||'').join('') || '';
+    if (!resp.ok) throw new Error(data.error && data.error.message ? data.error.message : "Erreur API "+resp.status);
+    const text = data.content ? data.content.map(c=>c.text||"").join("") : "";
     showLoader(false);
-    document.getElementById('output-content').innerHTML = `<textarea id="mail-output" readonly>${text}</textarea>`;
-    document.getElementById('generate-btn').disabled = false;
-
+    document.getElementById("output-content").innerHTML = "<textarea id=\"mail-output\" readonly>"+text+"</textarea>";
+    document.getElementById("generate-btn").disabled = false;
   } catch(err) {
     showLoader(false);
-    document.getElementById('output-content').innerHTML = `<div class="alert alert-error show">Erreur : ${err.message}</div>`;
-    document.getElementById('generate-btn').disabled = false;
+    document.getElementById("output-content").innerHTML = "<div class=\"alert alert-error show\">Erreur : "+err.message+"</div>";
+    document.getElementById("generate-btn").disabled = false;
   }
 }
 
 // ─── PROMPTS ─────────────────────────────────────────────────
 function buildSystemPrompt(mailType, journee, nextJournee) {
-  if (mailType === 'tendances') {
-    return `Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.
-Tu rédiges les TENDANCES AVANT-MATCH de la ${journee}.
-
-TON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.
-
-Pour chaque match :
-MATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne${' ⭐ BONUS si applicable'}
-🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]
-
-Longueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples.
-Envoi WhatsApp.`;
+  if (mailType === "tendances") {
+    return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la "+journee+".\n\nTON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.\n\nPour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]\n\nLongueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples.\nEnvoi WhatsApp.";
   }
-
-  return `Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.
-Tu rédiges le RÉCAP MATIN de la ${journee}, envoyé entre 8h et 14h.
-Ce récap couvre TOUS les matchs de la ${journee}, qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).
-
-TON : Amical, passionné, taquin, "communauté de potes". Français vivant, humour bienveillant. Émojis avec parcimonie.
-
-STRUCTURE OBLIGATOIRE :
-1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)
-2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables
-3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)
-4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant
-5. 💬 LA PHRASE DU JOUR
-6. 📊 CLASSEMENT APRÈS ${journee} — intégrer le classement fourni avec évolutions
-7. ⚽ AU PROGRAMME : ${nextJournee} — liste des matchs avec horaires et dates réelles
-8. Bonne journée / à ce soir !
-
-RÈGLES : Ne jamais inventer des points. Cite les joueurs par prénom/surnom. Pas de HTML.
-200-250 mots par match. 100-150 mots pour TOPS/FLOPS.`;
+  return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la "+journee+", envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la "+journee+", qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).\n\nTON : Amical, passionné, taquin, \"communauté de potes\". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS "+journee+" — intégrer le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : "+nextJournee+" — liste des matchs avec horaires et dates réelles\n8. Bonne journée / à ce soir !\n\nRÈGLES : Ne jamais inventer des points. Cite les joueurs par prénom/surnom. Pas de HTML.\n200-250 mots par match. 100-150 mots pour TOPS/FLOPS.";
 }
 
 function buildUserPrompt(ctx) {
   const { matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, journee, nextLabel, mailType } = ctx;
-
-  let p = mailType === 'tendances'
-    ? `Génère les tendances avant-match pour la ${journee}.\n\n`
-    : `Génère le récap matin pour la ${journee}.\n\n`;
-
-  p += `=== MATCHS DE LA ${journee} ===\n`;
+  let p = mailType === "tendances" ? "Génère les tendances avant-match pour la "+journee+".\n\n" : "Génère le récap matin pour la "+journee+".\n\n";
+  p += "=== MATCHS DE LA "+journee+" ===\n";
   matchesWithResults.forEach(m => {
-    p += `\nMatch #${m.id} | ${m.date} ${m.heure} | ${m.groupe}${m.isBonus?' ⭐ BONUS':''} | 📺 ${m.tv||'?'}\n`;
-    p += `${m.equipeA} vs ${m.equipeB}\n`;
-    p += m.scoreA!==''&&m.scoreB!==''
-      ? `Résultat : ${m.equipeA} ${m.scoreA} - ${m.scoreB} ${m.equipeB}${m.tab?' (TAB: '+m.tab+')':''}\n`
-      : `Résultat : non renseigné\n`;
-
+    p += "\nMatch #"+m.id+" | "+m.date+" "+m.heure+" | "+m.groupe+(m.isBonus?" ⭐ BONUS":"")+" | 📺 "+(m.tv||"?")+"\n";
+    p += m.equipeA+" vs "+m.equipeB+"\n";
+    if (m.scoreA!==""&&m.scoreB!=="") {
+      p += "Résultat : "+m.equipeA+" "+m.scoreA+" - "+m.scoreB+" "+m.equipeB+(m.tab?" (TAB: "+m.tab+")":"")+"\n";
+    } else {
+      p += "Résultat : non renseigné\n";
+    }
     const pronos = pronosParMatch[m.id] || [];
     if (pronos.length) {
-      p += `Pronostics (${pronos.length} joueurs) :\n`;
+      p += "Pronostics ("+pronos.length+" joueurs) :\n";
       pronos.forEach(pr => {
-        p += `  ${pr.joueur}: ${pr.pronoA}-${pr.pronoB}`;
-        if (pr.pronoTAB) p += ` TAB:${pr.pronoTAB}`;
-        if (pr.joker) p += ` [JOKER x2]`;
-        if (pr.points!=='') p += ` → ${pr.points} pts`;
-        if (pr.pointsTexte) p += ` (${pr.pointsTexte})`;
-        if (pr.performance) p += ` [${pr.performance}]`;
-        p += '\n';
+        p += "  "+pr.joueur+": "+pr.pronoA+"-"+pr.pronoB;
+        if (pr.pronoTAB) p += " TAB:"+pr.pronoTAB;
+        if (pr.joker) p += " [JOKER x2]";
+        if (pr.points!=="") p += " → "+pr.points+" pts";
+        if (pr.pointsTexte) p += " ("+pr.pointsTexte+")";
+        if (pr.performance) p += " ["+pr.performance+"]";
+        p += "\n";
       });
     }
   });
-
-  p += `\n=== CLASSEMENT APRÈS ${journee} ===\n`;
+  p += "\n=== CLASSEMENT APRÈS "+journee+" ===\n";
   if (classData.length) {
     classData.forEach((j,i) => {
       const e1 = parseInt(j.evoJ1)||0, e2 = parseInt(j.evoJ2)||0;
-      const fmt = v => v>0?`▲+${v}`:v<0?`▼${v}`:'=';
-      p += `${i+1}. ${j.joueur} — ${j.ptsJour} pts ce jour — ${j.ptsCumul} pts total — Evo J-1: ${fmt(e1)} — Evo J-2: ${fmt(e2)}\n`;
+      const fmt = v => v>0?"▲+"+v:v<0?"▼"+v:"=";
+      p += (i+1)+". "+j.joueur+" — "+j.ptsJour+" pts ce jour — "+j.ptsCumul+" pts total — Evo J-1: "+fmt(e1)+" — Evo J-2: "+fmt(e2)+"\n";
     });
-  } else p += `Données non disponibles.\n`;
-
-  p += `\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n`;
-  joueursInfo.forEach(j => {
-    if (j.vainqueur||j.finaliste)
-      p += `${j.joueur} : Vainqueur → ${j.vainqueur||'?'} | Finaliste → ${j.finaliste||'?'}\n`;
-  });
-
-  p += `\n=== MATCHS DE LA ${nextLabel} ===\n`;
+  } else p += "Données non disponibles.\n";
+  p += "\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n";
+  joueursInfo.forEach(j => { if (j.vainqueur||j.finaliste) p += j.joueur+" : Vainqueur → "+(j.vainqueur||"?")+" | Finaliste → "+(j.finaliste||"?")+"\n"; });
+  p += "\n=== MATCHS DE LA "+nextLabel+" ===\n";
   if (nextMatches.length) {
-    nextMatches.forEach(m => {
-      p += `${m.date} ${m.heure} — ${m.equipeA} vs ${m.equipeB} (${m.groupe})${m.isBonus?' ⭐ BONUS':''}${m.tv?' | 📺 '+m.tv:''}\n`;
-    });
-  } else p += `Aucun match trouvé pour ${nextLabel}.\n`;
-
+    nextMatches.forEach(m => { p += m.date+" "+m.heure+" — "+m.equipeA+" vs "+m.equipeB+" ("+m.groupe+")"+(m.isBonus?" ⭐ BONUS":"")+(m.tv?" | 📺 "+m.tv:"")+"\n"; });
+  } else p += "Aucun match trouvé pour "+nextLabel+".\n";
   return p;
 }
 
 // ─── UTILS ───────────────────────────────────────────────────
 function showLoader(active, text) {
-  document.getElementById('loader').classList.toggle('active', active);
-  if (text) document.getElementById('loader-text').textContent = text;
+  document.getElementById("loader").classList.toggle("active", active);
+  if (text) document.getElementById("loader-text").textContent = text;
 }
 function setStatus(st, label) {
-  document.getElementById('status-dot').className = `status-dot ${st}`;
-  document.getElementById('status-label').textContent = label;
+  document.getElementById("status-dot").className = "status-dot "+st;
+  document.getElementById("status-label").textContent = label;
 }
 function showAlert(id, msg, type) {
   const el = document.getElementById(id);
-  el.textContent = msg; el.className = `alert alert-${type} show`;
+  el.textContent = msg; el.className = "alert alert-"+type+" show";
 }
 function copyOutput() {
-  const ta = document.getElementById('mail-output');
+  const ta = document.getElementById("mail-output");
   if (!ta) return;
   navigator.clipboard.writeText(ta.value).then(() => {
-    const btn = document.getElementById('copy-btn');
-    btn.textContent = '✓ Copié !'; btn.classList.add('copy-flash');
-    setTimeout(() => { btn.textContent = '📋 Copier'; btn.classList.remove('copy-flash'); }, 2000);
+    const btn = document.getElementById("copy-btn");
+    btn.textContent = "✓ Copié !"; btn.classList.add("copy-flash");
+    setTimeout(() => { btn.textContent = "📋 Copier"; btn.classList.remove("copy-flash"); }, 2000);
   });
 }
 function clearOutput() {
-  document.getElementById('output-content').innerHTML = `
-    <div class="empty" style="padding:4rem 1rem">
-      <span class="empty-icon">🥃</span>
-      <div style="font-size:0.9rem;color:var(--text);margin-bottom:0.5rem">Prêt à générer</div>
-      Sélectionne une journée et génère !
-    </div>`;
+  document.getElementById("output-content").innerHTML = "<div class=\"empty\" style=\"padding:4rem 1rem\"><span class=\"empty-icon\">🥃</span><div style=\"font-size:0.9rem;color:var(--text);margin-bottom:0.5rem\">Prêt à générer</div>Sélectionne une journée et génère !</div>";
 }
-</script>
+<\/script>
 </body>
 </html>
