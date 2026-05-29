@@ -7,516 +7,124 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --surface2: #1f1f1f;
-    --border: #2a2a2a;
-    --accent: #f5c842;
-    --accent2: #e8843a;
-    --text: #f0ede8;
-    --muted: #888;
-    --success: #4caf7d;
-    --error: #e05050;
-    --info: #5b9bd5;
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1f1f1f; --border: #2a2a2a;
+    --accent: #f5c842; --accent2: #e8843a; --text: #f0ede8; --muted: #888;
+    --success: #4caf7d; --error: #e05050; --info: #5b9bd5;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
   header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem;
+    height: 64px; position: sticky; top: 0; z-index: 100;
   }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
   .logo span { color: var(--text); }
-
-  .header-badge {
-    background: var(--accent2);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 2px;
-  }
-
-  .header-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    transition: background 0.3s;
-  }
+  .header-badge { background: var(--accent2); color: white; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
   .status-dot.ok { background: var(--success); box-shadow: 0 0 6px var(--success); }
   .status-dot.error { background: var(--error); }
 
-  /* MAIN LAYOUT */
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
 
-  /* PANELS */
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 1rem 1.2rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .panel-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-  }
-
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .panel-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+  .panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--accent); }
   .panel-body { padding: 1.2rem; }
 
-  /* FORM ELEMENTS */
-  label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.4rem;
-  }
-
-  input, select, textarea {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
-    padding: 0.6rem 0.8rem;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--accent);
-  }
+  label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  input, select, textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; padding: 0.6rem 0.8rem; transition: border-color 0.2s; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   select option { background: var(--surface2); }
-
   .field { margin-bottom: 1rem; }
 
-  /* BUTTONS */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    border-radius: 5px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-    text-decoration: none;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-  }
+  .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 5px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: #000; }
   .btn-primary:hover { background: #ffd84a; transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-
-  .btn-danger {
-    background: transparent;
-    color: var(--error);
-    border: 1px solid var(--error);
-  }
+  .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); }
   .btn-danger:hover { background: var(--error); color: white; }
-
   .btn-block { width: 100%; justify-content: center; }
 
+  /* JOURNEE SELECTOR */
+  .journee-nav { display: flex; align-items: center; gap: 0.5rem; }
+  .journee-nav select { flex: 1; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; color: var(--accent); background: var(--surface2); }
+  .jnav-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 5px; width: 34px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; flex-shrink: 0; }
+  .jnav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
   /* MATCH CARDS */
-  .match-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.9rem;
-    margin-bottom: 0.75rem;
-    transition: border-color 0.2s;
-  }
-  .match-card:hover { border-color: #3a3a3a; }
+  .match-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem; margin-bottom: 0.75rem; }
   .match-card.has-result { border-color: #2d3d2d; background: #141f14; }
+  .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.3rem; }
+  .match-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .match-date-tag { font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--info); background: rgba(91,155,213,0.1); border: 1px solid rgba(91,155,213,0.2); padding: 1px 6px; border-radius: 3px; }
+  .match-bonus-badge { background: var(--accent2); color: white; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 2px; }
+  .result-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 3px; font-size: 0.72rem; font-weight: 600; font-family: 'DM Mono', monospace; background: #1a3a1a; color: var(--success); }
+  .match-teams { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.7rem; }
+  .match-vs { color: var(--muted); font-size: 0.7rem; }
+  .score-row { display: flex; gap: 0.5rem; align-items: center; }
+  .score-input { width: 52px; text-align: center; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; padding: 0.4rem; }
+  .score-sep { color: var(--muted); font-weight: 600; font-size: 1rem; }
+  .tab-select { flex: 1; font-size: 0.8rem; padding: 0.4rem 0.5rem; }
 
-  .match-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.6rem;
-  }
-
-  .match-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .match-bonus-badge {
-    background: var(--accent2);
-    color: white;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 1px 6px;
-    border-radius: 2px;
-  }
-
-  .match-teams {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.7rem;
-  }
-
-  .match-vs {
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-weight: 400;
-  }
-
-  .score-row {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  .score-input {
-    width: 52px;
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 0.4rem;
-  }
-
-  .score-sep {
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 1rem;
-  }
-
-  .tab-select {
-    flex: 1;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.5rem;
-  }
-
-  /* RESULT INDICATOR */
-  .result-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
-  }
-  .result-pill.ok { background: #1a3a1a; color: var(--success); }
-
-  /* DATE SELECTOR */
-  .date-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .date-nav input[type="date"] { flex: 1; }
-  .date-nav .btn { padding: 0.55rem 0.7rem; }
-
-  /* CLASSEMENT PREVIEW */
-  .classement-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-  }
-  .classement-table th {
-    text-align: left;
-    padding: 0.4rem 0.5rem;
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-  .classement-table td {
-    padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid #1a1a1a;
-    font-family: 'DM Mono', monospace;
-  }
+  /* CLASSEMENT */
+  .classement-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .classement-table th { text-align: left; padding: 0.4rem 0.5rem; color: var(--muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .classement-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid #1a1a1a; font-family: 'DM Mono', monospace; }
   .classement-table tr:last-child td { border-bottom: none; }
-  .classement-table .rank { color: var(--muted); width: 24px; }
-  .classement-table .name { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 500; }
-  .classement-table .pts { color: var(--accent); font-weight: 600; }
-  .classement-table .evo { text-align: right; }
-  .evo-up { color: var(--success); }
-  .evo-down { color: var(--error); }
-  .evo-eq { color: var(--muted); }
-
-  /* OUTPUT */
-  .output-area {
-    position: relative;
-  }
-
-  #mail-output {
-    width: 100%;
-    min-height: 500px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    line-height: 1.7;
-    padding: 1.2rem;
-    resize: vertical;
-    white-space: pre-wrap;
-  }
-
-  .output-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    justify-content: flex-end;
-  }
-
-  /* LOADING */
-  .loader {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    gap: 1rem;
-  }
-  .loader.active { display: flex; }
-
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loader-text {
-    color: var(--muted);
-    font-size: 0.85rem;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-
-  /* ALERT */
-  .alert {
-    padding: 0.7rem 0.9rem;
-    border-radius: 5px;
-    font-size: 0.82rem;
-    margin-bottom: 1rem;
-    display: none;
-  }
-  .alert.show { display: block; }
-  .alert-error { background: #2a1010; border: 1px solid var(--error); color: #f08080; }
-  .alert-success { background: #0f2a1a; border: 1px solid var(--success); color: #80c090; }
-  .alert-info { background: #101f2a; border: 1px solid var(--info); color: #80b0d0; }
+  .name { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 500; }
+  .pts { color: var(--accent); font-weight: 600; }
+  .evo-up { color: var(--success); } .evo-down { color: var(--error); } .evo-eq { color: var(--muted); }
 
   /* TABS */
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
-  }
-  .tab {
-    padding: 0.7rem 1.2rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    color: var(--muted);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.15s;
-  }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .tab { padding: 0.7rem 1.2rem; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab:hover:not(.active) { color: var(--text); }
-
   .tab-content { display: none; padding: 1.2rem; }
   .tab-content.active { display: block; }
 
-  /* SECTION DIVIDER */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 1rem 0;
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .section-divider::before, .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  /* OUTPUT */
+  #mail-output { width: 100%; min-height: 500px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.7; padding: 1.2rem; resize: vertical; }
 
-  /* CONFIG AREA */
-  .config-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.82rem;
-  }
-  .config-item:last-child { border-bottom: none; }
-  .config-key { color: var(--muted); font-size: 0.75rem; }
-  .config-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--accent);
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  /* LOADER */
+  .loader { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; gap: 1rem; }
+  .loader.active { display: flex; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text { color: var(--muted); font-size: 0.85rem; animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-  /* PRONOS PREVIEW */
-  .prono-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 2px 7px;
-    font-size: 0.72rem;
-    font-family: 'DM Mono', monospace;
-    margin: 2px;
-  }
-  .prono-chip.joker { border-color: var(--accent2); color: var(--accent2); }
+  /* ALERTS */
+  .alert { padding: 0.7rem 0.9rem; border-radius: 5px; font-size: 0.82rem; margin-bottom: 1rem; display: none; }
+  .alert.show { display: block; }
+  .alert-error { background: #2a1010; border: 1px solid var(--error); color: #f08080; }
+  .alert-success { background: #0f2a1a; border: 1px solid var(--success); color: #80c090; }
 
-  .match-pronos {
-    margin-top: 0.5rem;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  /* RIGHT PANEL STICKY */
-  .right-col { position: sticky; top: 80px; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-  /* GENERATE BTN BIG */
-  .generate-btn {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 0.12em;
-    border-radius: 6px;
-    margin-top: 1rem;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.15s;
-  }
+  /* GENERATE BTN */
+  .generate-btn { width: 100%; padding: 1rem; font-size: 1rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.12em; border-radius: 6px; margin-top: 1rem; background: var(--accent); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.15s; }
   .generate-btn:hover { background: #ffd84a; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,200,66,0.2); }
   .generate-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
 
-  /* EMPTY STATE */
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.85rem; }
   .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
-
   .no-matches { color: var(--muted); font-size: 0.82rem; padding: 1rem 0; text-align: center; }
 
-  /* COPY ANIMATION */
-  @keyframes copyFlash {
-    0% { background: var(--success); color: #000; }
-    100% { background: var(--surface2); color: var(--text); }
-  }
+  .prono-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 7px; font-size: 0.72rem; font-family: 'DM Mono', monospace; margin: 2px; }
+  .prono-chip.joker { border-color: var(--accent2); color: var(--accent2); }
+  .match-pronos { margin-top: 0.5rem; display: flex; flex-wrap: wrap; }
+
+  .right-col { position: sticky; top: 80px; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @keyframes copyFlash { 0% { background: var(--success); color: #000; } 100% { background: var(--surface2); color: var(--text); } }
   .copy-flash { animation: copyFlash 0.8s ease forwards; }
 </style>
 </head>
@@ -525,381 +133,350 @@
 <header>
   <div class="logo">🥃 Pastis <span>Pronos</span></div>
   <div class="header-badge">CDM 2026</div>
-  <div style="color:var(--muted); font-size:0.75rem; margin-left:0.5rem;">Générateur de Récap</div>
+  <div style="color:var(--muted);font-size:0.75rem;margin-left:0.5rem">Générateur de Récap</div>
   <div class="header-right">
-    <span id="status-label" style="font-size:0.75rem; color:var(--muted)">Non connecté</span>
+    <span id="status-label" style="font-size:0.75rem;color:var(--muted)">Non connecté</span>
     <div class="status-dot" id="status-dot"></div>
   </div>
 </header>
 
 <div class="container">
 
-  <!-- LEFT COLUMN: CONFIG + MATCHS -->
+  <!-- LEFT -->
   <div class="left-col">
 
-    <!-- CONFIGURATION -->
     <div class="panel" style="margin-bottom:1rem">
-      <div class="panel-header">
-        <span>⚙️</span>
-        <span class="panel-title">Configuration</span>
-      </div>
+      <div class="panel-header"><span>⚙️</span><span class="panel-title">Configuration</span></div>
       <div class="tabs">
-        <div class="tab active" onclick="switchTab('config','setup')">Connexion</div>
-        <div class="tab" onclick="switchTab('config','about')">À propos</div>
+        <div class="tab active" onclick="switchTab(event,'config','setup')">Connexion</div>
+        <div class="tab" onclick="switchTab(event,'config','about')">À propos</div>
       </div>
       <div id="config-setup" class="tab-content active">
         <div class="field">
           <label>Sheet ID Google Sheets</label>
-          <input type="text" id="sheet-id" placeholder="1zKJSP-Oijfncl6uGVV8L4_HocN_WA8q_ItX0lpGmV-0" />
+          <input type="text" id="sheet-id" placeholder="1zKJSP-Oijfncl6uGVV8L4_HocN..." />
         </div>
         <div class="field">
           <label>Clé API Anthropic</label>
           <input type="password" id="claude-key" placeholder="sk-ant-..." />
-          <div style="font-size:0.7rem; color:var(--muted); margin-top:0.3rem">Stockée localement, jamais envoyée ailleurs</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem">Stockée localement, jamais transmise</div>
         </div>
         <div class="field">
-          <label>Type de mail</label>
+          <label>Type de contenu</label>
           <select id="mail-type">
-            <option value="soir">📩 Récap du soir (23h)</option>
-            <option value="matin">☀️ Récap du matin (8h)</option>
+            <option value="recap">📩 Récap du matin (8h-14h)</option>
             <option value="tendances">🔮 Tendances avant-match</option>
           </select>
         </div>
-        <button class="btn btn-primary btn-block" onclick="loadData()">
-          <span>↻</span> Charger les données du Sheet
-        </button>
-        <div id="config-alert" class="alert" style="margin-top:0.75rem; margin-bottom:0"></div>
+        <button class="btn btn-primary btn-block" onclick="loadData()">↻ Charger les données</button>
+        <div id="config-alert" class="alert" style="margin-top:0.75rem;margin-bottom:0"></div>
       </div>
       <div id="config-about" class="tab-content">
-        <div style="font-size:0.8rem; color:var(--muted); line-height:1.6">
-          <p>Cette app lit ton Google Sheet en lecture publique et génère les mails via Claude (claude-sonnet-4-20250514).</p>
+        <div style="font-size:0.8rem;color:var(--muted);line-height:1.7">
+          <p>Sélectionne une <strong style="color:var(--accent)">Journée (J1, J2...)</strong> — tous les matchs de cette journée s'affichent, même répartis sur 2 jours calendaires.</p>
           <br>
-          <p><strong style="color:var(--text)">Feuilles utilisées :</strong></p>
-          <p>• <code style="color:var(--accent)">Calendrier</code> — matchs & résultats</p>
-          <p>• <code style="color:var(--accent)">Pronostics</code> — pronos joueurs</p>
-          <p>• <code style="color:var(--accent)">Classement_Jour</code> — points & évolution</p>
-          <p>• <code style="color:var(--accent)">Joueurs</code> — favoris & infos</p>
+          <p><strong style="color:var(--text)">Feuilles lues :</strong></p>
+          <p>• <code style="color:var(--accent)">Calendrier</code> — colonne Journée (AN) utilisée</p>
+          <p>• <code style="color:var(--accent)">Pronostics</code> — tous les pronos</p>
+          <p>• <code style="color:var(--accent)">Classement_Jour</code> — points & évolutions</p>
+          <p>• <code style="color:var(--accent)">Joueurs</code> — favoris début de tournoi</p>
         </div>
       </div>
     </div>
 
-    <!-- DATE + MATCHS -->
     <div class="panel">
-      <div class="panel-header">
-        <span>⚽</span>
-        <span class="panel-title">Matchs du jour</span>
-        <div style="margin-left:auto">
-          <div class="date-nav">
-            <input type="date" id="match-date" />
-            <button class="btn btn-secondary" onclick="filterByDate()">→</button>
-          </div>
+      <div class="panel-header"><span>⚽</span><span class="panel-title">Matchs de la Journée</span></div>
+
+      <!-- JOURNEE NAV -->
+      <div style="padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.015)">
+        <label style="margin-bottom:0.5rem">Sélectionner la Journée</label>
+        <div class="journee-nav">
+          <div class="jnav-btn" onclick="prevJournee()" title="Précédente">◀</div>
+          <select id="journee-select" onchange="filterByJournee()">
+            <option value="">— Charge les données d'abord —</option>
+          </select>
+          <div class="jnav-btn" onclick="nextJournee()" title="Suivante">▶</div>
         </div>
+        <div id="journee-dates" style="font-size:0.7rem;color:var(--muted);margin-top:0.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
       </div>
+
       <div class="panel-body" id="matches-container">
-        <div class="empty">
-          <span class="empty-icon">📅</span>
-          Charge les données pour voir les matchs
-        </div>
+        <div class="empty"><span class="empty-icon">📅</span>Charge les données puis sélectionne une journée</div>
       </div>
     </div>
 
   </div>
 
-  <!-- RIGHT COLUMN: OUTPUT -->
+  <!-- RIGHT -->
   <div class="right-col">
     <div class="panel">
       <div class="panel-header">
-        <span>✉️</span>
-        <span class="panel-title">Mail Généré</span>
-        <div style="margin-left:auto; display:flex; gap:0.5rem">
+        <span>✉️</span><span class="panel-title">Contenu Généré</span>
+        <div style="margin-left:auto;display:flex;gap:0.5rem">
           <button class="btn btn-secondary" onclick="copyOutput()" id="copy-btn">📋 Copier</button>
           <button class="btn btn-danger" onclick="clearOutput()">✕</button>
         </div>
       </div>
 
-      <!-- CLASSEMENT PREVIEW -->
       <div class="tabs">
-        <div class="tab active" onclick="switchTab('output','mail')">📝 Mail</div>
-        <div class="tab" onclick="switchTab('output','classement')">📊 Classement</div>
-        <div class="tab" onclick="switchTab('output','pronos')">🔮 Pronos</div>
+        <div class="tab active" onclick="switchTab(event,'output','mail')">📝 Texte</div>
+        <div class="tab" onclick="switchTab(event,'output','classement')">📊 Classement</div>
+        <div class="tab" onclick="switchTab(event,'output','pronos')">🔮 Pronos</div>
       </div>
 
       <div id="output-mail" class="tab-content active">
         <div id="loader" class="loader">
           <div class="spinner"></div>
-          <div class="loader-text" id="loader-text">Lecture du Sheet...</div>
+          <div class="loader-text" id="loader-text">Génération en cours...</div>
         </div>
         <div id="output-content">
-          <div class="empty" style="padding: 4rem 1rem">
+          <div class="empty" style="padding:4rem 1rem">
             <span class="empty-icon">🥃</span>
-            <div style="font-size:0.9rem; color:var(--text); margin-bottom:0.5rem">Prêt à générer</div>
-            Configure le Sheet, charge les données,<br>saisis les résultats, puis génère !
+            <div style="font-size:0.9rem;color:var(--text);margin-bottom:0.5rem">Prêt à générer</div>
+            Configure, charge, sélectionne la journée, puis génère !
           </div>
         </div>
         <button class="generate-btn" id="generate-btn" onclick="generateMail()" disabled>
-          🚀 GÉNÉRER LE MAIL RECAP
+          🚀 GÉNÉRER LE CONTENU
         </button>
       </div>
 
       <div id="output-classement" class="tab-content">
-        <div id="classement-preview" class="empty">
-          <span class="empty-icon">📊</span>
-          Charge les données pour voir le classement
-        </div>
+        <div id="classement-preview" class="empty"><span class="empty-icon">📊</span>Pas encore de données</div>
       </div>
 
       <div id="output-pronos" class="tab-content">
-        <div id="pronos-preview" class="empty">
-          <span class="empty-icon">🔮</span>
-          Sélectionne une date pour voir les pronos
-        </div>
+        <div id="pronos-preview" class="empty"><span class="empty-icon">🔮</span>Sélectionne une journée</div>
       </div>
-
     </div>
   </div>
 
 </div>
 
 <script>
-// ============================================================
-// STATE
-// ============================================================
+// ─── STATE ───────────────────────────────────────────────────
 let state = {
-  sheetId: '',
-  apiKey: '',
-  matches: [],
-  pronostics: [],
-  classement: [],
-  classementJour: [],
-  joueurs: [],
-  selectedDate: '',
-  dayMatches: [],   // matches filtered for selected date
-  results: {},      // { matchId: { scoreA, scoreB, tab } }
+  sheetId: '', apiKey: '',
+  matches: [], pronostics: [], classementJour: [], joueurs: [],
+  journees: [],        // ["J1","J2","J3"...]
+  selectedJournee: '',
+  dayMatches: [],
+  results: {},         // { matchId: {scoreA, scoreB, tab} }
 };
 
-// ============================================================
-// INIT
-// ============================================================
+// ─── INIT ────────────────────────────────────────────────────
 window.onload = () => {
-  // Restore saved config
   state.sheetId = localStorage.getItem('pp_sheet_id') || '';
-  state.apiKey = localStorage.getItem('pp_api_key') || '';
+  state.apiKey  = localStorage.getItem('pp_api_key')  || '';
   if (state.sheetId) document.getElementById('sheet-id').value = state.sheetId;
-  if (state.apiKey) document.getElementById('claude-key').value = state.apiKey;
-
-  // Set today's date
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('match-date').value = today;
-  state.selectedDate = today;
+  if (state.apiKey)  document.getElementById('claude-key').value = state.apiKey;
 };
 
-// ============================================================
-// TABS
-// ============================================================
-function switchTab(group, tabId) {
-  const map = {
-    config: ['setup', 'about'],
-    output: ['mail', 'classement', 'pronos']
-  };
-  map[group].forEach(id => {
-    document.getElementById(`config-${id}` === `config-${tabId}` ? `config-${id}` : `${group === 'output' ? 'output' : 'config'}-${id}`)?.classList.remove('active');
-  });
-  // simpler approach
-  document.querySelectorAll(`#${group === 'config' ? 'config' : 'output'}-setup, #config-about`).forEach(el => el?.classList.remove('active'));
-  document.querySelectorAll(`#output-mail, #output-classement, #output-pronos`).forEach(el => el?.classList.remove('active'));
+// ─── TABS ────────────────────────────────────────────────────
+function switchTab(event, group, tabId) {
+  const tabsEl = event.target.closest('.tabs');
+  if (tabsEl) tabsEl.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
 
-  const prefix = group === 'config' ? 'config' : 'output';
-  document.getElementById(`${prefix}-${tabId}`)?.classList.add('active');
-
-  // Update tab highlights
-  const panel = group === 'config'
-    ? document.querySelector('.panel .tabs')
-    : document.querySelectorAll('.panel .tabs')[1];
-  if (panel) {
-    panel.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-  }
+  const ids = group === 'config'
+    ? ['config-setup','config-about']
+    : ['output-mail','output-classement','output-pronos'];
+  ids.forEach(id => document.getElementById(id)?.classList.remove('active'));
+  document.getElementById(group === 'config' ? `config-${tabId}` : `output-${tabId}`)?.classList.add('active');
 }
 
-// ============================================================
-// GOOGLE SHEETS API (public, CSV export)
-// ============================================================
+// ─── GOOGLE SHEETS (CSV, sans clé API) ───────────────────────
 async function fetchSheet(sheetId, sheetName) {
-  // Use CSV export endpoint (no API key needed for public sheets)
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Impossible de lire la feuille "${sheetName}"`);
-  const text = await resp.text();
-  return parseCSV(text);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Impossible de lire "${sheetName}" (Sheet partagé en lecture publique ?)`);
+  return parseCSV(await r.text());
 }
 
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
-  if (lines.length === 0) return [];
-  const headers = parseCSVLine(lines[0]);
+  if (!lines.length) return [];
+  const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/^"|"$/g,''));
   return lines.slice(1).map(line => {
     const vals = parseCSVLine(line);
     const obj = {};
-    headers.forEach((h, i) => { obj[h.trim().replace(/^"|"$/g, '')] = (vals[i] || '').trim().replace(/^"|"$/g, ''); });
+    headers.forEach((h,i) => { obj[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
     return obj;
   });
 }
 
 function parseCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
+  const res = []; let cur = '', inQ = false;
   for (let i = 0; i < line.length; i++) {
-    if (line[i] === '"') {
-      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (line[i] === ',' && !inQuotes) {
-      result.push(current);
-      current = '';
-    } else {
-      current += line[i];
-    }
+    if (line[i]==='"') { if (inQ && line[i+1]==='"') { cur+='"'; i++; } else inQ=!inQ; }
+    else if (line[i]===',' && !inQ) { res.push(cur); cur=''; }
+    else cur += line[i];
   }
-  result.push(current);
-  return result;
+  res.push(cur); return res;
 }
 
-// ============================================================
-// LOAD DATA
-// ============================================================
+// ─── LOAD DATA ───────────────────────────────────────────────
 async function loadData() {
   const sheetId = document.getElementById('sheet-id').value.trim();
-  const apiKey = document.getElementById('claude-key').value.trim();
+  const apiKey  = document.getElementById('claude-key').value.trim();
+  if (!sheetId) { showAlert('config-alert','Renseigne le Sheet ID','error'); return; }
 
-  if (!sheetId) { showAlert('config-alert', 'Renseigne le Sheet ID', 'error'); return; }
-
-  state.sheetId = sheetId;
-  state.apiKey = apiKey;
+  state.sheetId = sheetId; state.apiKey = apiKey;
   localStorage.setItem('pp_sheet_id', sheetId);
   if (apiKey) localStorage.setItem('pp_api_key', apiKey);
 
   showLoader(true, 'Lecture du Google Sheet...');
-
   try {
-    // Load all sheets in parallel
-    const [calendrier, pronostics, classementJour, joueurs] = await Promise.all([
-      fetchSheet(sheetId, 'Calendrier'),
-      fetchSheet(sheetId, 'Pronostics'),
-      fetchSheet(sheetId, 'Classement_Jour'),
-      fetchSheet(sheetId, 'Joueurs'),
+    const [cal, pronos, cj, joueurs] = await Promise.all([
+      fetchSheet(sheetId,'Calendrier'),
+      fetchSheet(sheetId,'Pronostics'),
+      fetchSheet(sheetId,'Classement_Jour'),
+      fetchSheet(sheetId,'Joueurs'),
     ]);
+    state.matches = cal; state.pronostics = pronos;
+    state.classementJour = cj; state.joueurs = joueurs;
 
-    state.matches = calendrier;
-    state.pronostics = pronostics;
-    state.classementJour = classementJour;
-    state.joueurs = joueurs;
-
-    // Try classement
-    try {
-      state.classement = await fetchSheet(sheetId, 'Classement');
-    } catch(e) { state.classement = []; }
-
-    setStatus('ok', 'Connecté');
-    showAlert('config-alert', `✓ ${calendrier.length} matchs • ${pronostics.length} pronos • ${joueurs.length} joueurs chargés`, 'success');
-
-    filterByDate();
+    buildJourneesSelector();
     renderClassement();
+    setStatus('ok','Connecté');
+    showAlert('config-alert',`✓ ${cal.length} matchs • ${pronos.length} pronos • ${joueurs.length} joueurs`,'success');
     showLoader(false);
-
   } catch(err) {
-    showLoader(false);
-    setStatus('error', 'Erreur');
-    showAlert('config-alert', `Erreur : ${err.message}. Assure-toi que le Sheet est partagé en lecture publique.`, 'error');
+    showLoader(false); setStatus('error','Erreur');
+    showAlert('config-alert', err.message, 'error');
   }
 }
 
-// ============================================================
-// FILTER BY DATE
-// ============================================================
-function filterByDate() {
-  const dateInput = document.getElementById('match-date').value;
-  if (!dateInput) return;
-  state.selectedDate = dateInput;
+// ─── JOURNEES ────────────────────────────────────────────────
+// Lit la colonne "Journée" du Calendrier (en-tête exact dans le CSV)
+function getJourneeKey(m) {
+  return (m['Journ\u00e9e'] || m['Journee'] || m['journée'] || m['journee'] || '').trim();
+}
 
-  // Parse selected date
-  const [y, m, d] = dateInput.split('-');
-  const selDate = new Date(+y, +m-1, +d);
-
-  // Filter matches for selected date
-  // Calendrier date format: DD/MM/YYYY
-  state.dayMatches = state.matches.filter(match => {
-    const raw = match['Date'] || match['date'] || '';
-    if (!raw) return false;
-    const parts = raw.split('/');
-    if (parts.length < 3) return false;
-    const matchDate = new Date(+parts[2], +parts[1]-1, +parts[0]);
-    return matchDate.getTime() === selDate.getTime();
+function buildJourneesSelector() {
+  const set = new Set();
+  state.matches.forEach(m => {
+    const j = getJourneeKey(m);
+    if (j && /^J\d+$/i.test(j)) set.add(j.toUpperCase());
   });
+
+  state.journees = Array.from(set).sort((a,b) =>
+    parseInt(a.replace(/\D/g,'')) - parseInt(b.replace(/\D/g,''))
+  );
+
+  const sel = document.getElementById('journee-select');
+  if (!state.journees.length) {
+    sel.innerHTML = '<option value="">Aucune journée trouvée — vérif colonne AN "Journée"</option>';
+    return;
+  }
+
+  sel.innerHTML = state.journees.map(j =>
+    `<option value="${j}">${j} — ${getJourneeDates(j)}</option>`
+  ).join('');
+
+  // Auto-select : dernière journée avec au moins 1 match joué
+  let def = state.journees[0];
+  for (let i = state.journees.length-1; i >= 0; i--) {
+    const j = state.journees[i];
+    if (state.matches.some(m =>
+      getJourneeKey(m).toUpperCase() === j &&
+      (m['Score A'] || m['Score_A'] || '') !== ''
+    )) { def = j; break; }
+  }
+  sel.value = def;
+  filterByJournee();
+}
+
+// Retourne les dates couvertes par une journée sous forme lisible
+function getJourneeDates(journee) {
+  const dates = new Set();
+  state.matches
+    .filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase())
+    .forEach(m => { if (m['Date']) dates.add(m['Date']); });
+  return Array.from(dates).join(' + ') || '?';
+}
+
+function prevJournee() {
+  const sel = document.getElementById('journee-select');
+  const idx = state.journees.indexOf(sel.value);
+  if (idx > 0) { sel.value = state.journees[idx-1]; filterByJournee(); }
+}
+
+function nextJournee() {
+  const sel = document.getElementById('journee-select');
+  const idx = state.journees.indexOf(sel.value);
+  if (idx < state.journees.length-1) { sel.value = state.journees[idx+1]; filterByJournee(); }
+}
+
+// ─── FILTER BY JOURNEE ───────────────────────────────────────
+function filterByJournee() {
+  const journee = document.getElementById('journee-select').value;
+  if (!journee) return;
+  state.selectedJournee = journee;
+
+  state.dayMatches = state.matches.filter(m =>
+    getJourneeKey(m).toUpperCase() === journee.toUpperCase()
+  );
+
+  // Pré-remplir résultats depuis le Sheet
+  state.dayMatches.forEach(m => {
+    const id = m['ID_Match'] || m['ID Match'] || '';
+    if (!state.results[id]) {
+      state.results[id] = {
+        scoreA: m['Score A'] || m['Score_A'] || '',
+        scoreB: m['Score B'] || m['Score_B'] || '',
+        tab:    m['Vainqueur TAB'] || '',
+      };
+    }
+  });
+
+  // Afficher les dates couvertes sous le sélecteur
+  const dates = [...new Set(state.dayMatches.map(m => m['Date']).filter(Boolean))];
+  document.getElementById('journee-dates').textContent =
+    dates.length ? `📅 ${dates.join(' → ')} • ${state.dayMatches.length} match(s)` : '';
 
   renderMatches();
   renderPronostics();
 }
 
-// ============================================================
-// RENDER MATCHES
-// ============================================================
+// ─── RENDER MATCHES ──────────────────────────────────────────
 function renderMatches() {
   const container = document.getElementById('matches-container');
-
-  if (state.dayMatches.length === 0) {
-    container.innerHTML = '<div class="no-matches">Aucun match trouvé pour cette date</div>';
+  if (!state.dayMatches.length) {
+    container.innerHTML = '<div class="no-matches">Aucun match pour cette journée</div>';
     document.getElementById('generate-btn').disabled = true;
     return;
   }
 
   container.innerHTML = state.dayMatches.map(m => {
-    const id = m['ID_Match'] || m['ID Match'] || m['id_match'] || '';
-    const equipeA = m['Equipe A'] || m['Equipe_A'] || m['equipe_a'] || '';
-    const equipeB = m['Equipe B'] || m['Equipe_B'] || m['equipe_b'] || '';
-    const heure = m['Heure'] || m['heure'] || '';
+    const id      = m['ID_Match'] || m['ID Match'] || '';
+    const equipeA = m['Equipe A'] || m['Equipe_A'] || '';
+    const equipeB = m['Equipe B'] || m['Equipe_B'] || '';
+    const heure   = m['Heure'] || '';
+    const date    = m['Date'] || '';
     const isBonus = (m['Match Bonus'] || m['Match_Bonus'] || '').toLowerCase().includes('oui');
-    const groupe = m['Groupe'] || '';
-    const scoreA = m['Score A'] || m['Score_A'] || '';
-    const scoreB = m['Score B'] || m['Score_B'] || '';
+    const groupe  = m['Groupe'] || '';
+    const r       = state.results[id] || {scoreA:'',scoreB:'',tab:''};
+    const hasRes  = r.scoreA !== '' && r.scoreB !== '';
 
-    // Pre-fill from sheet if results exist
-    const existingResult = state.results[id] || {
-      scoreA: scoreA,
-      scoreB: scoreB,
-      tab: ''
-    };
-
-    const hasResult = scoreA !== '' && scoreB !== '';
-
-    return `
-    <div class="match-card ${hasResult ? 'has-result' : ''}" id="card-${id}">
+    return `<div class="match-card ${hasRes?'has-result':''}" id="card-${id}">
       <div class="match-header">
         <span class="match-label">#${id} • ${heure} • ${groupe}</span>
+        <span class="match-date-tag">${date}</span>
         ${isBonus ? '<span class="match-bonus-badge">⭐ Bonus</span>' : ''}
-        ${hasResult ? `<span class="result-pill ok">✓ ${scoreA}-${scoreB}</span>` : ''}
+        ${hasRes ? `<span class="result-pill">✓ ${r.scoreA}-${r.scoreB}</span>` : ''}
       </div>
-      <div class="match-teams">
-        <span>${equipeA}</span>
-        <span class="match-vs">vs</span>
-        <span>${equipeB}</span>
-      </div>
+      <div class="match-teams"><span>${equipeA}</span><span class="match-vs">vs</span><span>${equipeB}</span></div>
       <div class="score-row">
         <input class="score-input" type="number" min="0" max="20" placeholder="–"
-          id="score-a-${id}"
-          value="${existingResult.scoreA}"
-          oninput="updateResult('${id}','a',this.value)"
-        />
+          id="sa-${id}" value="${r.scoreA}" oninput="updateResult('${id}','a',this.value)">
         <span class="score-sep">–</span>
         <input class="score-input" type="number" min="0" max="20" placeholder="–"
-          id="score-b-${id}"
-          value="${existingResult.scoreB}"
-          oninput="updateResult('${id}','b',this.value)"
-        />
-        ${isBonus ? `
-        <select class="tab-select" id="tab-${id}" onchange="updateResult('${id}','tab',this.value)">
+          id="sb-${id}" value="${r.scoreB}" oninput="updateResult('${id}','b',this.value)">
+        ${isBonus ? `<select class="tab-select" onchange="updateResult('${id}','tab',this.value)">
           <option value="">TAB ?</option>
-          <option value="${equipeA}" ${existingResult.tab === equipeA ? 'selected':''}>TAB → ${equipeA}</option>
-          <option value="${equipeB}" ${existingResult.tab === equipeB ? 'selected':''}>TAB → ${equipeB}</option>
+          <option value="${equipeA}" ${r.tab===equipeA?'selected':''}>TAB → ${equipeA}</option>
+          <option value="${equipeB}" ${r.tab===equipeB?'selected':''}>TAB → ${equipeB}</option>
         </select>` : ''}
       </div>
     </div>`;
@@ -908,229 +485,161 @@ function renderMatches() {
   document.getElementById('generate-btn').disabled = false;
 }
 
-function updateResult(matchId, field, value) {
-  if (!state.results[matchId]) {
-    state.results[matchId] = { scoreA: '', scoreB: '', tab: '' };
-  }
-  if (field === 'a') state.results[matchId].scoreA = value;
-  if (field === 'b') state.results[matchId].scoreB = value;
-  if (field === 'tab') state.results[matchId].tab = value;
+function updateResult(id, field, val) {
+  if (!state.results[id]) state.results[id] = {scoreA:'',scoreB:'',tab:''};
+  if (field==='a') state.results[id].scoreA = val;
+  if (field==='b') state.results[id].scoreB = val;
+  if (field==='tab') state.results[id].tab = val;
 }
 
-// ============================================================
-// RENDER CLASSEMENT
-// ============================================================
+// ─── RENDER CLASSEMENT ───────────────────────────────────────
 function renderClassement() {
   const container = document.getElementById('classement-preview');
-  const data = state.classementJour.length > 0 ? state.classementJour : state.classement;
-  if (!data || data.length === 0) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">📊</span>Pas de données de classement</div>';
+  const rows = state.classementJour.filter(r => (r['Joueur']||'').trim()).slice(0,30);
+  if (!rows.length) {
+    container.innerHTML = '<div class="empty"><span class="empty-icon">📊</span>Pas de données</div>';
     return;
   }
-
-  // Take first 15 players with data
-  const rows = data.slice(0, 28).filter(r => {
-    const joueur = r['Joueur'] || r['joueur'] || '';
-    return joueur && joueur.trim();
-  });
-
-  container.innerHTML = `
-    <table class="classement-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Joueur</th>
-          <th>Pts Jour</th>
-          <th>Total</th>
-          <th>Evo</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows.map((r, i) => {
-          const joueur = r['Joueur'] || r['joueur'] || '';
-          const ptsJour = r['Points du Jour'] || r['Points_Jour'] || '0';
-          const ptsCum = r['Points Cumulés'] || r['Points_Cumules'] || r['Total'] || '0';
-          const evo = r['Evolution J-1'] || r['Évolution J-1'] || r['evo'] || '=';
-          let evoClass = 'evo-eq';
-          let evoIcon = '=';
-          if (evo && evo.includes('+')) { evoClass = 'evo-up'; evoIcon = '▲'; }
-          else if (evo && (evo.includes('-') || evo.includes('▼'))) { evoClass = 'evo-down'; evoIcon = '▼'; }
-          return `<tr>
-            <td class="rank">${i+1}</td>
-            <td class="name">${joueur}</td>
-            <td>${ptsJour}</td>
-            <td class="pts">${ptsCum}</td>
-            <td class="evo ${evoClass}">${evoIcon}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>`;
+  container.innerHTML = `<table class="classement-table">
+    <thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead>
+    <tbody>${rows.map((r,i) => {
+      const evo1 = parseInt(r['Évolution J-1']||r['Evolution J-1']||0)||0;
+      const evo2 = parseInt(r['Évolution J-2']||r['Evolution J-2']||0)||0;
+      const cls1 = evo1>0?'evo-up':evo1<0?'evo-down':'evo-eq';
+      const cls2 = evo2>0?'evo-up':evo2<0?'evo-down':'evo-eq';
+      const fmt = v => v>0?`▲+${v}`:v<0?`▼${v}`:'=';
+      return `<tr>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td class="name">${r['Joueur']||''}</td>
+        <td>${r['Points du Jour']||'0'}</td>
+        <td class="pts">${r['Points Cumulés']||'0'}</td>
+        <td class="${cls1}">${fmt(evo1)}</td>
+        <td class="${cls2}">${fmt(evo2)}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
 }
 
-// ============================================================
-// RENDER PRONOSTICS
-// ============================================================
+// ─── RENDER PRONOSTICS ───────────────────────────────────────
 function renderPronostics() {
   const container = document.getElementById('pronos-preview');
   if (!state.dayMatches.length) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Pas de matchs pour cette date</div>';
+    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Sélectionne une journée</div>';
+    return;
+  }
+  const matchIds = state.dayMatches.map(m => String(m['ID_Match']||m['ID Match']||''));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p['ID_Match']||p['ID Match']||'')));
+
+  if (!dayPronos.length) {
+    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Aucun prono pour cette journée</div>';
     return;
   }
 
-  const matchIds = state.dayMatches.map(m => String(m['ID_Match'] || m['ID Match'] || ''));
+  let html = `<div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem;font-family:'DM Mono',monospace">
+    ${state.selectedJournee} — ${dayPronos.length} pronos sur ${state.dayMatches.length} matchs</div>`;
 
-  const dayPronos = state.pronostics.filter(p => {
-    const pid = String(p['ID_Match'] || p['ID Match'] || '');
-    return matchIds.includes(pid);
-  });
-
-  if (dayPronos.length === 0) {
-    container.innerHTML = '<div class="empty"><span class="empty-icon">🔮</span>Aucun prono pour cette date</div>';
-    return;
-  }
-
-  let html = '';
   state.dayMatches.forEach(m => {
-    const id = String(m['ID_Match'] || m['ID Match'] || '');
-    const equipeA = m['Equipe A'] || m['Equipe_A'] || '';
-    const equipeB = m['Equipe B'] || m['Equipe_B'] || '';
-    const matchPronos = dayPronos.filter(p => String(p['ID_Match'] || p['ID Match'] || '') === id);
-
+    const id = String(m['ID_Match']||m['ID Match']||'');
+    const mp = dayPronos.filter(p => String(p['ID_Match']||p['ID Match']||'') === id);
+    if (!mp.length) return;
     html += `<div style="margin-bottom:1rem">
-      <div style="font-size:0.78rem; font-weight:600; color:var(--muted); margin-bottom:0.4rem">${equipeA} vs ${equipeB}</div>
-      <div class="match-pronos">
-        ${matchPronos.map(p => {
-          const joueur = p['Joueur'] || '';
-          const pA = p['Prono_Equipe_A'] || p['Prono A'] || '?';
-          const pB = p['Prono_Equipe_B'] || p['Prono B'] || '?';
-          const joker = (p['Joker'] || '').toLowerCase().includes('oui');
-          return `<span class="prono-chip ${joker ? 'joker' : ''}">${joueur}: ${pA}-${pB}${joker ? ' 🃏' : ''}</span>`;
-        }).join('')}
+      <div style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem">
+        ${m['Equipe A']||m['Equipe_A']||''} vs ${m['Equipe B']||m['Equipe_B']||''}
       </div>
+      <div class="match-pronos">${mp.map(p => {
+        const joker = (p['Joker']||'').toLowerCase().includes('oui');
+        const pts = p['Points']||'';
+        return `<span class="prono-chip ${joker?'joker':''}" title="${pts?pts+' pts':'en attente'}">
+          ${p['Joueur']||''}: ${p['Prono_Equipe_A']||'?'}-${p['Prono_Equipe_B']||'?'}${joker?' 🃏':''}${pts?' ('+pts+')':''}
+        </span>`;
+      }).join('')}</div>
     </div>`;
   });
-
   container.innerHTML = html;
 }
 
-// ============================================================
-// BUILD CONTEXT FOR CLAUDE
-// ============================================================
+// ─── BUILD CONTEXT ───────────────────────────────────────────
 function buildContext() {
   const mailType = document.getElementById('mail-type').value;
-  const matchIds = state.dayMatches.map(m => String(m['ID_Match'] || m['ID Match'] || ''));
+  const matchIds = state.dayMatches.map(m => String(m['ID_Match']||m['ID Match']||''));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p['ID_Match']||p['ID Match']||'')));
 
-  // Get pronos for day matches
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p['ID_Match'] || p['ID Match'] || '')));
-
-  // Get results (from user input or from sheet)
   const matchesWithResults = state.dayMatches.map(m => {
-    const id = String(m['ID_Match'] || m['ID Match'] || '');
-    const userResult = state.results[id] || {};
-    const scoreA = userResult.scoreA || m['Score A'] || m['Score_A'] || '';
-    const scoreB = userResult.scoreB || m['Score B'] || m['Score_B'] || '';
+    const id = String(m['ID_Match']||m['ID Match']||'');
+    const r  = state.results[id] || {};
     return {
-      id,
-      equipeA: m['Equipe A'] || m['Equipe_A'] || '',
-      equipeB: m['Equipe B'] || m['Equipe_B'] || '',
-      heure: m['Heure'] || '',
-      groupe: m['Groupe'] || '',
-      isBonus: (m['Match Bonus'] || m['Match_Bonus'] || '').toLowerCase().includes('oui'),
-      tv: m['TV'] || '',
-      scoreA,
-      scoreB,
-      tab: userResult.tab || m['Vainqueur TAB'] || '',
+      id, equipeA: m['Equipe A']||m['Equipe_A']||'', equipeB: m['Equipe B']||m['Equipe_B']||'',
+      heure: m['Heure']||'', date: m['Date']||'', groupe: m['Groupe']||'',
+      isBonus: (m['Match Bonus']||m['Match_Bonus']||'').toLowerCase().includes('oui'),
+      tv: m['TV']||'',
+      scoreA: r.scoreA !== undefined ? r.scoreA : (m['Score A']||m['Score_A']||''),
+      scoreB: r.scoreB !== undefined ? r.scoreB : (m['Score B']||m['Score_B']||''),
+      tab: r.tab || m['Vainqueur TAB']||'',
     };
   });
 
-  // Get next day matches
-  const selDate = new Date(state.selectedDate);
-  const nextDate = new Date(selDate);
-  nextDate.setDate(nextDate.getDate() + 1);
-  const nextMatches = state.matches.filter(m => {
-    const raw = m['Date'] || '';
-    const parts = raw.split('/');
-    if (parts.length < 3) return false;
-    const matchDate = new Date(+parts[2], +parts[1]-1, +parts[0]);
-    return matchDate.getTime() === nextDate.getTime();
-  }).map(m => ({
-    id: m['ID_Match'] || m['ID Match'] || '',
-    equipeA: m['Equipe A'] || m['Equipe_A'] || '',
-    equipeB: m['Equipe B'] || m['Equipe_B'] || '',
-    heure: m['Heure'] || '',
-    groupe: m['Groupe'] || '',
-    isBonus: (m['Match Bonus'] || m['Match_Bonus'] || '').toLowerCase().includes('oui'),
-  }));
+  // Journée suivante
+  const curNum = parseInt(state.selectedJournee.replace(/\D/g,'')) || 0;
+  const nextLabel = `J${curNum+1}`;
+  const nextMatches = state.matches
+    .filter(m => getJourneeKey(m).toUpperCase() === nextLabel.toUpperCase())
+    .map(m => ({
+      id: m['ID_Match']||m['ID Match']||'',
+      equipeA: m['Equipe A']||m['Equipe_A']||'', equipeB: m['Equipe B']||m['Equipe_B']||'',
+      heure: m['Heure']||'', date: m['Date']||'', groupe: m['Groupe']||'',
+      isBonus: (m['Match Bonus']||m['Match_Bonus']||'').toLowerCase().includes('oui'),
+      tv: m['TV']||'',
+    }));
 
-  // Classement jour data
-  const classData = state.classementJour.slice(0, 30).filter(r => (r['Joueur'] || '').trim()).map(r => ({
-    joueur: r['Joueur'] || '',
-    ptsJour: r['Points du Jour'] || '0',
-    ptsCumul: r['Points Cumulés'] || '0',
-    classement: r['Classement'] || '',
-    evolution: r['Evolution J-1'] || r['Évolution J-1'] || '=',
-  }));
+  // Classement du jour
+  const classData = state.classementJour
+    .filter(r => (r['Joueur']||'').trim()).slice(0,30)
+    .map(r => ({
+      joueur:   r['Joueur']||'',
+      ptsJour:  r['Points du Jour']||'0',
+      ptsCumul: r['Points Cumulés']||'0',
+      classement: r['Classement']||'',
+      evoJ1: r['Évolution J-1']||r['Evolution J-1']||'=',
+      evoJ2: r['Évolution J-2']||r['Evolution J-2']||'=',
+    }));
 
-  // Joueurs favoris
-  const joueursInfo = state.joueurs.filter(j => (j['Joueur'] || j['joueur'] || '').trim()).map(j => ({
-    joueur: j['Joueur'] || j['joueur'] || '',
-    vainqueur: j['Vainqueur'] || '',
-    finaliste: j['Finaliste'] || '',
-  }));
+  const joueursInfo = state.joueurs
+    .filter(j => (j['Joueur']||j['joueur']||'').trim())
+    .map(j => ({ joueur: j['Joueur']||j['joueur']||'', vainqueur: j['Vainqueur']||'', finaliste: j['Finaliste']||'' }));
 
-  // Build pronos par match
   const pronosParMatch = {};
   matchIds.forEach(id => {
-    pronosParMatch[id] = dayPronos.filter(p => String(p['ID_Match'] || p['ID Match'] || '') === id).map(p => ({
-      joueur: p['Joueur'] || '',
-      pronoA: p['Prono_Equipe_A'] || p['Prono A'] || '',
-      pronoB: p['Prono_Equipe_B'] || p['Prono B'] || '',
-      pronoTAB: p['Prono_Vainqueur_TAB'] || p['Prono TAB'] || '',
-      joker: (p['Joker'] || '').toLowerCase().includes('oui'),
-      points: p['Points'] || '',
-      pointsTexte: p['Points_Texte'] || '',
-    }));
+    pronosParMatch[id] = dayPronos
+      .filter(p => String(p['ID_Match']||p['ID Match']||'') === id)
+      .map(p => ({
+        joueur: p['Joueur']||'', pronoA: p['Prono_Equipe_A']||'', pronoB: p['Prono_Equipe_B']||'',
+        pronoTAB: p['Prono_Vainqueur_TAB']||'',
+        joker: (p['Joker']||'').toLowerCase().includes('oui'),
+        points: p['Points']||'', pointsTexte: p['Points_Texte']||'', performance: p['Performance']||'',
+      }));
   });
 
-  return {
-    mailType,
-    date: state.selectedDate,
-    matchesWithResults,
-    pronosParMatch,
-    classementJour: classData,
-    joueursInfo,
-    nextMatches,
-  };
+  return { mailType, journee: state.selectedJournee, matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, nextLabel };
 }
 
-// ============================================================
-// GENERATE MAIL
-// ============================================================
+// ─── GENERATE ────────────────────────────────────────────────
 async function generateMail() {
   const apiKey = document.getElementById('claude-key').value.trim();
-  if (!apiKey) {
-    alert('Renseigne ta clé API Anthropic dans la configuration');
-    return;
-  }
+  if (!apiKey) { alert('Renseigne ta clé API Anthropic'); return; }
 
   const ctx = buildContext();
-
-  // Check if results are filled
-  const missingResults = ctx.matchesWithResults.filter(m => m.scoreA === '' || m.scoreB === '');
-  if (missingResults.length > 0) {
-    const go = confirm(`${missingResults.length} match(s) sans résultat :\n${missingResults.map(m => `${m.equipeA} vs ${m.equipeB}`).join('\n')}\n\nContinuer quand même ?`);
+  const missing = ctx.matchesWithResults.filter(m => m.scoreA===''||m.scoreB==='');
+  if (missing.length) {
+    const go = confirm(`${missing.length} match(s) sans résultat :\n${missing.map(m=>`${m.equipeA} vs ${m.equipeB}`).join('\n')}\n\nContinuer ?`);
     if (!go) return;
   }
 
   document.getElementById('generate-btn').disabled = true;
-  showLoader(true, 'Composition du mail en cours...');
+  showLoader(true, 'Composition via Claude en cours...');
   document.getElementById('output-content').innerHTML = '';
 
-  const systemPrompt = buildSystemPrompt(ctx.mailType);
-  const userPrompt = buildUserPrompt(ctx);
-
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1141,23 +650,16 @@ async function generateMail() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 4000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }]
+        system: buildSystemPrompt(ctx.mailType, ctx.journee, ctx.nextLabel),
+        messages: [{ role: 'user', content: buildUserPrompt(ctx) }]
       })
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error?.message || `Erreur API ${response.status}`);
-    }
-
-    const text = data.content?.map(c => c.text || '').join('') || '';
-
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error?.message || `Erreur API ${resp.status}`);
+    const text = data.content?.map(c=>c.text||'').join('') || '';
     showLoader(false);
-    document.getElementById('output-content').innerHTML = `
-      <textarea id="mail-output" readonly>${text}</textarea>
-    `;
+    document.getElementById('output-content').innerHTML = `<textarea id="mail-output" readonly>${text}</textarea>`;
     document.getElementById('generate-btn').disabled = false;
 
   } catch(err) {
@@ -1167,143 +669,125 @@ async function generateMail() {
   }
 }
 
-// ============================================================
-// PROMPTS
-// ============================================================
-function buildSystemPrompt(mailType) {
+// ─── PROMPTS ─────────────────────────────────────────────────
+function buildSystemPrompt(mailType, journee, nextJournee) {
   if (mailType === 'tendances') {
-    return `Act en tant qu'expert en analyse de pronostics footballistiques et rédacteur en chef du concours "Pastis Pronos" pour la Coupe du Monde 2026. Tu rédiges des "Tendances d'avant-match".
+    return `Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.
+Tu rédiges les TENDANCES AVANT-MATCH de la ${journee}.
 
-TON ET STYLE : Amical, passionné, taquin, "communauté de potes". Français naturel et vivant avec des expressions imagées.
+TON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.
 
-Pour chaque match : numéro du match, chaine TV, heure française, contexte des équipes + historique en CDM, puis analyse des pronostics de la communauté.
+Pour chaque match :
+MATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne${' ⭐ BONUS si applicable'}
+🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]
 
-ANALYSE PRONOS : Consensus vs dissidents, scores les plus plébiscités, scores extrêmes, taquineries bienveillantes, liens avec les favoris de début de tournoi.
-
-Format titre match : MATCH #N — 🏳️ Equipe1 vs Equipe2 🏳️ : HHhMM, 📺 Chaine ⭐ MATCH BONUS (si applicable)
-Format titre pronos : 🔮 Les pronostics
-
-Longueur : 1500-1700 caractères par match, 2200 max pour les matchs à fort enjeu.
-Le texte sera envoyé sur WhatsApp : pas de HTML ni markdown complexe.`;
+Longueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples.
+Envoi WhatsApp.`;
   }
 
-  return `Act en tant qu'expert en animation de concours de pronostics footballistiques et rédacteur en chef du concours "Pastis Pronos" pour la Coupe du Monde 2026. Tu rédiges le mail récap ${mailType === 'soir' ? 'du soir (vers 23h)' : 'du matin (vers 8h)'}.
+  return `Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.
+Tu rédiges le RÉCAP MATIN de la ${journee}, envoyé entre 8h et 14h.
+Ce récap couvre TOUS les matchs de la ${journee}, qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).
 
-TON ET STYLE : Amical, passionné, taquin, très "communauté de potes". Français naturel, vivant, avec des expressions imagées, de l'humour, des piques bienveillantes. Émojis avec parcimonie mais à bon escient.
+TON : Amical, passionné, taquin, "communauté de potes". Français vivant, humour bienveillant. Émojis avec parcimonie.
 
-STRUCTURE DU MAIL :
-1. Ligne d'accroche (Bonsoir/Bonjour + ambiance de la journée)
-2. LES MATCHS DU JOUR ⚽ — Pour chaque match : résumé sportif, enjeu groupe, analyse des pronostics (qui avait le bon vainqueur, qui a le score exact, les "presque", les gros ratés)
-3. LES TOPS 📈 — Meilleures performances du jour (points marqués, remontées au classement, régularité)
-4. LES FLOPS 📉 — Moins bonnes performances, avec humour bienveillant
-5. PETITE PHRASE DU JOUR — Conclusion sur la journée
-6. LE CLASSEMENT 📊 — Intégrer le classement fourni
-7. LES MATCHS DE DEMAIN ⚽ — Liste chronologique
-8. PETITE PHRASE DE DEMAIN
-9. Signature : Bonne soirée / Bonne journée
+STRUCTURE OBLIGATOIRE :
+1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)
+2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables
+3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)
+4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant
+5. 💬 LA PHRASE DU JOUR
+6. 📊 CLASSEMENT APRÈS ${journee} — intégrer le classement fourni avec évolutions
+7. ⚽ AU PROGRAMME : ${nextJournee} — liste des matchs avec horaires et dates réelles
+8. Bonne journée / à ce soir !
 
-RÈGLES : Ne jamais inventer des points. Cite les joueurs par prénom/surnom. Pas de HTML, pas de markdown. Retours à la ligne pour structurer.
-Longueur : 200-300 mots par match, 150-200 mots pour TOPS et FLOPS.`;
+RÈGLES : Ne jamais inventer des points. Cite les joueurs par prénom/surnom. Pas de HTML.
+200-250 mots par match. 100-150 mots pour TOPS/FLOPS.`;
 }
 
 function buildUserPrompt(ctx) {
-  const {matchesWithResults, pronosParMatch, classementJour, joueursInfo, nextMatches, date, mailType} = ctx;
+  const { matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, journee, nextLabel, mailType } = ctx;
 
-  const dateFormatted = new Date(date).toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  let p = mailType === 'tendances'
+    ? `Génère les tendances avant-match pour la ${journee}.\n\n`
+    : `Génère le récap matin pour la ${journee}.\n\n`;
 
-  let prompt = `Génère le ${mailType === 'tendances' ? 'message de tendances' : 'mail récap'} pour le ${dateFormatted}.\n\n`;
-
-  prompt += `=== MATCHS DU JOUR ===\n`;
+  p += `=== MATCHS DE LA ${journee} ===\n`;
   matchesWithResults.forEach(m => {
-    const resultat = m.scoreA !== '' && m.scoreB !== ''
-      ? `Score : ${m.equipeA} ${m.scoreA} - ${m.scoreB} ${m.equipeB}${m.tab ? ` (TAB : ${m.tab})` : ''}`
-      : `Résultat : non renseigné`;
-    prompt += `\nMatch #${m.id} [${m.heure}] ${m.groupe} ${m.isBonus ? '⭐ BONUS' : ''}\n`;
-    prompt += `${m.equipeA} vs ${m.equipeB} — TV : ${m.tv}\n`;
-    prompt += `${resultat}\n`;
+    p += `\nMatch #${m.id} | ${m.date} ${m.heure} | ${m.groupe}${m.isBonus?' ⭐ BONUS':''} | 📺 ${m.tv||'?'}\n`;
+    p += `${m.equipeA} vs ${m.equipeB}\n`;
+    p += m.scoreA!==''&&m.scoreB!==''
+      ? `Résultat : ${m.equipeA} ${m.scoreA} - ${m.scoreB} ${m.equipeB}${m.tab?' (TAB: '+m.tab+')':''}\n`
+      : `Résultat : non renseigné\n`;
 
     const pronos = pronosParMatch[m.id] || [];
-    if (pronos.length > 0) {
-      prompt += `Pronostics (${pronos.length} joueurs) :\n`;
-      pronos.forEach(p => {
-        prompt += `  ${p.joueur} : ${p.pronoA}-${p.pronoB}${p.pronoTAB ? ` TAB:${p.pronoTAB}` : ''}${p.joker ? ' [JOKER]' : ''}${p.points ? ` → ${p.points} pts (${p.pointsTexte})` : ''}\n`;
+    if (pronos.length) {
+      p += `Pronostics (${pronos.length} joueurs) :\n`;
+      pronos.forEach(pr => {
+        p += `  ${pr.joueur}: ${pr.pronoA}-${pr.pronoB}`;
+        if (pr.pronoTAB) p += ` TAB:${pr.pronoTAB}`;
+        if (pr.joker) p += ` [JOKER x2]`;
+        if (pr.points!=='') p += ` → ${pr.points} pts`;
+        if (pr.pointsTexte) p += ` (${pr.pointsTexte})`;
+        if (pr.performance) p += ` [${pr.performance}]`;
+        p += '\n';
       });
     }
   });
 
-  prompt += `\n=== CLASSEMENT DU JOUR ===\n`;
-  if (classementJour.length > 0) {
-    classementJour.forEach((j, i) => {
-      const evo = j.evolution.includes('+') ? `▲ ${j.evolution}` : j.evolution.includes('-') ? `▼ ${j.evolution}` : '=';
-      prompt += `${i+1}. ${j.joueur} — ${j.ptsJour} pts aujourd'hui — ${j.ptsCumul} pts total — Evo: ${evo}\n`;
+  p += `\n=== CLASSEMENT APRÈS ${journee} ===\n`;
+  if (classData.length) {
+    classData.forEach((j,i) => {
+      const e1 = parseInt(j.evoJ1)||0, e2 = parseInt(j.evoJ2)||0;
+      const fmt = v => v>0?`▲+${v}`:v<0?`▼${v}`:'=';
+      p += `${i+1}. ${j.joueur} — ${j.ptsJour} pts ce jour — ${j.ptsCumul} pts total — Evo J-1: ${fmt(e1)} — Evo J-2: ${fmt(e2)}\n`;
     });
-  } else {
-    prompt += `Données de classement non disponibles.\n`;
-  }
+  } else p += `Données non disponibles.\n`;
 
-  prompt += `\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n`;
+  p += `\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n`;
   joueursInfo.forEach(j => {
-    if (j.vainqueur || j.finaliste) {
-      prompt += `${j.joueur} : Vainqueur → ${j.vainqueur || '?'} / Finaliste → ${j.finaliste || '?'}\n`;
-    }
+    if (j.vainqueur||j.finaliste)
+      p += `${j.joueur} : Vainqueur → ${j.vainqueur||'?'} | Finaliste → ${j.finaliste||'?'}\n`;
   });
 
-  prompt += `\n=== MATCHS DE DEMAIN ===\n`;
-  if (nextMatches.length > 0) {
+  p += `\n=== MATCHS DE LA ${nextLabel} ===\n`;
+  if (nextMatches.length) {
     nextMatches.forEach(m => {
-      prompt += `${m.heure} ${m.equipeA} vs ${m.equipeB} (${m.groupe})${m.isBonus ? ' ⭐ BONUS' : ''}\n`;
+      p += `${m.date} ${m.heure} — ${m.equipeA} vs ${m.equipeB} (${m.groupe})${m.isBonus?' ⭐ BONUS':''}${m.tv?' | 📺 '+m.tv:''}\n`;
     });
-  } else {
-    prompt += `Aucun match identifié pour le lendemain.\n`;
-  }
+  } else p += `Aucun match trouvé pour ${nextLabel}.\n`;
 
-  return prompt;
+  return p;
 }
 
-// ============================================================
-// UTILS
-// ============================================================
+// ─── UTILS ───────────────────────────────────────────────────
 function showLoader(active, text) {
-  const loader = document.getElementById('loader');
-  if (active) {
-    loader.classList.add('active');
-    document.getElementById('loader-text').textContent = text || 'Chargement...';
-  } else {
-    loader.classList.remove('active');
-  }
+  document.getElementById('loader').classList.toggle('active', active);
+  if (text) document.getElementById('loader-text').textContent = text;
 }
-
-function setStatus(state, label) {
-  document.getElementById('status-dot').className = `status-dot ${state}`;
+function setStatus(st, label) {
+  document.getElementById('status-dot').className = `status-dot ${st}`;
   document.getElementById('status-label').textContent = label;
 }
-
 function showAlert(id, msg, type) {
   const el = document.getElementById(id);
-  el.textContent = msg;
-  el.className = `alert alert-${type} show`;
+  el.textContent = msg; el.className = `alert alert-${type} show`;
 }
-
 function copyOutput() {
   const ta = document.getElementById('mail-output');
   if (!ta) return;
   navigator.clipboard.writeText(ta.value).then(() => {
     const btn = document.getElementById('copy-btn');
-    btn.textContent = '✓ Copié !';
-    btn.classList.add('copy-flash');
-    setTimeout(() => {
-      btn.textContent = '📋 Copier';
-      btn.classList.remove('copy-flash');
-    }, 2000);
+    btn.textContent = '✓ Copié !'; btn.classList.add('copy-flash');
+    setTimeout(() => { btn.textContent = '📋 Copier'; btn.classList.remove('copy-flash'); }, 2000);
   });
 }
-
 function clearOutput() {
   document.getElementById('output-content').innerHTML = `
-    <div class="empty" style="padding: 4rem 1rem">
+    <div class="empty" style="padding:4rem 1rem">
       <span class="empty-icon">🥃</span>
-      <div style="font-size:0.9rem; color:var(--text); margin-bottom:0.5rem">Prêt à générer</div>
-      Configure le Sheet, charge les données,<br>saisis les résultats, puis génère !
+      <div style="font-size:0.9rem;color:var(--text);margin-bottom:0.5rem">Prêt à générer</div>
+      Sélectionne une journée et génère !
     </div>`;
 }
 </script>
