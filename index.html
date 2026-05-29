@@ -196,6 +196,7 @@
           </div>
         </div>
         <button class="generate-btn" id="generate-btn" onclick="generateMail()" disabled>🚀 GÉNÉRER LE CONTENU</button>
+        <button onclick="showPrompt()" style="width:100%;margin-top:0.4rem;padding:0.5rem;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:0.75rem;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">🔍 Voir le prompt envoyé à Claude</button>
       </div>
       <div id="output-classement" class="tab-content">
         <div id="classement-preview" class="empty"><span class="empty-icon">📊</span>Pas encore de données</div>
@@ -438,13 +439,14 @@ function renderClassement() {
 function renderPronostics() {
   const container = document.getElementById("pronos-preview");
   if (!state.dayMatches.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Sélectionne une journée</div>"; return; }
-  const matchIds = state.dayMatches.map(m => String(m["ID_Match"]||m["ID Match"]||""));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p["ID_Match"]||p["ID Match"]||"")));
+  const normId = v => String(parseFloat(v)||v||"").replace(/\.0$/,"");
+  const matchIds = state.dayMatches.map(m => normId(m["ID_Match"]||m["ID Match"]||""));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(normId(p["ID_Match"]||p["ID Match"]||"")));
   if (!dayPronos.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Aucun prono pour cette journée</div>"; return; }
   let html = "<div style=\"font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem;font-family:'DM Mono',monospace\">"+state.selectedJournee+" — "+dayPronos.length+" pronos sur "+state.dayMatches.length+" matchs</div>";
   state.dayMatches.forEach(m => {
     const id = String(m["ID_Match"]||m["ID Match"]||"");
-    const mp = dayPronos.filter(p => String(p["ID_Match"]||p["ID Match"]||"") === id);
+    const mp = dayPronos.filter(p => normId(p["ID_Match"]||p["ID Match"]||"") === id);
     if (!mp.length) return;
     html += "<div style=\"margin-bottom:1rem\"><div style=\"font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem\">"+(m["Equipe A"]||m["Equipe_A"]||"")+" vs "+(m["Equipe B"]||m["Equipe_B"]||"")+"</div><div class=\"match-pronos\">";
     mp.forEach(p => {
@@ -460,10 +462,12 @@ function renderPronostics() {
 // ─── BUILD CONTEXT ───────────────────────────────────────────
 function buildContext() {
   const mailType = document.getElementById("mail-type").value;
-  const matchIds = state.dayMatches.map(m => String(m["ID_Match"]||m["ID Match"]||""));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(String(p["ID_Match"]||p["ID Match"]||"")));
+  // Normalise les IDs : "1.0" → "1" pour matcher Calendrier et Pronostics
+  const normId = v => String(parseFloat(v)||v||"").replace(/\.0$/,"");
+  const matchIds = state.dayMatches.map(m => normId(m["ID_Match"]||m["ID Match"]||""));
+  const dayPronos = state.pronostics.filter(p => matchIds.includes(normId(p["ID_Match"]||p["ID Match"]||"")));
   const matchesWithResults = state.dayMatches.map(m => {
-    const id = String(m["ID_Match"]||m["ID Match"]||"");
+    const id = normId(m["ID_Match"]||m["ID Match"]||"");
     const r  = state.results[id] || {};
     const phase = (m["Phase"] || "").toLowerCase();
     return {
@@ -498,7 +502,7 @@ function buildContext() {
     .map(j => ({ joueur: j["Joueur"]||j["joueur"]||"", vainqueur: j["Vainqueur"]||"", finaliste: j["Finaliste"]||"" }));
   const pronosParMatch = {};
   matchIds.forEach(id => {
-    pronosParMatch[id] = dayPronos.filter(p => String(p["ID_Match"]||p["ID Match"]||"") === id).map(p => ({
+    pronosParMatch[id] = dayPronos.filter(p => normId(p["ID_Match"]||p["ID Match"]||"") === id).map(p => ({
       joueur: p["Joueur"]||"", pronoA: p["Prono_Equipe_A"]||"", pronoB: p["Prono_Equipe_B"]||"",
       pronoTAB: p["Prono_Vainqueur_TAB"]||"",
       joker: (p["Joker"]||"").toLowerCase().includes("oui"),
@@ -555,7 +559,7 @@ function buildSystemPrompt(mailType, journee, nextJournee) {
   if (mailType === "tendances") {
     return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la "+journee+".\n\nTON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.\n\nPour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]\n\nLongueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples.\nEnvoi WhatsApp.";
   }
-  return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la "+journee+", envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la "+journee+", qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).\n\nTON : Amical, passionné, taquin, \"communauté de potes\". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS "+journee+" — intégrer le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : "+nextJournee+" — liste des matchs avec horaires et dates réelles\n8. Bonne journée / à ce soir !\n\nRÈGLES : Ne jamais inventer des points. Cite les joueurs par prénom/surnom. Pas de HTML.\n200-250 mots par match. 100-150 mots pour TOPS/FLOPS.";
+  return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la "+journee+", envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la "+journee+", qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).\n\nTON : Amical, passionné, taquin, \"communauté de potes\". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS "+journee+" — intégrer le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : "+nextJournee+" — liste des matchs avec horaires et dates réelles\n8. Bonne journée / à ce soir !\n\nRÈGLES IMPÉRATIVES :\n- Cite CHAQUE joueur par son prénom avec son prono, ses points gagnés et sa performance\n- Pour chaque match : commence par le résultat, puis passe en revue chaque joueur (score exact, bon vainqueur, raté)\n- Mets en avant les jokers utilisés\n- Tu as TOUTES les données : ne dis jamais qu'elles manquent\n- Ne jamais inventer des points. Pas de HTML.\n200-250 mots par match dont au moins 100 mots dédiés aux pronos nominatifs. 100-150 mots pour TOPS/FLOPS.";
 }
 
 function buildUserPrompt(ctx) {
@@ -599,6 +603,22 @@ function buildUserPrompt(ctx) {
     nextMatches.forEach(m => { p += m.date+" "+m.heure+" — "+m.equipeA+" vs "+m.equipeB+" ("+m.groupe+")"+(m.isBonus?" ⭐ BONUS":"")+(m.tv?" | 📺 "+m.tv:"")+"\n"; });
   } else p += "Aucun match trouvé pour "+nextLabel+".\n";
   return p;
+}
+
+// ─── DEBUG ───────────────────────────────────────────────────
+function showPrompt() {
+  const ctx = buildContext();
+  const prompt = buildUserPrompt(ctx);
+  const w = window.open("","_blank","width=800,height=600");
+  w.document.write("<html><body style='background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px;white-space:pre-wrap'>");
+  w.document.write("<h3 style='color:#f5c842'>PROMPT ENVOYÉ À CLAUDE — "+ctx.journee+"</h3>");
+  w.document.write("<h4 style='color:#888'>matchIds: "+JSON.stringify(ctx.matchesWithResults.map(m=>m.id))+"</h4>");
+  w.document.write("<h4 style='color:#888'>pronos trouvés: "+JSON.stringify(Object.fromEntries(Object.entries(ctx.pronosParMatch).map(([k,v])=>[k,v.length])))+"</h4>");
+  w.document.write("<h4 style='color:#888'>classData: "+ctx.classData.length+" joueurs</h4>");
+  w.document.write("<hr style='border-color:#333;margin:10px 0'>");
+  w.document.write(prompt.replace(/</g,"&lt;"));
+  w.document.write("</body></html>");
+  w.document.close();
 }
 
 // ─── UTILS ───────────────────────────────────────────────────
