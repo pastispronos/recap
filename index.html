@@ -3,649 +3,578 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pastis Pronos — Générateur de Récap</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Pastis Pronos — Récap</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0d0d; --surface: #161616; --surface2: #1f1f1f; --border: #2a2a2a;
-    --accent: #f5c842; --accent2: #e8843a; --text: #f0ede8; --muted: #888;
-    --success: #4caf7d; --error: #e05050; --info: #5b9bd5;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
-  .logo span { color: var(--text); }
-  .header-badge { background: var(--accent2); color: white; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
-  .header-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
-  .status-dot.ok { background: var(--success); box-shadow: 0 0 6px var(--success); }
-  .status-dot.error { background: var(--error); }
-  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
-  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .panel-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
-  .panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--accent); }
-  .panel-body { padding: 1.2rem; }
-  label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
-  input, select, textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; padding: 0.6rem 0.8rem; transition: border-color 0.2s; outline: none; }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  select option { background: var(--surface2); }
-  .field { margin-bottom: 1rem; }
-  .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 5px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-primary { background: var(--accent); color: #000; }
-  .btn-primary:hover { background: #ffd84a; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); }
-  .btn-danger:hover { background: var(--error); color: white; }
-  .btn-block { width: 100%; justify-content: center; }
-  .journee-nav { display: flex; align-items: center; gap: 0.5rem; }
-  .journee-nav select { flex: 1; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; color: var(--accent); background: var(--surface2); }
-  .jnav-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 5px; width: 34px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; flex-shrink: 0; }
-  .jnav-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .match-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem; margin-bottom: 0.75rem; }
-  .match-card.has-result { border-color: #2d3d2d; background: #141f14; }
-  .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.3rem; }
-  .match-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .match-date-tag { font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--info); background: rgba(91,155,213,0.1); border: 1px solid rgba(91,155,213,0.2); padding: 1px 6px; border-radius: 3px; }
-  .match-bonus-badge { background: var(--accent2); color: white; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 2px; }
-  .result-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 3px; font-size: 0.72rem; font-weight: 600; font-family: 'DM Mono', monospace; background: #1a3a1a; color: var(--success); }
-  .match-teams { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.7rem; }
-  .match-vs { color: var(--muted); font-size: 0.7rem; }
-  .score-row { display: flex; gap: 0.5rem; align-items: center; }
-  .score-input { width: 52px; text-align: center; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; padding: 0.4rem; }
-  .score-sep { color: var(--muted); font-weight: 600; font-size: 1rem; }
-  .tab-select { flex: 1; font-size: 0.8rem; padding: 0.4rem 0.5rem; }
-  .classement-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  .classement-table th { text-align: left; padding: 0.4rem 0.5rem; color: var(--muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-  .classement-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid #1a1a1a; font-family: 'DM Mono', monospace; }
-  .classement-table tr:last-child td { border-bottom: none; }
-  .name { color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 500; }
-  .pts { color: var(--accent); font-weight: 600; }
-  .evo-up { color: var(--success); } .evo-down { color: var(--error); } .evo-eq { color: var(--muted); }
-  .tabs { display: flex; border-bottom: 1px solid var(--border); }
-  .tab { padding: 0.7rem 1.2rem; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab:hover:not(.active) { color: var(--text); }
-  .tab-content { display: none; padding: 1.2rem; }
-  .tab-content.active { display: block; }
-  #mail-output { width: 100%; min-height: 500px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.7; padding: 1.2rem; resize: vertical; }
-  .loader { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; gap: 1rem; }
-  .loader.active { display: flex; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loader-text { color: var(--muted); font-size: 0.85rem; animation: blink 1.5s ease-in-out infinite; }
-  @keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-  .alert { padding: 0.7rem 0.9rem; border-radius: 5px; font-size: 0.82rem; margin-bottom: 1rem; display: none; }
-  .alert.show { display: block; }
-  .alert-error { background: #2a1010; border: 1px solid var(--error); color: #f08080; }
-  .alert-success { background: #0f2a1a; border: 1px solid var(--success); color: #80c090; }
-  .generate-btn { width: 100%; padding: 1rem; font-size: 1rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.12em; border-radius: 6px; margin-top: 1rem; background: var(--accent); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.15s; }
-  .generate-btn:hover { background: #ffd84a; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,200,66,0.2); }
-  .generate-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
-  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.85rem; }
-  .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
-  .no-matches { color: var(--muted); font-size: 0.82rem; padding: 1rem 0; text-align: center; }
-  .prono-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 7px; font-size: 0.72rem; font-family: 'DM Mono', monospace; margin: 2px; }
-  .prono-chip.joker { border-color: var(--accent2); color: var(--accent2); }
-  .match-pronos { margin-top: 0.5rem; display: flex; flex-wrap: wrap; }
-  .right-col { position: sticky; top: 80px; }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  @keyframes copyFlash { 0% { background: var(--success); color: #000; } 100% { background: var(--surface2); color: var(--text); } }
-  .copy-flash { animation: copyFlash 0.8s ease forwards; }
+:root{--bg:#0d0d0d;--s1:#161616;--s2:#1f1f1f;--bd:#2a2a2a;--ac:#f5c842;--ac2:#e8843a;--tx:#f0ede8;--mu:#888;--ok:#4caf7d;--er:#e05050;--inf:#5b9bd5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
+header{background:var(--s1);border-bottom:1px solid var(--bd);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:64px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--ac)}
+.logo b{color:var(--tx)}
+.hbadge{background:var(--ac2);color:#fff;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:2px}
+.hright{margin-left:auto;display:flex;align-items:center;gap:1rem}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--mu);transition:background .3s}
+.sdot.ok{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+.sdot.er{background:var(--er)}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:340px 1fr;gap:1.5rem;align-items:start}
+.panel{background:var(--s1);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:1rem}
+.ph{padding:1rem 1.2rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.6rem}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:var(--ac)}
+.pb{padding:1.2rem}
+label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem}
+input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:5px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:.6rem .8rem;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ac)}
+select option{background:var(--s2)}
+.field{margin-bottom:1rem}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.bp{background:var(--ac);color:#000}
+.bp:hover{background:#ffd84a;transform:translateY(-1px)}
+.bp:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bs{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
+.bs:hover{border-color:var(--ac);color:var(--ac)}
+.bd2{background:transparent;color:var(--er);border:1px solid var(--er)}
+.bd2:hover{background:var(--er);color:#fff}
+.bblock{width:100%;justify-content:center}
+.tabs{display:flex;border-bottom:1px solid var(--bd)}
+.tab{padding:.7rem 1.2rem;font-size:.8rem;font-weight:600;text-transform:uppercase;cursor:pointer;color:var(--mu);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.tab:hover:not(.active){color:var(--tx)}
+.tc{display:none;padding:1.2rem}
+.tc.active{display:block}
+.jnav{display:flex;align-items:center;gap:.5rem}
+.jnav select{flex:1;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--ac);background:var(--s2)}
+.jbtn{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:5px;width:34px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .15s;flex-shrink:0}
+.jbtn:hover{border-color:var(--ac);color:var(--ac)}
+.mc{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:.9rem;margin-bottom:.75rem}
+.mc.done{border-color:#2d3d2d;background:#141f14}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:.3rem}
+.mlbl{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.dtag{font-size:.65rem;font-family:'DM Mono',monospace;color:var(--inf);background:rgba(91,155,213,.1);border:1px solid rgba(91,155,213,.2);padding:1px 6px;border-radius:3px}
+.bbadge{background:var(--ac2);color:#fff;font-size:.6rem;font-weight:700;text-transform:uppercase;padding:1px 6px;border-radius:2px}
+.rpill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:3px;font-size:.72rem;font-weight:600;font-family:'DM Mono',monospace;background:#1a3a1a;color:var(--ok)}
+.mteams{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.95rem;margin-bottom:.7rem}
+.mvs{color:var(--mu);font-size:.7rem}
+.srow{display:flex;gap:.5rem;align-items:center}
+.si{width:52px;text-align:center;font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;padding:.4rem}
+.ssep{color:var(--mu);font-weight:600;font-size:1rem}
+.tsel{flex:1;font-size:.8rem;padding:.4rem .5rem}
+.ctbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.ctbl th{text-align:left;padding:.4rem .5rem;color:var(--mu);font-size:.7rem;font-weight:600;text-transform:uppercase;border-bottom:1px solid var(--bd)}
+.ctbl td{padding:.4rem .5rem;border-bottom:1px solid #1a1a1a;font-family:'DM Mono',monospace}
+.ctbl tr:last-child td{border-bottom:none}
+.cn{color:var(--tx);font-family:'DM Sans',sans-serif;font-weight:500}
+.cp{color:var(--ac);font-weight:600}
+.eu{color:var(--ok)} .ed{color:var(--er)} .eq{color:var(--mu)}
+#mail-output{width:100%;min-height:500px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--tx);font-family:'DM Mono',monospace;font-size:.8rem;line-height:1.7;padding:1.2rem;resize:vertical}
+.loader{display:none;flex-direction:column;align-items:center;justify-content:center;padding:3rem;gap:1rem}
+.loader.on{display:flex}
+.spin{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{color:var(--mu);font-size:.85rem;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+.alert{padding:.7rem .9rem;border-radius:5px;font-size:.82rem;margin-bottom:1rem;display:none}
+.alert.on{display:block}
+.aerr{background:#2a1010;border:1px solid var(--er);color:#f08080}
+.aok{background:#0f2a1a;border:1px solid var(--ok);color:#80c090}
+.gbtn{width:100%;padding:1rem;font-size:1rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;border-radius:6px;margin-top:1rem;background:var(--ac);color:#000;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .15s}
+.gbtn:hover{background:#ffd84a;transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,200,66,.2)}
+.gbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.dbtn{width:100%;margin-top:.4rem;padding:.5rem;background:transparent;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-size:.75rem;cursor:pointer;transition:border-color .15s}
+.dbtn:hover{border-color:var(--ac);color:var(--ac)}
+.empty{text-align:center;padding:3rem 1rem;color:var(--mu);font-size:.85rem}
+.ei{font-size:2rem;margin-bottom:.5rem;display:block}
+.nom{color:var(--mu);font-size:.82rem;padding:1rem 0;text-align:center}
+.pchip{display:inline-flex;align-items:center;gap:.3rem;background:var(--s2);border:1px solid var(--bd);border-radius:3px;padding:2px 7px;font-size:.72rem;font-family:'DM Mono',monospace;margin:2px}
+.pchip.jok{border-color:var(--ac2);color:var(--ac2)}
+.mpronos{margin-top:.5rem;display:flex;flex-wrap:wrap}
+.rcol{position:sticky;top:80px}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+@keyframes cf{0%{background:var(--ok);color:#000}100%{background:var(--s2);color:var(--tx)}}
+.cf{animation:cf .8s ease forwards}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="logo">🥃 Pastis <span>Pronos</span></div>
-  <div class="header-badge">CDM 2026</div>
-  <div style="color:var(--muted);font-size:0.75rem;margin-left:0.5rem">Générateur de Récap</div>
-  <div class="header-right">
-    <span id="status-label" style="font-size:0.75rem;color:var(--muted)">Non connecté</span>
-    <div class="status-dot" id="status-dot"></div>
+  <div class="logo">🥃 Pastis <b>Pronos</b></div>
+  <div class="hbadge">CDM 2026</div>
+  <span style="color:var(--mu);font-size:.75rem;margin-left:.5rem">Générateur de Récap</span>
+  <div class="hright">
+    <span id="slbl" style="font-size:.75rem;color:var(--mu)">Non connecté</span>
+    <div class="sdot" id="sdot"></div>
   </div>
 </header>
 
-<div class="container">
-  <div class="left-col">
-    <div class="panel" style="margin-bottom:1rem">
-      <div class="panel-header"><span>⚙️</span><span class="panel-title">Configuration</span></div>
+<div class="wrap">
+  <div>
+    <div class="panel">
+      <div class="ph"><span>⚙️</span><span class="pt">Configuration</span></div>
       <div class="tabs">
-        <div class="tab active" onclick="switchTab(event,'config','setup')">Connexion</div>
-        <div class="tab" onclick="switchTab(event,'config','about')">À propos</div>
+        <div class="tab active" onclick="stab(event,'cfg','conn')">Connexion</div>
+        <div class="tab" onclick="stab(event,'cfg','info')">À propos</div>
       </div>
-      <div id="config-setup" class="tab-content active">
-        <div class="field">
-          <label>Sheet ID Google Sheets</label>
-          <input type="text" id="sheet-id" placeholder="1zKJSP-Oijfncl6uGVV8L4_HocN..." />
-        </div>
+      <div id="cfg-conn" class="tc active">
+        <div class="field"><label>Sheet ID Google Sheets</label><input id="sid" placeholder="1zKJSP-Oijfncl6uGVV8L4_HocN..."/></div>
         <div class="field">
           <label>Clé API Anthropic</label>
-          <input type="password" id="claude-key" placeholder="sk-ant-..." />
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem">Stockée localement, jamais transmise</div>
+          <input type="password" id="akey" placeholder="sk-ant-..."/>
+          <div style="font-size:.7rem;color:var(--mu);margin-top:.3rem">Stockée localement, jamais transmise</div>
         </div>
         <div class="field">
           <label>Type de contenu</label>
-          <select id="mail-type">
+          <select id="mtype">
             <option value="recap">📩 Récap du matin (8h-14h)</option>
             <option value="tendances">🔮 Tendances avant-match</option>
           </select>
         </div>
-        <button class="btn btn-primary btn-block" onclick="loadData()">↻ Charger les données</button>
-        <div id="config-alert" class="alert" style="margin-top:0.75rem;margin-bottom:0"></div>
+        <button class="btn bp bblock" onclick="loadData()">↻ Charger les données</button>
+        <div id="calert" class="alert" style="margin-top:.75rem;margin-bottom:0"></div>
       </div>
-      <div id="config-about" class="tab-content">
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.7">
-          <p>Sélectionne une <strong style="color:var(--accent)">Journée (J1, J2...)</strong> — tous les matchs de cette journée s'affichent, même répartis sur 2 jours calendaires.</p><br>
-          <p><strong style="color:var(--text)">Feuilles lues :</strong></p>
-          <p>• <code style="color:var(--accent)">Calendrier</code> — colonne Journée (AN) utilisée</p>
-          <p>• <code style="color:var(--accent)">Pronostics</code> — tous les pronos</p>
-          <p>• <code style="color:var(--accent)">Classement_Jour</code> — points & évolutions</p>
-          <p>• <code style="color:var(--accent)">Joueurs</code> — favoris début de tournoi</p>
+      <div id="cfg-info" class="tc">
+        <div style="font-size:.8rem;color:var(--mu);line-height:1.7">
+          <p>Sélectionne une <strong style="color:var(--ac)">Journée (J1, J2...)</strong> — tous ses matchs s'affichent même répartis sur 2 jours calendaires.</p><br>
+          <p><strong style="color:var(--tx)">Colonnes lues :</strong></p>
+          <p>• <code style="color:var(--ac)">Calendrier</code> : ID_Match, Score A/B, Phase, Match Bonus, Groupe, TV, Journée</p>
+          <p>• <code style="color:var(--ac)">Pronostics</code> : Joueur, ID_Match, Prono_Equipe_A/B, Joker, Points, Points_Texte, Performance</p>
+          <p>• <code style="color:var(--ac)">Classement_Jour</code> : Joueur, Points du Jour, Points Cumulés, Évolution J-1/J-2</p>
+          <p>• <code style="color:var(--ac)">Joueurs</code> : Joueur, Vainqueur, Finaliste, Description</p>
         </div>
       </div>
     </div>
 
     <div class="panel">
-      <div class="panel-header"><span>⚽</span><span class="panel-title">Matchs de la Journée</span></div>
-      <div style="padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.015)">
-        <label style="margin-bottom:0.5rem">Sélectionner la Journée</label>
-        <div class="journee-nav">
-          <div class="jnav-btn" onclick="prevJournee()" title="Précédente">◀</div>
-          <select id="journee-select" onchange="filterByJournee()">
-            <option value="">— Charge les données d'abord —</option>
-          </select>
-          <div class="jnav-btn" onclick="nextJournee()" title="Suivante">▶</div>
+      <div class="ph"><span>⚽</span><span class="pt">Matchs de la Journée</span></div>
+      <div style="padding:.9rem 1.2rem;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)">
+        <label style="margin-bottom:.5rem">Sélectionner la Journée</label>
+        <div class="jnav">
+          <div class="jbtn" onclick="prevJ()">◀</div>
+          <select id="jsel" onchange="filterJ()"><option value="">— Charge d'abord —</option></select>
+          <div class="jbtn" onclick="nextJ()">▶</div>
         </div>
-        <div id="journee-dates" style="font-size:0.7rem;color:var(--muted);margin-top:0.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
+        <div id="jdates" style="font-size:.7rem;color:var(--mu);margin-top:.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
       </div>
-      <div class="panel-body" id="matches-container">
-        <div class="empty"><span class="empty-icon">📅</span>Charge les données puis sélectionne une journée</div>
-      </div>
+      <div class="pb" id="mcont"><div class="empty"><span class="ei">📅</span>Charge puis sélectionne une journée</div></div>
     </div>
   </div>
 
-  <div class="right-col">
+  <div class="rcol">
     <div class="panel">
-      <div class="panel-header">
-        <span>✉️</span><span class="panel-title">Contenu Généré</span>
-        <div style="margin-left:auto;display:flex;gap:0.5rem">
-          <button class="btn btn-secondary" onclick="copyOutput()" id="copy-btn">📋 Copier</button>
-          <button class="btn btn-danger" onclick="clearOutput()">✕</button>
+      <div class="ph">
+        <span>✉️</span><span class="pt">Contenu Généré</span>
+        <div style="margin-left:auto;display:flex;gap:.5rem">
+          <button class="btn bs" onclick="copyOut()" id="cbtn">📋 Copier</button>
+          <button class="btn bd2" onclick="clearOut()">✕</button>
         </div>
       </div>
       <div class="tabs">
-        <div class="tab active" onclick="switchTab(event,'output','mail')">📝 Texte</div>
-        <div class="tab" onclick="switchTab(event,'output','classement')">📊 Classement</div>
-        <div class="tab" onclick="switchTab(event,'output','pronos')">🔮 Pronos</div>
+        <div class="tab active" onclick="stab(event,'out','mail')">📝 Texte</div>
+        <div class="tab" onclick="stab(event,'out','class')">📊 Classement</div>
+        <div class="tab" onclick="stab(event,'out','pron')">🔮 Pronos</div>
       </div>
-      <div id="output-mail" class="tab-content active">
-        <div id="loader" class="loader">
-          <div class="spinner"></div>
-          <div class="loader-text" id="loader-text">Génération en cours...</div>
-        </div>
-        <div id="output-content">
-          <div class="empty" style="padding:4rem 1rem">
-            <span class="empty-icon">🥃</span>
-            <div style="font-size:0.9rem;color:var(--text);margin-bottom:0.5rem">Prêt à générer</div>
-            Configure, charge, sélectionne la journée, puis génère !
-          </div>
-        </div>
-        <button class="generate-btn" id="generate-btn" onclick="generateMail()" disabled>🚀 GÉNÉRER LE CONTENU</button>
-        <button onclick="showPrompt()" style="width:100%;margin-top:0.4rem;padding:0.5rem;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:0.75rem;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">🔍 Voir le prompt envoyé à Claude</button>
+      <div id="out-mail" class="tc active">
+        <div id="loader" class="loader"><div class="spin"></div><div class="ltxt" id="ltxt">...</div></div>
+        <div id="ocont"><div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Configure, charge, sélectionne, génère !</div></div>
+        <button class="gbtn" id="gbtn" onclick="generate()" disabled>🚀 GÉNÉRER LE CONTENU</button>
+        <button class="dbtn" onclick="showPrompt()">🔍 Voir le prompt envoyé à Claude</button>
       </div>
-      <div id="output-classement" class="tab-content">
-        <div id="classement-preview" class="empty"><span class="empty-icon">📊</span>Pas encore de données</div>
-      </div>
-      <div id="output-pronos" class="tab-content">
-        <div id="pronos-preview" class="empty"><span class="empty-icon">🔮</span>Sélectionne une journée</div>
-      </div>
+      <div id="out-class" class="tc"><div id="cprev" class="empty"><span class="ei">📊</span>Pas encore de données</div></div>
+      <div id="out-pron" class="tc"><div id="pprev" class="empty"><span class="ei">🔮</span>Sélectionne une journée</div></div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────
-let state = {
-  sheetId: "", apiKey: "",
-  matches: [], pronostics: [], classementJour: [], joueurs: [],
-  journees: [], selectedJournee: "", dayMatches: [], results: {}
+// ── STATE ─────────────────────────────────────────────────────
+const S = {
+  sheetId:'', apiKey:'',
+  cal:[], pronos:[], cj:[], joueurs:[],
+  journees:[], jsel:'',
+  dayM:[], res:{}
 };
 
-// ─── INIT ────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────
 window.onload = () => {
-  state.sheetId = localStorage.getItem("pp_sheet_id") || "";
-  state.apiKey  = localStorage.getItem("pp_api_key")  || "";
-  if (state.sheetId) document.getElementById("sheet-id").value = state.sheetId;
-  if (state.apiKey)  document.getElementById("claude-key").value = state.apiKey;
+  S.sheetId = localStorage.getItem('pp_sid') || '';
+  S.apiKey  = localStorage.getItem('pp_key') || '';
+  if (S.sheetId) document.getElementById('sid').value = S.sheetId;
+  if (S.apiKey)  document.getElementById('akey').value = S.apiKey;
 };
 
-// ─── TABS ────────────────────────────────────────────────────
-function switchTab(event, group, tabId) {
-  const tabsEl = event.target.closest(".tabs");
-  if (tabsEl) tabsEl.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  event.target.classList.add("active");
-  const ids = group === "config" ? ["config-setup","config-about"] : ["output-mail","output-classement","output-pronos"];
-  ids.forEach(id => document.getElementById(id) && document.getElementById(id).classList.remove("active"));
-  const target = document.getElementById(group === "config" ? "config-"+tabId : "output-"+tabId);
-  if (target) target.classList.add("active");
+// ── TABS ──────────────────────────────────────────────────────
+function stab(e, grp, id) {
+  e.target.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  const pfx = grp === 'cfg' ? 'cfg' : 'out';
+  document.querySelectorAll('[id^="'+pfx+'-"]').forEach(el => el.classList.remove('active'));
+  document.getElementById(pfx+'-'+id).classList.add('active');
 }
 
-// ─── CSV FETCH ───────────────────────────────────────────────
-async function fetchSheet(sheetId, sheetName) {
-  const url = "https://docs.google.com/spreadsheets/d/"+sheetId+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(sheetName);
+// ── CSV ───────────────────────────────────────────────────────
+async function fetchCSV(sid, name) {
+  const url = 'https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent(name);
   const r = await fetch(url);
-  if (!r.ok) throw new Error("Impossible de lire \""+sheetName+"\" — Sheet bien partagé en lecture publique ?");
-  return parseCSV(await r.text());
+  if (!r.ok) throw new Error('Feuille "'+name+'" inaccessible. Sheet partagé en lecture publique ?');
+  return csv2arr(await r.text());
 }
 
-function parseCSV(text) {
-  const lines = text.split("\n").filter(l => l.trim());
+function csv2arr(txt) {
+  const lines = txt.split('\n').filter(l => l.trim());
   if (!lines.length) return [];
-  const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/^"|"$/g,""));
+  const hdrs = csvRow(lines[0]).map(h => h.trim().replace(/^"|"$/g,''));
   return lines.slice(1).map(line => {
-    const vals = parseCSVLine(line);
-    const obj = {};
-    headers.forEach((h,i) => { obj[h] = (vals[i]||"").trim().replace(/^"|"$/g,""); });
-    return obj;
+    const vals = csvRow(line);
+    const o = {};
+    hdrs.forEach((h,i) => { o[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
+    return o;
   });
 }
 
-function parseCSVLine(line) {
-  const res = []; let cur = "", inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === "\"") { if (inQ && line[i+1] === "\"") { cur += "\""; i++; } else inQ = !inQ; }
-    else if (line[i] === "," && !inQ) { res.push(cur); cur = ""; }
-    else cur += line[i];
+function csvRow(line) {
+  const r=[], n=line.length; let c='', q=false;
+  for(let i=0;i<n;i++){
+    const ch=line[i];
+    if(ch==='"'){if(q&&line[i+1]==='"'){c+='"';i++;}else q=!q;}
+    else if(ch===','&&!q){r.push(c);c='';}
+    else c+=ch;
   }
-  res.push(cur); return res;
+  r.push(c); return r;
 }
 
-// ─── LOAD DATA ───────────────────────────────────────────────
+// ── LOAD ──────────────────────────────────────────────────────
 async function loadData() {
-  const sheetId = document.getElementById("sheet-id").value.trim();
-  const apiKey  = document.getElementById("claude-key").value.trim();
-  if (!sheetId) { showAlert("config-alert","Renseigne le Sheet ID","error"); return; }
-  state.sheetId = sheetId; state.apiKey = apiKey;
-  localStorage.setItem("pp_sheet_id", sheetId);
-  if (apiKey) localStorage.setItem("pp_api_key", apiKey);
-  showLoader(true, "Lecture du Google Sheet...");
+  const sid = document.getElementById('sid').value.trim();
+  const key = document.getElementById('akey').value.trim();
+  if (!sid) { alert2('calert','Renseigne le Sheet ID','aerr'); return; }
+  S.sheetId = sid; S.apiKey = key;
+  localStorage.setItem('pp_sid', sid);
+  if (key) localStorage.setItem('pp_key', key);
+  loader(true,'Lecture du Google Sheet...');
   try {
-    const [cal, pronos, cj, joueurs] = await Promise.all([
-      fetchSheet(sheetId,"Calendrier"), fetchSheet(sheetId,"Pronostics"),
-      fetchSheet(sheetId,"Classement_Jour"), fetchSheet(sheetId,"Joueurs"),
+    const [cal, pr, cj, jo] = await Promise.all([
+      fetchCSV(sid,'Calendrier'), fetchCSV(sid,'Pronostics'),
+      fetchCSV(sid,'Classement_Jour'), fetchCSV(sid,'Joueurs')
     ]);
-    state.matches = cal; state.pronostics = pronos;
-    state.classementJour = cj; state.joueurs = joueurs;
-    buildJourneesSelector();
-    renderClassement();
-    setStatus("ok","Connecté");
-    showAlert("config-alert","✓ "+cal.length+" matchs • "+pronos.length+" pronos • "+joueurs.length+" joueurs","success");
-    showLoader(false);
+    S.cal=cal; S.pronos=pr; S.cj=cj; S.joueurs=jo;
+    buildJsel();
+    renderClass();
+    dot('ok','Connecté');
+    alert2('calert','✓ '+cal.length+' matchs • '+pr.length+' pronos • '+jo.length+' joueurs','aok');
+    loader(false);
   } catch(err) {
-    showLoader(false); setStatus("error","Erreur");
-    showAlert("config-alert", err.message, "error");
+    loader(false); dot('er','Erreur');
+    alert2('calert',err.message,'aerr');
   }
 }
 
-// ─── JOURNEES ────────────────────────────────────────────────
-function getJourneeKey(m) {
-  // Parcourt toutes les clés et normalise les accents pour trouver "Journée"
-  for (const key of Object.keys(m)) {
-    const norm = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-    if (norm === "journee") {
-      const val = (m[key] || "").trim();
-      if (val) return val;
-    }
+// ── JOURNEE KEY ───────────────────────────────────────────────
+// Lit la colonne "Journée" quelle que soit la casse/accent
+function jkey(m) {
+  for (const k of Object.keys(m)) {
+    const n = k.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');
+    if (n === 'journee') { const v=(m[k]||'').trim(); if(v) return v; }
   }
-  return "";
+  return '';
 }
 
-function buildJourneesSelector() {
+// Normalise les IDs : "1.0" → "1"
+function nid(v) { return String(v||'').replace(/\.0$/,'').trim(); }
+
+// ── JOURNEES ──────────────────────────────────────────────────
+function buildJsel() {
   const set = new Set();
-  state.matches.forEach(m => {
-    const j = getJourneeKey(m);
-    if (j && /^J\d+$/i.test(j)) set.add(j.toUpperCase());
+  S.cal.forEach(m => { const j=jkey(m); if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase()); });
+  S.journees = Array.from(set).sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
+  const sel = document.getElementById('jsel');
+  if (!S.journees.length) {
+    sel.innerHTML='<option value="">Aucune journée — vérif colonne AN</option>'; return;
+  }
+  sel.innerHTML = S.journees.map(j=>'<option value="'+j+'">'+j+' — '+jdates(j)+'</option>').join('');
+  // Auto-select : dernière journée avec un score
+  let def = S.journees[0];
+  for(let i=S.journees.length-1;i>=0;i--){
+    const j=S.journees[i];
+    if(S.cal.some(m=>jkey(m).toUpperCase()===j&&(m['Score A']||'')!=='')){ def=j; break; }
+  }
+  sel.value=def; filterJ();
+}
+
+function jdates(j) {
+  const ds=new Set();
+  S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase()).forEach(m=>{if(m['Date'])ds.add(m['Date']);});
+  return Array.from(ds).join(' + ')||'?';
+}
+
+function prevJ() {
+  const sel=document.getElementById('jsel'), i=S.journees.indexOf(sel.value);
+  if(i>0){sel.value=S.journees[i-1];filterJ();}
+}
+function nextJ() {
+  const sel=document.getElementById('jsel'), i=S.journees.indexOf(sel.value);
+  if(i<S.journees.length-1){sel.value=S.journees[i+1];filterJ();}
+}
+
+// ── FILTER ───────────────────────────────────────────────────
+function filterJ() {
+  const j=document.getElementById('jsel').value; if(!j) return;
+  S.jsel=j;
+  S.dayM=S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase());
+  S.dayM.forEach(m=>{
+    const id=nid(m['ID_Match']||m['ID Match']||'');
+    if(!S.res[id]) S.res[id]={a:m['Score A']||'',b:m['Score B']||'',tab:m['Vainqueur TAB']||''};
   });
-  state.journees = Array.from(set).sort((a,b) => parseInt(a.replace(/\D/g,"")) - parseInt(b.replace(/\D/g,"")));
-  const sel = document.getElementById("journee-select");
-  if (!state.journees.length) {
-    sel.innerHTML = "<option value=\"\">Aucune journée trouvée — vérif colonne AN du Calendrier</option>";
-    return;
-  }
-  sel.innerHTML = state.journees.map(j => "<option value=\""+j+"\">"+j+" — "+getJourneeDates(j)+"</option>").join("");
-  // Auto-select : dernière journée avec au moins 1 match joué
-  let def = state.journees[0];
-  for (let i = state.journees.length-1; i >= 0; i--) {
-    const j = state.journees[i];
-    if (state.matches.some(m => getJourneeKey(m).toUpperCase() === j && (m["Score A"] || m["Score_A"] || "") !== "")) {
-      def = j; break;
-    }
-  }
-  sel.value = def;
-  filterByJournee();
+  const ds=[...new Set(S.dayM.map(m=>m['Date']).filter(Boolean))];
+  document.getElementById('jdates').textContent = ds.length?'📅 '+ds.join(' → ')+' • '+S.dayM.length+' match(s)':'';
+  renderM(); renderPron();
 }
 
-function getJourneeDates(journee) {
-  const dates = new Set();
-  state.matches.filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase())
-    .forEach(m => { if (m["Date"]) dates.add(m["Date"]); });
-  return Array.from(dates).join(" + ") || "?";
+// ── RENDER MATCHES ────────────────────────────────────────────
+function renderM() {
+  const c=document.getElementById('mcont');
+  if(!S.dayM.length){c.innerHTML='<div class="nom">Aucun match pour cette journée</div>';document.getElementById('gbtn').disabled=true;return;}
+  c.innerHTML=S.dayM.map(m=>{
+    const id=nid(m['ID_Match']||m['ID Match']||'');
+    const eA=m['Equipe A']||m['Equipe_A']||'';
+    const eB=m['Equipe B']||m['Equipe_B']||'';
+    const h=m['Heure']||'', dt=m['Date']||'', gr=m['Groupe']||'';
+    const bonus=(m['Match Bonus']||'').toLowerCase()==='oui';
+    const phase=(m['Phase']||'').toLowerCase();
+    const finale=phase!==''&&!phase.includes('poule');
+    const r=S.res[id]||{a:'',b:'',tab:''};
+    const done=r.a!==''&&r.b!=='';
+    const tabH=finale?'<select class="tsel" onchange="updR(\''+id+'\',\'t\',this.value)"><option value="">TAB ?</option><option value="'+eA+'"'+(r.tab===eA?' selected':'')+'>TAB → '+eA+'</option><option value="'+eB+'"'+(r.tab===eB?' selected':'')+'>TAB → '+eB+'</option></select>':'';
+    return '<div class="mc'+(done?' done':'')+'" id="mc'+id+'">'
+      +'<div class="mh">'
+      +'<span class="mlbl">#'+id+' • '+h+' • '+gr+'</span>'
+      +'<span class="dtag">'+dt+'</span>'
+      +(bonus?'<span class="bbadge">⭐ Bonus</span>':'')
+      +(done?'<span class="rpill">✓ '+r.a+'-'+r.b+'</span>':'')
+      +'</div>'
+      +'<div class="mteams"><span>'+eA+'</span><span class="mvs">vs</span><span>'+eB+'</span></div>'
+      +'<div class="srow">'
+      +'<input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.a+'" oninput="updR(\''+id+'\',\'a\',this.value)">'
+      +'<span class="ssep">–</span>'
+      +'<input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.b+'" oninput="updR(\''+id+'\',\'b\',this.value)">'
+      +tabH+'</div></div>';
+  }).join('');
+  document.getElementById('gbtn').disabled=false;
 }
 
-function prevJournee() {
-  const sel = document.getElementById("journee-select");
-  const idx = state.journees.indexOf(sel.value);
-  if (idx > 0) { sel.value = state.journees[idx-1]; filterByJournee(); }
+function updR(id,f,v){
+  if(!S.res[id])S.res[id]={a:'',b:'',tab:''};
+  if(f==='a')S.res[id].a=v; else if(f==='b')S.res[id].b=v; else S.res[id].tab=v;
 }
 
-function nextJournee() {
-  const sel = document.getElementById("journee-select");
-  const idx = state.journees.indexOf(sel.value);
-  if (idx < state.journees.length-1) { sel.value = state.journees[idx+1]; filterByJournee(); }
+// ── RENDER CLASSEMENT ─────────────────────────────────────────
+function renderClass() {
+  const c=document.getElementById('cprev');
+  const rows=S.cj.filter(r=>(r['Joueur']||'').trim()).slice(0,30);
+  if(!rows.length){c.innerHTML='<div class="empty"><span class="ei">📊</span>Pas de données</div>';return;}
+  const fmt=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
+  c.innerHTML='<table class="ctbl"><thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead><tbody>'
+    +rows.map((r,i)=>{
+      const e1=parseInt(r['Évolution J-1']||r['Evolution J-1']||0)||0;
+      const e2=parseInt(r['Évolution J-2']||r['Evolution J-2']||0)||0;
+      return '<tr><td style="color:var(--mu)">'+(i+1)+'</td><td class="cn">'+(r['Joueur']||'')+'</td><td>'+(r['Points du Jour']||'0')+'</td><td class="cp">'+(r['Points Cumulés']||'0')+'</td><td class="'+(e1>0?'eu':e1<0?'ed':'eq')+'">'+(fmt(e1))+'</td><td class="'+(e2>0?'eu':e2<0?'ed':'eq')+'">'+(fmt(e2))+'</td></tr>';
+    }).join('')+'</tbody></table>';
 }
 
-// ─── FILTER BY JOURNEE ───────────────────────────────────────
-function filterByJournee() {
-  const journee = document.getElementById("journee-select").value;
-  if (!journee) return;
-  state.selectedJournee = journee;
-  state.dayMatches = state.matches.filter(m => getJourneeKey(m).toUpperCase() === journee.toUpperCase());
-  state.dayMatches.forEach(m => {
-    const id = m["ID_Match"] || m["ID Match"] || "";
-    if (!state.results[id]) {
-      state.results[id] = {
-        scoreA: m["Score A"] || m["Score_A"] || "",
-        scoreB: m["Score B"] || m["Score_B"] || "",
-        tab: m["Vainqueur TAB"] || ""
-      };
-    }
-  });
-  const dates = [...new Set(state.dayMatches.map(m => m["Date"]).filter(Boolean))];
-  document.getElementById("journee-dates").textContent =
-    dates.length ? "📅 "+dates.join(" → ")+" • "+state.dayMatches.length+" match(s)" : "";
-  renderMatches();
-  renderPronostics();
-}
-
-// ─── RENDER MATCHES ──────────────────────────────────────────
-function renderMatches() {
-  const container = document.getElementById("matches-container");
-  if (!state.dayMatches.length) {
-    container.innerHTML = "<div class=\"no-matches\">Aucun match pour cette journée</div>";
-    document.getElementById("generate-btn").disabled = true;
-    return;
-  }
-  container.innerHTML = state.dayMatches.map(m => {
-    const id      = m["ID_Match"] || m["ID Match"] || "";
-    const equipeA = m["Equipe A"] || m["Equipe_A"] || "";
-    const equipeB = m["Equipe B"] || m["Equipe_B"] || "";
-    const heure   = m["Heure"] || "";
-    const date    = m["Date"] || "";
-    const phase   = (m["Phase"] || "").toLowerCase();
-    const isBonus = (m["Match Bonus"] || m["Match_Bonus"] || "").toLowerCase().includes("oui");
-    // TAB uniquement hors phase de poules
-    const isFinale = phase !== "" && !phase.includes("poule");
-    const groupe  = m["Groupe"] || "";
-    const r       = state.results[id] || {scoreA:"",scoreB:"",tab:""};
-    const hasRes  = r.scoreA !== "" && r.scoreB !== "";
-    const tabHTML = isFinale
-      ? "<select class=\"tab-select\" onchange=\"updateResult('"+id+"','tab',this.value)\"><option value=\"\">TAB ?</option><option value=\""+equipeA+"\" "+(r.tab===equipeA?"selected":"")+">TAB → "+equipeA+"</option><option value=\""+equipeB+"\" "+(r.tab===equipeB?"selected":"")+">TAB → "+equipeB+"</option></select>"
-      : "";
-    return "<div class=\"match-card "+(hasRes?"has-result":"")+"\" id=\"card-"+id+"\">"
-      +"<div class=\"match-header\">"
-      +"<span class=\"match-label\">#"+id+" • "+heure+" • "+groupe+"</span>"
-      +"<span class=\"match-date-tag\">"+date+"</span>"
-      +(isBonus ? "<span class=\"match-bonus-badge\">⭐ Bonus</span>" : "")
-      +(hasRes ? "<span class=\"result-pill\">✓ "+r.scoreA+"-"+r.scoreB+"</span>" : "")
-      +"</div>"
-      +"<div class=\"match-teams\"><span>"+equipeA+"</span><span class=\"match-vs\">vs</span><span>"+equipeB+"</span></div>"
-      +"<div class=\"score-row\">"
-      +"<input class=\"score-input\" type=\"number\" min=\"0\" max=\"20\" placeholder=\"–\" id=\"sa-"+id+"\" value=\""+r.scoreA+"\" oninput=\"updateResult('"+id+"','a',this.value)\">"
-      +"<span class=\"score-sep\">–</span>"
-      +"<input class=\"score-input\" type=\"number\" min=\"0\" max=\"20\" placeholder=\"–\" id=\"sb-"+id+"\" value=\""+r.scoreB+"\" oninput=\"updateResult('"+id+"','b',this.value)\">"
-      +tabHTML
-      +"</div></div>";
-  }).join("");
-  document.getElementById("generate-btn").disabled = false;
-}
-
-function updateResult(id, field, val) {
-  if (!state.results[id]) state.results[id] = {scoreA:"",scoreB:"",tab:""};
-  if (field==="a") state.results[id].scoreA = val;
-  if (field==="b") state.results[id].scoreB = val;
-  if (field==="tab") state.results[id].tab = val;
-}
-
-// ─── RENDER CLASSEMENT ───────────────────────────────────────
-function renderClassement() {
-  const container = document.getElementById("classement-preview");
-  const rows = state.classementJour.filter(r => (r["Joueur"]||"").trim()).slice(0,30);
-  if (!rows.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">📊</span>Pas de données</div>"; return; }
-  const fmt = v => v>0 ? "▲+"+v : v<0 ? "▼"+v : "=";
-  container.innerHTML = "<table class=\"classement-table\"><thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead><tbody>"
-    + rows.map((r,i) => {
-      const e1 = parseInt(r["Évolution J-1"]||r["Evolution J-1"]||0)||0;
-      const e2 = parseInt(r["Évolution J-2"]||r["Evolution J-2"]||0)||0;
-      return "<tr><td style=\"color:var(--muted)\">"+(i+1)+"</td><td class=\"name\">"+(r["Joueur"]||"")+"</td><td>"+(r["Points du Jour"]||"0")+"</td><td class=\"pts\">"+(r["Points Cumulés"]||"0")+"</td><td class=\""+(e1>0?"evo-up":e1<0?"evo-down":"evo-eq")+"\">"+(fmt(e1))+"</td><td class=\""+(e2>0?"evo-up":e2<0?"evo-down":"evo-eq")+"\">"+(fmt(e2))+"</td></tr>";
-    }).join("") + "</tbody></table>";
-}
-
-// ─── RENDER PRONOSTICS ───────────────────────────────────────
-function renderPronostics() {
-  const container = document.getElementById("pronos-preview");
-  if (!state.dayMatches.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Sélectionne une journée</div>"; return; }
-  const normId = v => String(parseFloat(v)||v||"").replace(/\.0$/,"");
-  const matchIds = state.dayMatches.map(m => normId(m["ID_Match"]||m["ID Match"]||""));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(normId(p["ID_Match"]||p["ID Match"]||"")));
-  if (!dayPronos.length) { container.innerHTML = "<div class=\"empty\"><span class=\"empty-icon\">🔮</span>Aucun prono pour cette journée</div>"; return; }
-  let html = "<div style=\"font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem;font-family:'DM Mono',monospace\">"+state.selectedJournee+" — "+dayPronos.length+" pronos sur "+state.dayMatches.length+" matchs</div>";
-  state.dayMatches.forEach(m => {
-    const id = String(m["ID_Match"]||m["ID Match"]||"");
-    const mp = dayPronos.filter(p => normId(p["ID_Match"]||p["ID Match"]||"") === id);
-    if (!mp.length) return;
-    html += "<div style=\"margin-bottom:1rem\"><div style=\"font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem\">"+(m["Equipe A"]||m["Equipe_A"]||"")+" vs "+(m["Equipe B"]||m["Equipe_B"]||"")+"</div><div class=\"match-pronos\">";
-    mp.forEach(p => {
-      const joker = (p["Joker"]||"").toLowerCase().includes("oui");
-      const pts = p["Points"]||"";
-      html += "<span class=\"prono-chip "+(joker?"joker":"")+"\" title=\""+(pts?pts+" pts":"en attente")+"\">"+p["Joueur"]+": "+(p["Prono_Equipe_A"]||"?")+"—"+(p["Prono_Equipe_B"]||"?")+(joker?" 🃏":"")+(pts?" ("+pts+")":"")+"</span>";
+// ── RENDER PRONOS ─────────────────────────────────────────────
+function renderPron() {
+  const c=document.getElementById('pprev');
+  if(!S.dayM.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Sélectionne une journée</div>';return;}
+  const ids=S.dayM.map(m=>nid(m['ID_Match']||m['ID Match']||''));
+  const dp=S.pronos.filter(p=>ids.includes(nid(p['ID_Match']||'')));
+  if(!dp.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Aucun prono pour cette journée</div>';return;}
+  let h='<div style="font-size:.72rem;color:var(--mu);margin-bottom:.75rem;font-family:\'DM Mono\',monospace">'+S.jsel+' — '+dp.length+' pronos sur '+S.dayM.length+' matchs</div>';
+  S.dayM.forEach(m=>{
+    const id=nid(m['ID_Match']||m['ID Match']||'');
+    const mp=dp.filter(p=>nid(p['ID_Match']||'')===id);
+    if(!mp.length)return;
+    h+='<div style="margin-bottom:1rem"><div style="font-size:.78rem;font-weight:600;color:var(--mu);margin-bottom:.4rem">'+(m['Equipe A']||m['Equipe_A']||'')+' vs '+(m['Equipe B']||m['Equipe_B']||'')+'</div><div class="mpronos">';
+    mp.forEach(p=>{
+      const jok=(p['Joker']||'').toLowerCase()==='oui';
+      const pts=p['Points']||'';
+      h+='<span class="pchip'+(jok?' jok':'')+'" title="'+(pts?pts+' pts':'en attente')+'">'+p['Joueur']+': '+(p['Prono_Equipe_A']||'?')+'-'+(p['Prono_Equipe_B']||'?')+(jok?' 🃏':'')+(pts?' ('+pts+')':'')+'</span>';
     });
-    html += "</div></div>";
+    h+='</div></div>';
   });
-  container.innerHTML = html;
+  c.innerHTML=h;
 }
 
-// ─── BUILD CONTEXT ───────────────────────────────────────────
-function buildContext() {
-  const mailType = document.getElementById("mail-type").value;
-  // Normalise les IDs : "1.0" → "1" pour matcher Calendrier et Pronostics
-  const normId = v => String(parseFloat(v)||v||"").replace(/\.0$/,"");
-  const matchIds = state.dayMatches.map(m => normId(m["ID_Match"]||m["ID Match"]||""));
-  const dayPronos = state.pronostics.filter(p => matchIds.includes(normId(p["ID_Match"]||p["ID Match"]||"")));
-  const matchesWithResults = state.dayMatches.map(m => {
-    const id = normId(m["ID_Match"]||m["ID Match"]||"");
-    const r  = state.results[id] || {};
-    const phase = (m["Phase"] || "").toLowerCase();
+// ── CONTEXT & PROMPT ─────────────────────────────────────────
+function buildCtx() {
+  const mtype=document.getElementById('mtype').value;
+  const ids=S.dayM.map(m=>nid(m['ID_Match']||m['ID Match']||''));
+  const dp=S.pronos.filter(p=>ids.includes(nid(p['ID_Match']||'')));
+
+  const matches=S.dayM.map(m=>{
+    const id=nid(m['ID_Match']||m['ID Match']||'');
+    const r=S.res[id]||{};
+    const phase=(m['Phase']||'').toLowerCase();
     return {
-      id, equipeA: m["Equipe A"]||m["Equipe_A"]||"", equipeB: m["Equipe B"]||m["Equipe_B"]||"",
-      heure: m["Heure"]||"", date: m["Date"]||"", groupe: m["Groupe"]||"",
-      phase: m["Phase"]||"",
-      isBonus: (m["Match Bonus"]||m["Match_Bonus"]||"").toLowerCase().includes("oui"),
-      isFinale: phase !== "" && !phase.includes("poule"),
-      tv: m["TV"]||"",
-      scoreA: (r.scoreA !== undefined && r.scoreA !== "") ? r.scoreA : (m["Score A"]||m["Score_A"]||""),
-      scoreB: (r.scoreB !== undefined && r.scoreB !== "") ? r.scoreB : (m["Score B"]||m["Score_B"]||""),
-      tab: r.tab || m["Vainqueur TAB"]||""
+      id, eA:m['Equipe A']||m['Equipe_A']||'', eB:m['Equipe B']||m['Equipe_B']||'',
+      h:m['Heure']||'', dt:m['Date']||'', gr:m['Groupe']||'',
+      phase:m['Phase']||'',
+      bonus:(m['Match Bonus']||'').toLowerCase()==='oui',
+      finale:phase!==''&&!phase.includes('poule'),
+      tv:m['TV']||'',
+      sA:(r.a!==undefined&&r.a!=='')?r.a:(m['Score A']||''),
+      sB:(r.b!==undefined&&r.b!=='')?r.b:(m['Score B']||''),
+      tab:r.tab||m['Vainqueur TAB']||''
     };
   });
-  const curNum = parseInt(state.selectedJournee.replace(/\D/g,"")) || 0;
-  const nextLabel = "J"+(curNum+1);
-  const nextMatches = state.matches.filter(m => getJourneeKey(m).toUpperCase() === nextLabel.toUpperCase())
-    .map(m => ({
-      id: m["ID_Match"]||m["ID Match"]||"",
-      equipeA: m["Equipe A"]||m["Equipe_A"]||"", equipeB: m["Equipe B"]||m["Equipe_B"]||"",
-      heure: m["Heure"]||"", date: m["Date"]||"", groupe: m["Groupe"]||"",
-      isBonus: (m["Match Bonus"]||m["Match_Bonus"]||"").toLowerCase().includes("oui"),
-      tv: m["TV"]||""
+
+  const pronosM={};
+  ids.forEach(id=>{
+    pronosM[id]=dp.filter(p=>nid(p['ID_Match']||'')===id).map(p=>({
+      j:p['Joueur']||'',
+      pA:p['Prono_Equipe_A']||'', pB:p['Prono_Equipe_B']||'',
+      tab:p['Prono_Vainqueur_TAB']||'',
+      jok:(p['Joker']||'').toLowerCase()==='oui',
+      pts:p['Points']||'', ptxt:p['Points_Texte']||'', perf:p['Performance']||''
     }));
-  const classData = state.classementJour.filter(r => (r["Joueur"]||"").trim()).slice(0,30).map(r => ({
-    joueur: r["Joueur"]||"", ptsJour: r["Points du Jour"]||"0", ptsCumul: r["Points Cumulés"]||"0",
-    classement: r["Classement"]||"",
-    evoJ1: r["Évolution J-1"]||r["Evolution J-1"]||"=",
-    evoJ2: r["Évolution J-2"]||r["Evolution J-2"]||"="
+  });
+
+  const curN=parseInt(S.jsel.replace(/\D/g,''))||0;
+  const nextJ='J'+(curN+1);
+  const nextM=S.cal.filter(m=>jkey(m).toUpperCase()===nextJ.toUpperCase()).map(m=>({
+    eA:m['Equipe A']||m['Equipe_A']||'', eB:m['Equipe B']||m['Equipe_B']||'',
+    h:m['Heure']||'', dt:m['Date']||'', gr:m['Groupe']||'',
+    bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:m['TV']||''
   }));
-  const joueursInfo = state.joueurs.filter(j => (j["Joueur"]||j["joueur"]||"").trim())
-    .map(j => ({ joueur: j["Joueur"]||j["joueur"]||"", vainqueur: j["Vainqueur"]||"", finaliste: j["Finaliste"]||"" }));
-  const pronosParMatch = {};
-  matchIds.forEach(id => {
-    pronosParMatch[id] = dayPronos.filter(p => normId(p["ID_Match"]||p["ID Match"]||"") === id).map(p => ({
-      joueur: p["Joueur"]||"", pronoA: p["Prono_Equipe_A"]||"", pronoB: p["Prono_Equipe_B"]||"",
-      pronoTAB: p["Prono_Vainqueur_TAB"]||"",
-      joker: (p["Joker"]||"").toLowerCase().includes("oui"),
-      points: p["Points"]||"", pointsTexte: p["Points_Texte"]||"", performance: p["Performance"]||""
-    }));
-  });
-  return { mailType, journee: state.selectedJournee, matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, nextLabel };
+
+  const classD=S.cj.filter(r=>(r['Joueur']||'').trim()).slice(0,30).map(r=>({
+    j:r['Joueur']||'', pj:r['Points du Jour']||'0', pc:r['Points Cumulés']||'0',
+    e1:r['Évolution J-1']||r['Evolution J-1']||'=',
+    e2:r['Évolution J-2']||r['Evolution J-2']||'='
+  }));
+
+  const joueursI=S.joueurs.filter(j=>(j['Joueur']||'').trim()).map(j=>({
+    j:j['Joueur']||'', v:j['Vainqueur']||'', f:j['Finaliste']||'', d:j['Description']||''
+  }));
+
+  return {mtype,jsel:S.jsel,matches,pronosM,classD,joueursI,nextM,nextJ};
 }
 
-// ─── GENERATE ────────────────────────────────────────────────
-async function generateMail() {
-  const apiKey = document.getElementById("claude-key").value.trim();
-  if (!apiKey) { alert("Renseigne ta clé API Anthropic"); return; }
-  const ctx = buildContext();
-  const missing = ctx.matchesWithResults.filter(m => m.scoreA===""||m.scoreB==="");
-  if (missing.length) {
-    const go = confirm(missing.length+" match(s) sans résultat :\n"+missing.map(m=>m.equipeA+" vs "+m.equipeB).join("\n")+"\n\nContinuer ?");
-    if (!go) return;
-  }
-  document.getElementById("generate-btn").disabled = true;
-  showLoader(true, "Composition via Claude en cours...");
-  document.getElementById("output-content").innerHTML = "";
-  try {
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 4000,
-        system: buildSystemPrompt(ctx.mailType, ctx.journee, ctx.nextLabel),
-        messages: [{ role: "user", content: buildUserPrompt(ctx) }]
-      })
-    });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error && data.error.message ? data.error.message : "Erreur API "+resp.status);
-    const text = data.content ? data.content.map(c=>c.text||"").join("") : "";
-    showLoader(false);
-    document.getElementById("output-content").innerHTML = "<textarea id=\"mail-output\" readonly>"+text+"</textarea>";
-    document.getElementById("generate-btn").disabled = false;
-  } catch(err) {
-    showLoader(false);
-    document.getElementById("output-content").innerHTML = "<div class=\"alert alert-error show\">Erreur : "+err.message+"</div>";
-    document.getElementById("generate-btn").disabled = false;
-  }
-}
+function buildPrompt(ctx) {
+  const {mtype,jsel,matches,pronosM,classD,joueursI,nextM,nextJ}=ctx;
+  let p = mtype==='tendances'
+    ? 'Génère les tendances avant-match pour la '+jsel+'.\n\n'
+    : 'Génère le récap matin pour la '+jsel+'.\n\n';
 
-// ─── PROMPTS ─────────────────────────────────────────────────
-function buildSystemPrompt(mailType, journee, nextJournee) {
-  if (mailType === "tendances") {
-    return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la "+journee+".\n\nTON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.\n\nPour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]\n\nLongueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples.\nEnvoi WhatsApp.";
-  }
-  return "Tu es le rédacteur en chef du concours \"Pastis Pronos\" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la "+journee+", envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la "+journee+", qui peuvent s'étaler sur 2 jours calendaires (soirée + nuit).\n\nTON : Amical, passionné, taquin, \"communauté de potes\". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance de la journée, nb de matchs, faits marquants en 2 phrases)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) + qui avait bon vainqueur / score exact / les raté mémorables\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms, points, pourquoi c'est fort)\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS "+journee+" — intégrer le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : "+nextJournee+" — liste des matchs avec horaires et dates réelles\n8. Bonne journée / à ce soir !\n\nRÈGLES IMPÉRATIVES :\n- Cite CHAQUE joueur par son prénom avec son prono, ses points gagnés et sa performance\n- Pour chaque match : commence par le résultat, puis passe en revue chaque joueur (score exact, bon vainqueur, raté)\n- Mets en avant les jokers utilisés\n- Tu as TOUTES les données : ne dis jamais qu'elles manquent\n- Ne jamais inventer des points. Pas de HTML.\n200-250 mots par match dont au moins 100 mots dédiés aux pronos nominatifs. 100-150 mots pour TOPS/FLOPS.";
-}
-
-function buildUserPrompt(ctx) {
-  const { matchesWithResults, pronosParMatch, classData, joueursInfo, nextMatches, journee, nextLabel, mailType } = ctx;
-  let p = mailType === "tendances" ? "Génère les tendances avant-match pour la "+journee+".\n\n" : "Génère le récap matin pour la "+journee+".\n\n";
-  p += "=== MATCHS DE LA "+journee+" ===\n";
-  matchesWithResults.forEach(m => {
-    p += "\nMatch #"+m.id+" | "+m.date+" "+m.heure+" | "+m.groupe+(m.isBonus?" ⭐ BONUS":"")+" | 📺 "+(m.tv||"?")+"\n";
-    p += m.equipeA+" vs "+m.equipeB+"\n";
-    if (m.scoreA!==""&&m.scoreB!=="") {
-      p += "Résultat : "+m.equipeA+" "+m.scoreA+" - "+m.scoreB+" "+m.equipeB+(m.tab?" (TAB: "+m.tab+")":"")+"\n";
-    } else {
-      p += "Résultat : non renseigné\n";
-    }
-    const pronos = pronosParMatch[m.id] || [];
-    if (pronos.length) {
-      p += "Pronostics ("+pronos.length+" joueurs) :\n";
-      pronos.forEach(pr => {
-        p += "  "+pr.joueur+": "+pr.pronoA+"-"+pr.pronoB;
-        if (pr.pronoTAB) p += " TAB:"+pr.pronoTAB;
-        if (pr.joker) p += " [JOKER x2]";
-        if (pr.points!=="") p += " → "+pr.points+" pts";
-        if (pr.pointsTexte) p += " ("+pr.pointsTexte+")";
-        if (pr.performance) p += " ["+pr.performance+"]";
-        p += "\n";
+  p+='=== MATCHS DE LA '+jsel+' ===\n';
+  matches.forEach(m=>{
+    p+='\nMatch #'+m.id+' | '+m.dt+' '+m.h+' | '+m.gr+(m.bonus?' ⭐ BONUS':'')+' | 📺 '+(m.tv||'?')+'\n';
+    p+=m.eA+' vs '+m.eB+'\n';
+    if(m.sA!==''&&m.sB!=='') p+='Résultat : '+m.eA+' '+m.sA+' - '+m.sB+' '+m.eB+(m.tab?' (TAB: '+m.tab+')':'')+'\n';
+    else p+='Résultat : non renseigné\n';
+    const pr=pronosM[m.id]||[];
+    if(pr.length){
+      p+='Pronostics ('+pr.length+' joueurs) :\n';
+      pr.forEach(r=>{
+        p+='  '+r.j+' : '+r.pA+'-'+r.pB;
+        if(r.tab) p+=' TAB:'+r.tab;
+        if(r.jok) p+=' [JOKER x2]';
+        if(r.pts!=='') p+=' → '+r.pts+' pts';
+        if(r.ptxt) p+=' ('+r.ptxt+')';
+        if(r.perf) p+=' ['+r.perf+']';
+        p+='\n';
       });
-    }
+    } else p+='  (aucun prono trouvé pour ce match)\n';
   });
-  p += "\n=== CLASSEMENT APRÈS "+journee+" ===\n";
-  if (classData.length) {
-    classData.forEach((j,i) => {
-      const e1 = parseInt(j.evoJ1)||0, e2 = parseInt(j.evoJ2)||0;
-      const fmt = v => v>0?"▲+"+v:v<0?"▼"+v:"=";
-      p += (i+1)+". "+j.joueur+" — "+j.ptsJour+" pts ce jour — "+j.ptsCumul+" pts total — Evo J-1: "+fmt(e1)+" — Evo J-2: "+fmt(e2)+"\n";
+
+  p+='\n=== CLASSEMENT APRÈS '+jsel+' ===\n';
+  if(classD.length){
+    classD.forEach((r,i)=>{
+      const e1=parseInt(r.e1)||0, e2=parseInt(r.e2)||0;
+      const f=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
+      p+=(i+1)+'. '+r.j+' — '+r.pj+' pts ce jour — '+r.pc+' pts total — Evo J-1: '+f(e1)+' | Evo J-2: '+f(e2)+'\n';
     });
-  } else p += "Données non disponibles.\n";
-  p += "\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n";
-  joueursInfo.forEach(j => { if (j.vainqueur||j.finaliste) p += j.joueur+" : Vainqueur → "+(j.vainqueur||"?")+" | Finaliste → "+(j.finaliste||"?")+"\n"; });
-  p += "\n=== MATCHS DE LA "+nextLabel+" ===\n";
-  if (nextMatches.length) {
-    nextMatches.forEach(m => { p += m.date+" "+m.heure+" — "+m.equipeA+" vs "+m.equipeB+" ("+m.groupe+")"+(m.isBonus?" ⭐ BONUS":"")+(m.tv?" | 📺 "+m.tv:"")+"\n"; });
-  } else p += "Aucun match trouvé pour "+nextLabel+".\n";
+  } else p+='Données non disponibles.\n';
+
+  p+='\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n';
+  joueursI.forEach(r=>{
+    if(r.v||r.f) p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';
+  });
+
+  p+='\n=== MATCHS DE LA '+nextJ+' ===\n';
+  if(nextM.length) nextM.forEach(m=>{ p+=m.dt+' '+m.h+' — '+m.eA+' vs '+m.eB+' ('+m.gr+')'+(m.bonus?' ⭐ BONUS':'')+(m.tv?' | 📺 '+m.tv:'')+'\n'; });
+  else p+='Aucun match trouvé pour '+nextJ+'.\n';
   return p;
 }
 
-// ─── DEBUG ───────────────────────────────────────────────────
-function showPrompt() {
-  const ctx = buildContext();
-  const prompt = buildUserPrompt(ctx);
-  const w = window.open("","_blank","width=800,height=600");
-  w.document.write("<html><body style='background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px;white-space:pre-wrap'>");
-  w.document.write("<h3 style='color:#f5c842'>PROMPT ENVOYÉ À CLAUDE — "+ctx.journee+"</h3>");
-  w.document.write("<h4 style='color:#888'>matchIds: "+JSON.stringify(ctx.matchesWithResults.map(m=>m.id))+"</h4>");
-  w.document.write("<h4 style='color:#888'>pronos trouvés: "+JSON.stringify(Object.fromEntries(Object.entries(ctx.pronosParMatch).map(([k,v])=>[k,v.length])))+"</h4>");
-  w.document.write("<h4 style='color:#888'>classData: "+ctx.classData.length+" joueurs</h4>");
-  w.document.write("<hr style='border-color:#333;margin:10px 0'>");
-  w.document.write(prompt.replace(/</g,"&lt;"));
-  w.document.write("</body></html>");
-  w.document.close();
+function buildSys(mtype,jsel,nextJ) {
+  if(mtype==='tendances') return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la '+jsel+'.\n\nTON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.\n\nPour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]\n\nLongueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples. Envoi WhatsApp.';
+  return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la '+jsel+', envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la '+jsel+', qui peuvent s\'étaler sur 2 jours calendaires.\n\nTON : Amical, passionné, taquin, "communauté de potes". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance, nb de matchs, faits marquants)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) PUIS analyse détaillée des pronos : cite CHAQUE joueur avec son score pronostiqué, les points gagnés et sa performance\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs avec noms et points\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS '+jsel+' — reprendre le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : '+nextJ+' — liste des matchs avec horaires et dates réelles\n8. Bonne journée !\n\nRÈGLES IMPÉRATIVES :\n- Cite CHAQUE joueur nominativement avec son prono, ses points et sa performance\n- Signale les jokers (JOKER x2)\n- Tu as TOUTES les données dans le prompt : ne dis jamais qu\'elles sont manquantes\n- Ne jamais inventer des points. Pas de HTML.\n200-250 mots par match dont 100 mots min sur les pronos individuels.';
 }
 
-// ─── UTILS ───────────────────────────────────────────────────
-function showLoader(active, text) {
-  document.getElementById("loader").classList.toggle("active", active);
-  if (text) document.getElementById("loader-text").textContent = text;
+// ── GENERATE ─────────────────────────────────────────────────
+async function generate() {
+  const key=document.getElementById('akey').value.trim();
+  if(!key){alert('Renseigne ta clé API Anthropic');return;}
+  const ctx=buildCtx();
+  const miss=ctx.matches.filter(m=>m.sA===''||m.sB==='');
+  if(miss.length){const go=confirm(miss.length+' match(s) sans résultat :\n'+miss.map(m=>m.eA+' vs '+m.eB).join('\n')+'\n\nContinuer ?');if(!go)return;}
+  document.getElementById('gbtn').disabled=true;
+  loader(true,'Composition via Claude en cours...');
+  document.getElementById('ocont').innerHTML='';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:buildSys(ctx.mtype,ctx.jsel,ctx.nextJ),messages:[{role:'user',content:buildPrompt(ctx)}]})
+    });
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+r.status);
+    const txt=d.content?d.content.map(c=>c.text||'').join(''):'';
+    loader(false);
+    document.getElementById('ocont').innerHTML='<textarea id="mail-output" readonly>'+txt+'</textarea>';
+    document.getElementById('gbtn').disabled=false;
+  }catch(err){
+    loader(false);
+    document.getElementById('ocont').innerHTML='<div class="alert aerr on">Erreur : '+err.message+'</div>';
+    document.getElementById('gbtn').disabled=false;
+  }
 }
-function setStatus(st, label) {
-  document.getElementById("status-dot").className = "status-dot "+st;
-  document.getElementById("status-label").textContent = label;
+
+// ── DEBUG ─────────────────────────────────────────────────────
+function showPrompt() {
+  const ctx=buildCtx();
+  const prompt=buildPrompt(ctx);
+  const w=window.open('','_blank','width=800,height=600');
+  w.document.write('<html><body style="background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px;white-space:pre-wrap">');
+  w.document.write('<h3 style="color:#f5c842">PROMPT — '+ctx.jsel+'</h3>');
+  w.document.write('<h4 style="color:#888">matchIds: '+JSON.stringify(ctx.matches.map(m=>m.id))+'</h4>');
+  w.document.write('<h4 style="color:#888">pronos par match: '+JSON.stringify(Object.fromEntries(Object.entries(ctx.pronosM).map(([k,v])=>[k,v.length])))+'</h4>');
+  w.document.write('<h4 style="color:#888">classement: '+ctx.classD.length+' joueurs | favoris: '+ctx.joueursI.length+'</h4>');
+  w.document.write('<hr style="border-color:#333;margin:10px 0">');
+  w.document.write(prompt.replace(/</g,'&lt;'));
+  w.document.write('</body></html>'); w.document.close();
 }
-function showAlert(id, msg, type) {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.className = "alert alert-"+type+" show";
+
+// ── UTILS ─────────────────────────────────────────────────────
+function loader(on,txt){
+  document.getElementById('loader').classList.toggle('on',on);
+  if(txt)document.getElementById('ltxt').textContent=txt;
 }
-function copyOutput() {
-  const ta = document.getElementById("mail-output");
-  if (!ta) return;
-  navigator.clipboard.writeText(ta.value).then(() => {
-    const btn = document.getElementById("copy-btn");
-    btn.textContent = "✓ Copié !"; btn.classList.add("copy-flash");
-    setTimeout(() => { btn.textContent = "📋 Copier"; btn.classList.remove("copy-flash"); }, 2000);
+function dot(cls,lbl){
+  document.getElementById('sdot').className='sdot '+cls;
+  document.getElementById('slbl').textContent=lbl;
+}
+function alert2(id,msg,cls){
+  const el=document.getElementById(id);
+  el.textContent=msg; el.className='alert '+cls+' on';
+}
+function copyOut(){
+  const ta=document.getElementById('mail-output'); if(!ta)return;
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const b=document.getElementById('cbtn'); b.textContent='✓ Copié !'; b.classList.add('cf');
+    setTimeout(()=>{b.textContent='📋 Copier';b.classList.remove('cf');},2000);
   });
 }
-function clearOutput() {
-  document.getElementById("output-content").innerHTML = "<div class=\"empty\" style=\"padding:4rem 1rem\"><span class=\"empty-icon\">🥃</span><div style=\"font-size:0.9rem;color:var(--text);margin-bottom:0.5rem\">Prêt à générer</div>Sélectionne une journée et génère !</div>";
+function clearOut(){
+  document.getElementById('ocont').innerHTML='<div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Sélectionne une journée et génère !</div>';
 }
-<\/script>
+</script>
 </body>
 </html>
