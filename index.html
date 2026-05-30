@@ -176,6 +176,7 @@ select option{background:var(--s2)}
         <div id="ocont"><div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Configure, charge, sélectionne, génère !</div></div>
         <button class="gbtn" id="gbtn" onclick="generate()" disabled>🚀 GÉNÉRER LE CONTENU</button>
         <button class="dbtn" onclick="showPrompt()">🔍 Voir le prompt envoyé à Claude</button>
+        <button class="dbtn" onclick="debugKeys()">🗝️ Voir les clés CSV lues</button>
       </div>
       <div id="out-class" class="tc"><div id="cprev" class="empty"><span class="ei">📊</span>Pas encore de données</div></div>
       <div id="out-pron" class="tc"><div id="pprev" class="empty"><span class="ei">🔮</span>Sélectionne une journée</div></div>
@@ -220,13 +221,29 @@ async function fetchCSV(sid, name) {
 function csv2arr(txt) {
   const lines = txt.split('\n').filter(l => l.trim());
   if (!lines.length) return [];
-  const hdrs = csvRow(lines[0]).map(h => h.trim().replace(/^"|"$/g,''));
+  // Normalise les en-têtes : supprime retours à la ligne, espaces multiples, quotes
+  const hdrs = csvRow(lines[0]).map(h => h.trim().replace(/^"|"$/g,'').replace(/[\r\n]+/g,' ').replace(/\s+/g,' '));
   return lines.slice(1).map(line => {
     const vals = csvRow(line);
     const o = {};
     hdrs.forEach((h,i) => { o[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
     return o;
   });
+}
+
+// Affiche les vraies clés CSV pour debug
+function debugKeys() {
+  const w=window.open('','_blank','width=700,height=500');
+  w.document.write('<html><body style="background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px">');
+  w.document.write('<h3 style="color:#f5c842">Clés CSV réelles</h3>');
+  [['Calendrier',S.cal],['Pronostics',S.pronos],['Classement_Jour',S.cj],['Joueurs',S.joueurs]].forEach(([name,data])=>{
+    if(!data.length){w.document.write('<p style="color:#e05050">'+name+' : VIDE</p>');return;}
+    w.document.write('<h4 style="color:#f5c842;margin-top:1rem">'+name+' ('+data.length+' lignes)</h4>');
+    w.document.write('<pre style="color:#80c090">'+JSON.stringify(Object.keys(data[0]),null,2)+'</pre>');
+    w.document.write('<p style="color:#888">Première ligne :</p>');
+    w.document.write('<pre style="color:#aaa">'+JSON.stringify(data[0],null,2).slice(0,500)+'</pre>');
+  });
+  w.document.write('</body></html>'); w.document.close();
 }
 
 function csvRow(line) {
@@ -313,13 +330,39 @@ function nextJ() {
   if(i<S.journees.length-1){sel.value=S.journees[i+1];filterJ();}
 }
 
+// Trouve l'ID du match dans toutes les variantes de noms de colonnes
+function getMatchId(m) {
+  for (const k of Object.keys(m)) {
+    const kn = k.toLowerCase().replace(/[\s_-]/g,'');
+    if (kn === 'idmatch' || kn === 'id') {
+      const v = nid(m[k]);
+      if (v && v !== '') return v;
+    }
+  }
+  return '';
+}
+
+// Trouve une valeur dans un objet CSV par nom de colonne flexible
+function col(obj, ...names) {
+  for (const name of names) {
+    if (obj[name] !== undefined && obj[name] !== '') return obj[name];
+    // Cherche sans casse ni accents
+    const norm = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    for (const k of Object.keys(obj)) {
+      const kn = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      if (kn === norm && obj[k] !== '') return obj[k];
+    }
+  }
+  return '';
+}
+
 // ── FILTER ───────────────────────────────────────────────────
 function filterJ() {
   const j=document.getElementById('jsel').value; if(!j) return;
   S.jsel=j;
   S.dayM=S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase());
   S.dayM.forEach(m=>{
-    const id=nid(m['ID_Match']||m['ID Match']||'');
+    const id=getMatchId(m);
     if(!S.res[id]) S.res[id]={a:m['Score A']||'',b:m['Score B']||'',tab:m['Vainqueur TAB']||''};
   });
   const ds=[...new Set(S.dayM.map(m=>m['Date']).filter(Boolean))];
@@ -332,7 +375,7 @@ function renderM() {
   const c=document.getElementById('mcont');
   if(!S.dayM.length){c.innerHTML='<div class="nom">Aucun match pour cette journée</div>';document.getElementById('gbtn').disabled=true;return;}
   c.innerHTML=S.dayM.map(m=>{
-    const id=nid(m['ID_Match']||m['ID Match']||'');
+    const id=getMatchId(m);
     const eA=m['Equipe A']||m['Equipe_A']||'';
     const eB=m['Equipe B']||m['Equipe_B']||'';
     const h=m['Heure']||'', dt=m['Date']||'', gr=m['Groupe']||'';
@@ -382,13 +425,13 @@ function renderClass() {
 function renderPron() {
   const c=document.getElementById('pprev');
   if(!S.dayM.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Sélectionne une journée</div>';return;}
-  const ids=S.dayM.map(m=>nid(m['ID_Match']||m['ID Match']||''));
-  const dp=S.pronos.filter(p=>ids.includes(nid(p['ID_Match']||'')));
+  const ids=S.dayM.map(m=>getMatchId(m));
+  const dp=S.pronos.filter(p=>ids.includes(getMatchId(p)));
   if(!dp.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Aucun prono pour cette journée</div>';return;}
   let h='<div style="font-size:.72rem;color:var(--mu);margin-bottom:.75rem;font-family:\'DM Mono\',monospace">'+S.jsel+' — '+dp.length+' pronos sur '+S.dayM.length+' matchs</div>';
   S.dayM.forEach(m=>{
-    const id=nid(m['ID_Match']||m['ID Match']||'');
-    const mp=dp.filter(p=>nid(p['ID_Match']||'')===id);
+    const id=getMatchId(m);
+    const mp=dp.filter(p=>getMatchId(p)===id);
     if(!mp.length)return;
     h+='<div style="margin-bottom:1rem"><div style="font-size:.78rem;font-weight:600;color:var(--mu);margin-bottom:.4rem">'+(m['Equipe A']||m['Equipe_A']||'')+' vs '+(m['Equipe B']||m['Equipe_B']||'')+'</div><div class="mpronos">';
     mp.forEach(p=>{
@@ -404,8 +447,8 @@ function renderPron() {
 // ── CONTEXT & PROMPT ─────────────────────────────────────────
 function buildCtx() {
   const mtype=document.getElementById('mtype').value;
-  const ids=S.dayM.map(m=>nid(m['ID_Match']||m['ID Match']||''));
-  const dp=S.pronos.filter(p=>ids.includes(nid(p['ID_Match']||'')));
+  const ids=S.dayM.map(m=>getMatchId(m));
+  const dp=S.pronos.filter(p=>ids.includes(getMatchId(p)));
 
   const matches=S.dayM.map(m=>{
     const id=nid(m['ID_Match']||m['ID Match']||'');
@@ -426,7 +469,7 @@ function buildCtx() {
 
   const pronosM={};
   ids.forEach(id=>{
-    pronosM[id]=dp.filter(p=>nid(p['ID_Match']||'')===id).map(p=>({
+    pronosM[id]=dp.filter(p=>getMatchId(p)===id).map(p=>({
       j:p['Joueur']||'',
       pA:p['Prono_Equipe_A']||'', pB:p['Prono_Equipe_B']||'',
       tab:p['Prono_Vainqueur_TAB']||'',
@@ -443,10 +486,12 @@ function buildCtx() {
     bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:m['TV']||''
   }));
 
-  const classD=S.cj.filter(r=>(r['Joueur']||'').trim()).slice(0,30).map(r=>({
-    j:r['Joueur']||'', pj:r['Points du Jour']||'0', pc:r['Points Cumulés']||'0',
-    e1:r['Évolution J-1']||r['Evolution J-1']||'=',
-    e2:r['Évolution J-2']||r['Evolution J-2']||'='
+  const classD=S.cj.filter(r=>col(r,'Joueur','joueur')).slice(0,30).map(r=>({
+    j:col(r,'Joueur','joueur'),
+    pj:col(r,'Points du Jour','Points_Jour','PtsJour')||'0',
+    pc:col(r,'Points Cumulés','Points Cumules','Points_Cumules')||'0',
+    e1:col(r,'Évolution J-1','Evolution J-1','Evo J-1','Évol J-1')||'=',
+    e2:col(r,'Évolution J-2','Evolution J-2','Evo J-2','Évol J-2')||'='
   }));
 
   const joueursI=S.joueurs.filter(j=>(j['Joueur']||'').trim()).map(j=>({
