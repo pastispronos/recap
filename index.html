@@ -3,95 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pastis Pronos — Récap</title>
+<title>Pastis Pronos — Récap CDM 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d0d0d;--s1:#161616;--s2:#1f1f1f;--bd:#2a2a2a;--ac:#f5c842;--ac2:#e8843a;--tx:#f0ede8;--mu:#888;--ok:#4caf7d;--er:#e05050;--inf:#5b9bd5}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
 header{background:var(--s1);border-bottom:1px solid var(--bd);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:64px;position:sticky;top:0;z-index:100}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--ac)}
-.logo b{color:var(--tx)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--ac)}.logo b{color:var(--tx)}
 .hbadge{background:var(--ac2);color:#fff;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:2px}
 .hright{margin-left:auto;display:flex;align-items:center;gap:1rem}
-.sdot{width:8px;height:8px;border-radius:50%;background:var(--mu);transition:background .3s}
-.sdot.ok{background:var(--ok);box-shadow:0 0 6px var(--ok)}
-.sdot.er{background:var(--er)}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--mu)}.sdot.ok{background:var(--ok);box-shadow:0 0 6px var(--ok)}.sdot.er{background:var(--er)}
 .wrap{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:340px 1fr;gap:1.5rem;align-items:start}
 .panel{background:var(--s1);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:1rem}
 .ph{padding:1rem 1.2rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.6rem}
 .pt{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:var(--ac)}
-.pb{padding:1.2rem}
-label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem}
+.pb{padding:1.2rem}label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem}
 input,select,textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:5px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:.6rem .8rem;outline:none;transition:border-color .2s}
-input:focus,select:focus,textarea:focus{border-color:var(--ac)}
-select option{background:var(--s2)}
-.field{margin-bottom:1rem}
+input:focus,select:focus,textarea:focus{border-color:var(--ac)}select option{background:var(--s2)}.field{margin-bottom:1rem}
 .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
-.bp{background:var(--ac);color:#000}
-.bp:hover{background:#ffd84a;transform:translateY(-1px)}
-.bp:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.bs{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
-.bs:hover{border-color:var(--ac);color:var(--ac)}
-.bd2{background:transparent;color:var(--er);border:1px solid var(--er)}
-.bd2:hover{background:var(--er);color:#fff}
+.bp{background:var(--ac);color:#000}.bp:hover{background:#ffd84a;transform:translateY(-1px)}.bp:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bs{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}.bs:hover{border-color:var(--ac);color:var(--ac)}
+.bd2{background:transparent;color:var(--er);border:1px solid var(--er)}.bd2:hover{background:var(--er);color:#fff}
 .bblock{width:100%;justify-content:center}
-.tabs{display:flex;border-bottom:1px solid var(--bd)}
-.tab{padding:.7rem 1.2rem;font-size:.8rem;font-weight:600;text-transform:uppercase;cursor:pointer;color:var(--mu);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-.tab.active{color:var(--ac);border-bottom-color:var(--ac)}
-.tab:hover:not(.active){color:var(--tx)}
-.tc{display:none;padding:1.2rem}
-.tc.active{display:block}
-.jnav{display:flex;align-items:center;gap:.5rem}
-.jnav select{flex:1;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--ac);background:var(--s2)}
-.jbtn{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:5px;width:34px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .15s;flex-shrink:0}
-.jbtn:hover{border-color:var(--ac);color:var(--ac)}
-.mc{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:.9rem;margin-bottom:.75rem}
-.mc.done{border-color:#2d3d2d;background:#141f14}
+.tabs{display:flex;border-bottom:1px solid var(--bd)}.tab{padding:.7rem 1.2rem;font-size:.8rem;font-weight:600;text-transform:uppercase;cursor:pointer;color:var(--mu);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}.tab.active{color:var(--ac);border-bottom-color:var(--ac)}.tab:hover:not(.active){color:var(--tx)}
+.tc{display:none;padding:1.2rem}.tc.active{display:block}
+.jnav{display:flex;align-items:center;gap:.5rem}.jnav select{flex:1;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--ac);background:var(--s2)}
+.jbtn{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:5px;width:34px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .15s;flex-shrink:0}.jbtn:hover{border-color:var(--ac);color:var(--ac)}
+.mc{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:.9rem;margin-bottom:.75rem}.mc.done{border-color:#2d3d2d;background:#141f14}
 .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:.3rem}
 .mlbl{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
 .dtag{font-size:.65rem;font-family:'DM Mono',monospace;color:var(--inf);background:rgba(91,155,213,.1);border:1px solid rgba(91,155,213,.2);padding:1px 6px;border-radius:3px}
 .bbadge{background:var(--ac2);color:#fff;font-size:.6rem;font-weight:700;text-transform:uppercase;padding:1px 6px;border-radius:2px}
 .rpill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:3px;font-size:.72rem;font-weight:600;font-family:'DM Mono',monospace;background:#1a3a1a;color:var(--ok)}
-.mteams{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.95rem;margin-bottom:.7rem}
-.mvs{color:var(--mu);font-size:.7rem}
-.srow{display:flex;gap:.5rem;align-items:center}
-.si{width:52px;text-align:center;font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;padding:.4rem}
-.ssep{color:var(--mu);font-weight:600;font-size:1rem}
+.mteams{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.95rem;margin-bottom:.7rem}.mvs{color:var(--mu);font-size:.7rem}
+.srow{display:flex;gap:.5rem;align-items:center}.si{width:52px;text-align:center;font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;padding:.4rem}.ssep{color:var(--mu);font-weight:600;font-size:1rem}
 .tsel{flex:1;font-size:.8rem;padding:.4rem .5rem}
-.ctbl{width:100%;border-collapse:collapse;font-size:.8rem}
-.ctbl th{text-align:left;padding:.4rem .5rem;color:var(--mu);font-size:.7rem;font-weight:600;text-transform:uppercase;border-bottom:1px solid var(--bd)}
-.ctbl td{padding:.4rem .5rem;border-bottom:1px solid #1a1a1a;font-family:'DM Mono',monospace}
-.ctbl tr:last-child td{border-bottom:none}
-.cn{color:var(--tx);font-family:'DM Sans',sans-serif;font-weight:500}
-.cp{color:var(--ac);font-weight:600}
-.eu{color:var(--ok)} .ed{color:var(--er)} .eq{color:var(--mu)}
+.ctbl{width:100%;border-collapse:collapse;font-size:.8rem}.ctbl th{text-align:left;padding:.4rem .5rem;color:var(--mu);font-size:.7rem;font-weight:600;text-transform:uppercase;border-bottom:1px solid var(--bd)}.ctbl td{padding:.4rem .5rem;border-bottom:1px solid #1a1a1a;font-family:'DM Mono',monospace}.ctbl tr:last-child td{border-bottom:none}
+.cn{color:var(--tx);font-family:'DM Sans',sans-serif;font-weight:500}.cp{color:var(--ac);font-weight:600}.eu{color:var(--ok)}.ed{color:var(--er)}.eq{color:var(--mu)}
 #mail-output{width:100%;min-height:500px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--tx);font-family:'DM Mono',monospace;font-size:.8rem;line-height:1.7;padding:1.2rem;resize:vertical}
-.loader{display:none;flex-direction:column;align-items:center;justify-content:center;padding:3rem;gap:1rem}
-.loader.on{display:flex}
-.spin{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ltxt{color:var(--mu);font-size:.85rem;animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
-.alert{padding:.7rem .9rem;border-radius:5px;font-size:.82rem;margin-bottom:1rem;display:none}
-.alert.on{display:block}
-.aerr{background:#2a1010;border:1px solid var(--er);color:#f08080}
-.aok{background:#0f2a1a;border:1px solid var(--ok);color:#80c090}
-.gbtn{width:100%;padding:1rem;font-size:1rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;border-radius:6px;margin-top:1rem;background:var(--ac);color:#000;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .15s}
-.gbtn:hover{background:#ffd84a;transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,200,66,.2)}
-.gbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
-.dbtn{width:100%;margin-top:.4rem;padding:.5rem;background:transparent;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-size:.75rem;cursor:pointer;transition:border-color .15s}
-.dbtn:hover{border-color:var(--ac);color:var(--ac)}
-.empty{text-align:center;padding:3rem 1rem;color:var(--mu);font-size:.85rem}
-.ei{font-size:2rem;margin-bottom:.5rem;display:block}
+.loader{display:none;flex-direction:column;align-items:center;justify-content:center;padding:3rem;gap:1rem}.loader.on{display:flex}
+.spin{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{color:var(--mu);font-size:.85rem;animation:bl 1.5s ease-in-out infinite}@keyframes bl{0%,100%{opacity:.4}50%{opacity:1}}
+.alert{padding:.7rem .9rem;border-radius:5px;font-size:.82rem;margin-bottom:1rem;display:none}.alert.on{display:block}.aerr{background:#2a1010;border:1px solid var(--er);color:#f08080}.aok{background:#0f2a1a;border:1px solid var(--ok);color:#80c090}
+.gbtn{width:100%;padding:1rem;font-size:1rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.12em;border-radius:6px;margin-top:1rem;background:var(--ac);color:#000;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .15s}.gbtn:hover{background:#ffd84a;transform:translateY(-1px)}.gbtn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.dbtn{width:100%;margin-top:.4rem;padding:.5rem;background:transparent;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-size:.75rem;cursor:pointer;transition:border-color .15s}.dbtn:hover{border-color:var(--ac);color:var(--ac)}
+.empty{text-align:center;padding:3rem 1rem;color:var(--mu);font-size:.85rem}.ei{font-size:2rem;margin-bottom:.5rem;display:block}
 .nom{color:var(--mu);font-size:.82rem;padding:1rem 0;text-align:center}
-.pchip{display:inline-flex;align-items:center;gap:.3rem;background:var(--s2);border:1px solid var(--bd);border-radius:3px;padding:2px 7px;font-size:.72rem;font-family:'DM Mono',monospace;margin:2px}
-.pchip.jok{border-color:var(--ac2);color:var(--ac2)}
-.mpronos{margin-top:.5rem;display:flex;flex-wrap:wrap}
-.rcol{position:sticky;top:80px}
+.pchip{display:inline-flex;align-items:center;gap:.3rem;background:var(--s2);border:1px solid var(--bd);border-radius:3px;padding:2px 7px;font-size:.72rem;font-family:'DM Mono',monospace;margin:2px}.pchip.jok{border-color:var(--ac2);color:var(--ac2)}
+.mpronos{margin-top:.5rem;display:flex;flex-wrap:wrap}.rcol{position:sticky;top:80px}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
-@keyframes cf{0%{background:var(--ok);color:#000}100%{background:var(--s2);color:var(--tx)}}
-.cf{animation:cf .8s ease forwards}
+@keyframes cf{0%{background:var(--ok);color:#000}100%{background:var(--s2);color:var(--tx)}}.cf{animation:cf .8s ease forwards}
 </style>
 </head>
 <body>
@@ -104,7 +65,6 @@ select option{background:var(--s2)}
     <div class="sdot" id="sdot"></div>
   </div>
 </header>
-
 <div class="wrap">
   <div>
     <div class="panel">
@@ -115,33 +75,19 @@ select option{background:var(--s2)}
       </div>
       <div id="cfg-conn" class="tc active">
         <div class="field"><label>Sheet ID Google Sheets</label><input id="sid" placeholder="1zKJSP-Oijfncl6uGVV8L4_HocN..."/></div>
-        <div class="field">
-          <label>Clé API Anthropic</label>
-          <input type="password" id="akey" placeholder="sk-ant-..."/>
-          <div style="font-size:.7rem;color:var(--mu);margin-top:.3rem">Stockée localement, jamais transmise</div>
-        </div>
-        <div class="field">
-          <label>Type de contenu</label>
-          <select id="mtype">
-            <option value="recap">📩 Récap du matin (8h-14h)</option>
-            <option value="tendances">🔮 Tendances avant-match</option>
-          </select>
-        </div>
+        <div class="field"><label>Clé API Anthropic</label><input type="password" id="akey" placeholder="sk-ant-..."/><div style="font-size:.7rem;color:var(--mu);margin-top:.3rem">Stockée localement, jamais transmise</div></div>
+        <div class="field"><label>Type de contenu</label><select id="mtype"><option value="recap">📩 Récap du matin (8h-14h)</option><option value="tendances">🔮 Tendances avant-match</option></select></div>
         <button class="btn bp bblock" onclick="loadData()">↻ Charger les données</button>
         <div id="calert" class="alert" style="margin-top:.75rem;margin-bottom:0"></div>
       </div>
       <div id="cfg-info" class="tc">
         <div style="font-size:.8rem;color:var(--mu);line-height:1.7">
-          <p>Sélectionne une <strong style="color:var(--ac)">Journée (J1, J2...)</strong> — tous ses matchs s'affichent même répartis sur 2 jours calendaires.</p><br>
-          <p><strong style="color:var(--tx)">Colonnes lues :</strong></p>
-          <p>• <code style="color:var(--ac)">Calendrier</code> : ID_Match, Score A/B, Phase, Match Bonus, Groupe, TV, Journée</p>
-          <p>• <code style="color:var(--ac)">Pronostics</code> : Joueur, ID_Match, Prono_Equipe_A/B, Joker, Points, Points_Texte, Performance</p>
-          <p>• <code style="color:var(--ac)">Classement_Jour</code> : Joueur, Points du Jour, Points Cumulés, Évolution J-1/J-2</p>
-          <p>• <code style="color:var(--ac)">Joueurs</code> : Joueur, Vainqueur, Finaliste, Description</p>
+          <p>Sélectionne une <strong style="color:var(--ac)">Journée (J1, J2...)</strong></p><br>
+          <p><strong style="color:var(--tx)">Architecture :</strong></p>
+          <p>Les matchs sont reconstruits depuis <code style="color:var(--ac)">Pronostics</code> (qui a ID_Match + Journée). Le <code style="color:var(--ac)">Calendrier</code> enrichit avec Heure, Groupe, TV, Score.</p>
         </div>
       </div>
     </div>
-
     <div class="panel">
       <div class="ph"><span>⚽</span><span class="pt">Matchs de la Journée</span></div>
       <div style="padding:.9rem 1.2rem;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)">
@@ -151,16 +97,14 @@ select option{background:var(--s2)}
           <select id="jsel" onchange="filterJ()"><option value="">— Charge d'abord —</option></select>
           <div class="jbtn" onclick="nextJ()">▶</div>
         </div>
-        <div id="jdates" style="font-size:.7rem;color:var(--mu);margin-top:.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
+        <div id="jinfo" style="font-size:.7rem;color:var(--mu);margin-top:.4rem;font-family:'DM Mono',monospace;min-height:1rem"></div>
       </div>
       <div class="pb" id="mcont"><div class="empty"><span class="ei">📅</span>Charge puis sélectionne une journée</div></div>
     </div>
   </div>
-
   <div class="rcol">
     <div class="panel">
-      <div class="ph">
-        <span>✉️</span><span class="pt">Contenu Généré</span>
+      <div class="ph"><span>✉️</span><span class="pt">Contenu Généré</span>
         <div style="margin-left:auto;display:flex;gap:.5rem">
           <button class="btn bs" onclick="copyOut()" id="cbtn">📋 Copier</button>
           <button class="btn bd2" onclick="clearOut()">✕</button>
@@ -175,85 +119,84 @@ select option{background:var(--s2)}
         <div id="loader" class="loader"><div class="spin"></div><div class="ltxt" id="ltxt">...</div></div>
         <div id="ocont"><div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Configure, charge, sélectionne, génère !</div></div>
         <button class="gbtn" id="gbtn" onclick="generate()" disabled>🚀 GÉNÉRER LE CONTENU</button>
-        <button class="dbtn" onclick="showPrompt()">🔍 Voir le prompt envoyé à Claude</button>
-        <button class="dbtn" onclick="debugKeys()">🗝️ Voir les clés CSV lues</button>
+        <button class="dbtn" onclick="showPrompt()">🔍 Voir le prompt Claude</button>
+        <button class="dbtn" onclick="debugData()">🗝️ Debug données</button>
       </div>
       <div id="out-class" class="tc"><div id="cprev" class="empty"><span class="ei">📊</span>Pas encore de données</div></div>
       <div id="out-pron" class="tc"><div id="pprev" class="empty"><span class="ei">🔮</span>Sélectionne une journée</div></div>
     </div>
   </div>
 </div>
-
 <script>
-// ── STATE ─────────────────────────────────────────────────────
-const S = {
-  sheetId:'', apiKey:'',
-  cal:[], pronos:[], cj:[], joueurs:[],
-  journees:[], jsel:'',
-  dayM:[], res:{}
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+const D = {
+  sid:'', key:'',
+  cal:[],     // Calendrier brut
+  pronos:[],  // Pronostics brut
+  cjRaw:[],   // Classement_Jour brut
+  joueurs:[], // Joueurs brut
+  journees:[],
+  jsel:'',
+  // Données construites après sélection journée
+  matchesJ:[],   // matchs de la journée (reconstruits)
+  pronosJ:[],    // pronos de la journée
+  cjData:[],     // classement du jour parsé
+  res:{}         // scores saisis manuellement
 };
 
-// ── INIT ──────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
 window.onload = () => {
-  S.sheetId = localStorage.getItem('pp_sid') || '';
-  S.apiKey  = localStorage.getItem('pp_key') || '';
-  if (S.sheetId) document.getElementById('sid').value = S.sheetId;
-  if (S.apiKey)  document.getElementById('akey').value = S.apiKey;
+  D.sid = localStorage.getItem('pp_sid')||'';
+  D.key = localStorage.getItem('pp_key')||'';
+  if(D.sid) document.getElementById('sid').value = D.sid;
+  if(D.key) document.getElementById('akey').value = D.key;
 };
 
-// ── TABS ──────────────────────────────────────────────────────
-function stab(e, grp, id) {
-  e.target.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+// ════════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════════
+function stab(e,grp,id){
+  e.target.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   e.target.classList.add('active');
-  const pfx = grp === 'cfg' ? 'cfg' : 'out';
-  document.querySelectorAll('[id^="'+pfx+'-"]').forEach(el => el.classList.remove('active'));
-  document.getElementById(pfx+'-'+id).classList.add('active');
+  const p=grp==='cfg'?'cfg':'out';
+  document.querySelectorAll('[id^="'+p+'-"]').forEach(el=>el.classList.remove('active'));
+  document.getElementById(p+'-'+id).classList.add('active');
 }
 
-// ── CSV ───────────────────────────────────────────────────────
-async function fetchCSV(sid, name, skipRows) {
-  const url = 'https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent(name);
-  const r = await fetch(url);
-  if (!r.ok) throw new Error('Feuille "'+name+'" inaccessible. Sheet partagé en lecture publique ?');
-  return csv2arr(await r.text(), skipRows||0);
+// ════════════════════════════════════════════════════════════
+// CSV PARSER
+// ════════════════════════════════════════════════════════════
+async function fetchCSV(sid, name) {
+  const url='https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent(name);
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('Feuille "'+name+'" inaccessible (Sheet partagé en lecture publique ?)');
+  return parseCsv(await r.text());
 }
 
-function csv2arr(txt, skipRows) {
-  const lines = txt.split('\n').filter(l => l.trim());
-  if (!lines.length) return [];
-  const skip = skipRows||0;
-  const hdrLine = skip; // ligne des en-têtes après skip
-  if (lines.length <= hdrLine) return [];
-  // Normalise les en-têtes
-  const hdrs = csvRow(lines[hdrLine]).map(h => h.trim().replace(/^"|"$/g,'').replace(/[\r\n]+/g,' ').replace(/\s+/g,' '));
-  return lines.slice(hdrLine+1).map((line,idx) => {
-    const vals = csvRow(line);
-    const o = {};
-    hdrs.forEach((h,i) => { o[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
-    // Pour Calendrier : injecter un ID synthétique basé sur le n° de ligne
-    if (!o['ID_Match'] && !o['id_match']) o['_rowIdx'] = String(idx+1);
-    return o;
-  });
+function parseCsv(txt) {
+  const rows = [];
+  const lines = txt.split('\n');
+  for(const line of lines){
+    if(line.trim()) rows.push(csvRow(line));
+  }
+  if(rows.length<2) return [];
+  const hdrs = rows[0].map(h=>h.trim().replace(/^"|"$/g,'').replace(/[\r\n]+/g,' ').trim());
+  const result = [];
+  for(let i=1;i<rows.length;i++){
+    const o={};
+    hdrs.forEach((h,j)=>{ o[h]=(rows[i][j]||'').trim().replace(/^"|"$/g,''); });
+    result.push(o);
+  }
+  return result;
 }
 
-// Affiche les vraies clés CSV pour debug
-function debugKeys() {
-  const w=window.open('','_blank','width=700,height=500');
-  w.document.write('<html><body style="background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px">');
-  w.document.write('<h3 style="color:#f5c842">Clés CSV réelles</h3>');
-  [['Calendrier',S.cal],['Pronostics',S.pronos],['Classement_Jour',S.cj],['Joueurs',S.joueurs]].forEach(([name,data])=>{
-    if(!data.length){w.document.write('<p style="color:#e05050">'+name+' : VIDE</p>');return;}
-    w.document.write('<h4 style="color:#f5c842;margin-top:1rem">'+name+' ('+data.length+' lignes)</h4>');
-    w.document.write('<pre style="color:#80c090">'+JSON.stringify(Object.keys(data[0]),null,2)+'</pre>');
-    w.document.write('<p style="color:#888">Première ligne :</p>');
-    w.document.write('<pre style="color:#aaa">'+JSON.stringify(data[0],null,2).slice(0,500)+'</pre>');
-  });
-  w.document.write('</body></html>'); w.document.close();
-}
-
-function csvRow(line) {
-  const r=[], n=line.length; let c='', q=false;
-  for(let i=0;i<n;i++){
+function csvRow(line){
+  const r=[]; let c='',q=false;
+  for(let i=0;i<line.length;i++){
     const ch=line[i];
     if(ch==='"'){if(q&&line[i+1]==='"'){c+='"';i++;}else q=!q;}
     else if(ch===','&&!q){r.push(c);c='';}
@@ -262,188 +205,224 @@ function csvRow(line) {
   r.push(c); return r;
 }
 
-// ── LOAD ──────────────────────────────────────────────────────
-async function loadData() {
-  const sid = document.getElementById('sid').value.trim();
-  const key = document.getElementById('akey').value.trim();
-  if (!sid) { alert2('calert','Renseigne le Sheet ID','aerr'); return; }
-  S.sheetId = sid; S.apiKey = key;
-  localStorage.setItem('pp_sid', sid);
-  if (key) localStorage.setItem('pp_key', key);
+// ════════════════════════════════════════════════════════════
+// LOAD DATA
+// ════════════════════════════════════════════════════════════
+async function loadData(){
+  const sid=document.getElementById('sid').value.trim();
+  const key=document.getElementById('akey').value.trim();
+  if(!sid){alert2('calert','Renseigne le Sheet ID','aerr');return;}
+  D.sid=sid; D.key=key;
+  localStorage.setItem('pp_sid',sid);
+  if(key) localStorage.setItem('pp_key',key);
   loader(true,'Lecture du Google Sheet...');
-  try {
-    const [cal, pr, cj, jo] = await Promise.all([
-      fetchCSV(sid,'Calendrier',0), fetchCSV(sid,'Pronostics',0),
-      fetchCSV(sid,'Classement_Jour',2), fetchCSV(sid,'Joueurs',0)
+  try{
+    const [cal,pronos,cj,jo]=await Promise.all([
+      fetchCSV(sid,'Calendrier'),
+      fetchCSV(sid,'Pronostics'),
+      fetchCSV(sid,'Classement_Jour'),
+      fetchCSV(sid,'Joueurs')
     ]);
-    S.cal=cal; S.pronos=pr; S.cj=cj; S.joueurs=jo;
+    D.cal=cal; D.pronos=pronos; D.cjRaw=cj; D.joueurs=jo;
     buildJsel();
-    renderClass();
     dot('ok','Connecté');
-    alert2('calert','✓ '+cal.length+' matchs • '+pr.length+' pronos • '+jo.length+' joueurs','aok');
+    alert2('calert','✓ '+cal.length+' matchs Calendrier • '+pronos.length+' pronos • '+jo.length+' joueurs','aok');
     loader(false);
-  } catch(err) {
+  }catch(err){
     loader(false); dot('er','Erreur');
     alert2('calert',err.message,'aerr');
   }
 }
 
-// ── JOURNEE KEY ───────────────────────────────────────────────
-// Lit la colonne "Journée" quelle que soit la casse/accent
-function jkey(m) {
-  for (const k of Object.keys(m)) {
-    const n = k.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');
-    if (n === 'journee') { const v=(m[k]||'').trim(); if(v) return v; }
-  }
-  return '';
-}
-
-// Normalise les IDs : "1.0" → "1"
-function nid(v) { return String(v||'').replace(/\.0$/,'').trim(); }
-
-// ── JOURNEES ──────────────────────────────────────────────────
-function buildJsel() {
-  const set = new Set();
-  S.cal.forEach(m => { const j=jkey(m); if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase()); });
-  S.journees = Array.from(set).sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
-  const sel = document.getElementById('jsel');
-  if (!S.journees.length) {
-    sel.innerHTML='<option value="">Aucune journée — vérif colonne AN</option>'; return;
-  }
-  sel.innerHTML = S.journees.map(j=>'<option value="'+j+'">'+j+' — '+jdates(j)+'</option>').join('');
-  // Auto-select : dernière journée avec un score
-  let def = S.journees[0];
-  for(let i=S.journees.length-1;i>=0;i--){
-    const j=S.journees[i];
-    if(S.cal.some(m=>jkey(m).toUpperCase()===j&&(m['Score A']||'')!=='')){ def=j; break; }
-  }
-  sel.value=def; filterJ();
-}
-
-function jdates(j) {
-  const ds=new Set();
-  S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase()).forEach(m=>{if(m['Date'])ds.add(m['Date']);});
-  return Array.from(ds).join(' + ')||'?';
-}
-
-function prevJ() {
-  const sel=document.getElementById('jsel'), i=S.journees.indexOf(sel.value);
-  if(i>0){sel.value=S.journees[i-1];filterJ();}
-}
-function nextJ() {
-  const sel=document.getElementById('jsel'), i=S.journees.indexOf(sel.value);
-  if(i<S.journees.length-1){sel.value=S.journees[i+1];filterJ();}
-}
-
-// Trouve l'ID du match dans toutes les variantes de noms de colonnes
-function getMatchId(m) {
-  // Pronostics : colonne ID_Match
-  if (m['ID_Match'] && m['ID_Match'] !== '') return nid(m['ID_Match']);
-  // Calendrier : pas de colonne ID → on utilise _rowIdx injecté à la lecture
-  if (m['_rowIdx'] && m['_rowIdx'] !== '') return nid(m['_rowIdx']);
-  // Autres variantes
-  for (const k of Object.keys(m)) {
-    const kn = k.toLowerCase().replace(/[\s_-]/g,'');
-    if (kn === 'idmatch') {
-      const v = nid(m[k]);
-      if (v && v !== '') return v;
-    }
-  }
-  return '';
-}
-
-// Trouve une valeur dans un objet CSV par nom de colonne flexible
-function col(obj, ...names) {
-  for (const name of names) {
-    if (obj[name] !== undefined && obj[name] !== '') return obj[name];
-    // Cherche sans casse ni accents
-    const norm = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    for (const k of Object.keys(obj)) {
-      const kn = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-      if (kn === norm && obj[k] !== '') return obj[k];
-    }
-  }
-  return '';
-}
-
-// ── FILTER ───────────────────────────────────────────────────
-function filterJ() {
-  const j=document.getElementById('jsel').value; if(!j) return;
-  S.jsel=j;
-  S.dayM=S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase());
-  S.dayM.forEach(m=>{
-    const id=getMatchId(m);
-    if(!S.res[id]) S.res[id]={a:col(m,'Score A','Score_A'),b:col(m,'Score B','Score_B'),tab:col(m,'Vainqueur TAB','Vainqueur_TAB')};
+// ════════════════════════════════════════════════════════════
+// JOURNEES — construites depuis Pronostics (qui a Journée + ID_Match)
+// ════════════════════════════════════════════════════════════
+function buildJsel(){
+  // On lit les journées depuis PRONOSTICS (colonne "Journée")
+  const set=new Set();
+  D.pronos.forEach(p=>{
+    const j=(p['Journée']||p['Journee']||'').trim();
+    if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase());
   });
-  const ds=[...new Set(S.dayM.map(m=>m['Date']).filter(Boolean))];
-  document.getElementById('jdates').textContent = ds.length?'📅 '+ds.join(' → ')+' • '+S.dayM.length+' match(s)':'';
-  renderM(); renderPron();
+  // Fallback : depuis Calendrier
+  if(set.size===0){
+    D.cal.forEach(m=>{
+      const j=(m['Journée']||m['Journee']||'').trim();
+      if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase());
+    });
+  }
+  D.journees=Array.from(set).sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
+  const sel=document.getElementById('jsel');
+  if(!D.journees.length){sel.innerHTML='<option value="">Aucune journée trouvée</option>';return;}
+  sel.innerHTML=D.journees.map(j=>'<option value="'+j+'">'+j+'</option>').join('');
+  // Auto-select : dernière journée avec au moins un prono avec des points
+  let def=D.journees[0];
+  for(let i=D.journees.length-1;i>=0;i--){
+    const j=D.journees[i];
+    if(D.pronos.some(p=>(p['Journée']||p['Journee']||'').toUpperCase()===j&&(p['Points']||'')!=='')){def=j;break;}
+  }
+  sel.value=def;
+  filterJ();
 }
 
-// ── RENDER MATCHES ────────────────────────────────────────────
-function renderM() {
+function prevJ(){const sel=document.getElementById('jsel'),i=D.journees.indexOf(sel.value);if(i>0){sel.value=D.journees[i-1];filterJ();}}
+function nextJ(){const sel=document.getElementById('jsel'),i=D.journees.indexOf(sel.value);if(i<D.journees.length-1){sel.value=D.journees[i+1];filterJ();}}
+
+// ════════════════════════════════════════════════════════════
+// FILTER BY JOURNEE
+// ════════════════════════════════════════════════════════════
+function filterJ(){
+  const j=document.getElementById('jsel').value;
+  if(!j) return;
+  D.jsel=j;
+
+  // 1. Pronos de cette journée
+  D.pronosJ=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===j.toUpperCase());
+
+  // 2. IDs uniques des matchs de cette journée (depuis Pronostics)
+  const idsSet=new Set(D.pronosJ.map(p=>p['ID_Match']||'').filter(Boolean));
+  const ids=Array.from(idsSet).sort((a,b)=>parseInt(a)-parseInt(b));
+
+  // 3. Pour chaque ID, construire la fiche match
+  // Enrichissement depuis Calendrier : cherche par Equipe_A ou ID si dispo
+  const calMap={};
+  D.cal.forEach((m,idx)=>{
+    // Clé par équipe A (car Calendrier n'a pas toujours ID_Match dans le CSV)
+    const eA=(m['Equipe A']||'').trim();
+    const eB=(m['Equipe B']||'').trim();
+    if(eA) calMap[eA+'|'+eB]=m;
+    // Aussi par index+1 au cas où
+    calMap['#'+(idx+1)]=m;
+  });
+
+  D.matchesJ=ids.map(id=>{
+    // Trouver un prono de ce match pour avoir Equipe_A, Equipe_B
+    const sample=D.pronos.find(p=>p['ID_Match']===id)||{};
+    const eA=sample['Equipe_A']||'';
+    const eB=sample['Equipe_B']||'';
+    // Chercher dans Calendrier
+    const calM=calMap[eA+'|'+eB]||calMap['#'+id]||{};
+    // Score depuis Calendrier ou résultat saisi
+    const r=D.res[id]||{};
+    return {
+      id,
+      eA, eB,
+      heure:calM['Heure']||'',
+      date:calM['Date']||sample['Date']||'',
+      groupe:calM['Groupe']||'',
+      phase:calM['Phase']||sample['Phase']||'',
+      bonus:(calM['Match Bonus']||'').toLowerCase()==='oui',
+      tv:calM['TV']||'',
+      sA:(r.a!==undefined&&r.a!=='')?r.a:(calM['Score A']||''),
+      sB:(r.b!==undefined&&r.b!=='')?r.b:(calM['Score B']||''),
+      tab:r.tab||calM['Vainqueur TAB']||''
+    };
+  });
+
+  // 4. Classement_Jour : chercher les colonnes réelles
+  parseCJ();
+
+  // 5. Pré-remplir res depuis Calendrier
+  D.matchesJ.forEach(m=>{
+    if(!D.res[m.id]) D.res[m.id]={a:m.sA,b:m.sB,tab:m.tab};
+  });
+
+  // Info sous le sélecteur
+  const dates=[...new Set(D.matchesJ.map(m=>m.date).filter(Boolean))];
+  document.getElementById('jinfo').textContent=dates.length?'📅 '+dates.join(' → ')+' • '+D.matchesJ.length+' match(s) • '+D.pronosJ.length+' pronos':'';
+
+  renderM();
+  renderPron();
+  renderClass();
+  document.getElementById('gbtn').disabled=D.matchesJ.length===0;
+}
+
+// ════════════════════════════════════════════════════════════
+// PARSE CLASSEMENT_JOUR
+// Cherche la ligne avec "Joueur" comme premier élément non-vide
+// ════════════════════════════════════════════════════════════
+function parseCJ(){
+  D.cjData=[];
+  if(!D.cjRaw.length) return;
+  // Cherche la ligne d'en-têtes (celle qui contient "Joueur")
+  // Le CSV brut peut avoir des lignes vides avant
+  // On cherche parmi toutes les lignes brutes en re-parsant
+  // Mais on n'a que des objets parsés... 
+  // Solution : chercher dans cjRaw l'objet qui a une clé "Joueur"
+  const hasJoueur=D.cjRaw.filter(r=>r['Joueur']&&r['Joueur'].trim()!=='');
+  if(hasJoueur.length>0){
+    D.cjData=hasJoueur.map(r=>({
+      j:r['Joueur'],
+      pj:r['Points du Jour']||r['Points_Jour']||'0',
+      pc:r['Points Cumulés']||r['Points_Cumules']||'0',
+      e1:r['Évolution J-1']||r['Evolution J-1']||'=',
+      e2:r['Évolution J-2']||r['Evolution J-2']||'='
+    }));
+    return;
+  }
+  // Fallback : le CSV exporte mal — essayer en cherchant les clés qui ressemblent à des noms
+  // Dans ton cas le CSV donne {"":"", "J1":"1"} → pas utilisable directement
+  // On va re-fetch avec le bon range via l'URL gid
+  D.cjData=[];
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER MATCHES
+// ════════════════════════════════════════════════════════════
+function renderM(){
   const c=document.getElementById('mcont');
-  if(!S.dayM.length){c.innerHTML='<div class="nom">Aucun match pour cette journée</div>';document.getElementById('gbtn').disabled=true;return;}
-  c.innerHTML=S.dayM.map(m=>{
-    const id=getMatchId(m);
-    const eA=col(m,'Equipe A','Equipe_A');
-    const eB=col(m,'Equipe B','Equipe_B');
-    const h=col(m,'Heure'); const dt=col(m,'Date'); const gr=col(m,'Groupe');
-    const bonus=col(m,'Match Bonus','Match_Bonus').toLowerCase()==='oui'||col(m,'Match Bonus','Match_Bonus').toLowerCase()==='true';
-    const phase=col(m,'Phase','phase').toLowerCase();
-    const finale=phase!==''&&!phase.includes('poule');
-    const r=S.res[id]||{a:'',b:'',tab:''};
+  if(!D.matchesJ.length){c.innerHTML='<div class="nom">Aucun match pour cette journée</div>';return;}
+  c.innerHTML=D.matchesJ.map(m=>{
+    const r=D.res[m.id]||{a:'',b:'',tab:''};
     const done=r.a!==''&&r.b!=='';
-    const tabH=finale?'<select class="tsel" onchange="updR(\''+id+'\',\'t\',this.value)"><option value="">TAB ?</option><option value="'+eA+'"'+(r.tab===eA?' selected':'')+'>TAB → '+eA+'</option><option value="'+eB+'"'+(r.tab===eB?' selected':'')+'>TAB → '+eB+'</option></select>':'';
-    return '<div class="mc'+(done?' done':'')+'" id="mc'+id+'">'
-      +'<div class="mh">'
-      +'<span class="mlbl">#'+id+' • '+h+' • '+gr+'</span>'
-      +'<span class="dtag">'+dt+'</span>'
-      +(bonus?'<span class="bbadge">⭐ Bonus</span>':'')
-      +(done?'<span class="rpill">✓ '+r.a+'-'+r.b+'</span>':'')
-      +'</div>'
-      +'<div class="mteams"><span>'+eA+'</span><span class="mvs">vs</span><span>'+eB+'</span></div>'
-      +'<div class="srow">'
-      +'<input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.a+'" oninput="updR(\''+id+'\',\'a\',this.value)">'
+    const finale=m.phase!==''&&!m.phase.toLowerCase().includes('poule');
+    const tabH=finale?'<select class="tsel" onchange="updR(\''+m.id+'\',\'t\',this.value)"><option value="">TAB ?</option><option value="'+m.eA+'"'+(r.tab===m.eA?' selected':'')+'>TAB → '+m.eA+'</option><option value="'+m.eB+'"'+(r.tab===m.eB?' selected':'')+'>TAB → '+m.eB+'</option></select>':'';
+    return '<div class="mc'+(done?' done':'')+'">'
+      +'<div class="mh"><span class="mlbl">#'+m.id+' • '+m.heure+' • '+m.groupe+'</span>'
+      +'<span class="dtag">'+m.date+'</span>'
+      +(m.bonus?'<span class="bbadge">⭐ Bonus</span>':'')
+      +(done?'<span class="rpill">✓ '+r.a+'-'+r.b+'</span>':'')+'</div>'
+      +'<div class="mteams"><span>'+m.eA+'</span><span class="mvs">vs</span><span>'+m.eB+'</span></div>'
+      +'<div class="srow"><input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.a+'" oninput="updR(\''+m.id+'\',\'a\',this.value)">'
       +'<span class="ssep">–</span>'
-      +'<input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.b+'" oninput="updR(\''+id+'\',\'b\',this.value)">'
+      +'<input class="si" type="number" min="0" max="20" placeholder="–" value="'+r.b+'" oninput="updR(\''+m.id+'\',\'b\',this.value)">'
       +tabH+'</div></div>';
   }).join('');
-  document.getElementById('gbtn').disabled=false;
 }
 
 function updR(id,f,v){
-  if(!S.res[id])S.res[id]={a:'',b:'',tab:''};
-  if(f==='a')S.res[id].a=v; else if(f==='b')S.res[id].b=v; else S.res[id].tab=v;
+  if(!D.res[id])D.res[id]={a:'',b:'',tab:''};
+  if(f==='a')D.res[id].a=v; else if(f==='b')D.res[id].b=v; else D.res[id].tab=v;
 }
 
-// ── RENDER CLASSEMENT ─────────────────────────────────────────
-function renderClass() {
+// ════════════════════════════════════════════════════════════
+// RENDER CLASSEMENT
+// ════════════════════════════════════════════════════════════
+function renderClass(){
   const c=document.getElementById('cprev');
-  const rows=S.cj.filter(r=>(r['Joueur']||'').trim()).slice(0,30);
-  if(!rows.length){c.innerHTML='<div class="empty"><span class="ei">📊</span>Pas de données</div>';return;}
+  if(!D.cjData.length){
+    c.innerHTML='<div class="empty"><span class="ei">📊</span>Classement non disponible<br><small style="font-size:.7rem;color:var(--mu)">Vérif onglet Classement_Jour</small></div>';
+    return;
+  }
   const fmt=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
   c.innerHTML='<table class="ctbl"><thead><tr><th>#</th><th>Joueur</th><th>Pts J</th><th>Total</th><th>Evo J-1</th><th>Evo J-2</th></tr></thead><tbody>'
-    +rows.map((r,i)=>{
-      const e1=parseInt(r['Évolution J-1']||r['Evolution J-1']||0)||0;
-      const e2=parseInt(r['Évolution J-2']||r['Evolution J-2']||0)||0;
-      return '<tr><td style="color:var(--mu)">'+(i+1)+'</td><td class="cn">'+(r['Joueur']||'')+'</td><td>'+(r['Points du Jour']||'0')+'</td><td class="cp">'+(r['Points Cumulés']||'0')+'</td><td class="'+(e1>0?'eu':e1<0?'ed':'eq')+'">'+(fmt(e1))+'</td><td class="'+(e2>0?'eu':e2<0?'ed':'eq')+'">'+(fmt(e2))+'</td></tr>';
+    +D.cjData.map((r,i)=>{
+      const e1=parseInt(r.e1)||0,e2=parseInt(r.e2)||0;
+      return '<tr><td style="color:var(--mu)">'+(i+1)+'</td><td class="cn">'+r.j+'</td><td>'+r.pj+'</td><td class="cp">'+r.pc+'</td><td class="'+(e1>0?'eu':e1<0?'ed':'eq')+'">'+(fmt(e1))+'</td><td class="'+(e2>0?'eu':e2<0?'ed':'eq')+'">'+(fmt(e2))+'</td></tr>';
     }).join('')+'</tbody></table>';
 }
 
-// ── RENDER PRONOS ─────────────────────────────────────────────
-function renderPron() {
+// ════════════════════════════════════════════════════════════
+// RENDER PRONOS
+// ════════════════════════════════════════════════════════════
+function renderPron(){
   const c=document.getElementById('pprev');
-  if(!S.dayM.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Sélectionne une journée</div>';return;}
-  const ids=S.dayM.map(m=>getMatchId(m));
-  const dp=S.pronos.filter(p=>ids.includes(getMatchId(p)));
-  if(!dp.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Aucun prono pour cette journée</div>';return;}
-  let h='<div style="font-size:.72rem;color:var(--mu);margin-bottom:.75rem;font-family:\'DM Mono\',monospace">'+S.jsel+' — '+dp.length+' pronos sur '+S.dayM.length+' matchs</div>';
-  S.dayM.forEach(m=>{
-    const id=getMatchId(m);
-    const mp=dp.filter(p=>getMatchId(p)===id);
-    if(!mp.length)return;
-    h+='<div style="margin-bottom:1rem"><div style="font-size:.78rem;font-weight:600;color:var(--mu);margin-bottom:.4rem">'+(m['Equipe A']||m['Equipe_A']||'')+' vs '+(m['Equipe B']||m['Equipe_B']||'')+'</div><div class="mpronos">';
+  if(!D.matchesJ.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Sélectionne une journée</div>';return;}
+  let h='<div style="font-size:.72rem;color:var(--mu);margin-bottom:.75rem;font-family:\'DM Mono\',monospace">'+D.jsel+' — '+D.pronosJ.length+' pronos sur '+D.matchesJ.length+' matchs</div>';
+  D.matchesJ.forEach(m=>{
+    const mp=D.pronosJ.filter(p=>p['ID_Match']===m.id);
+    if(!mp.length) return;
+    h+='<div style="margin-bottom:1rem"><div style="font-size:.78rem;font-weight:600;color:var(--mu);margin-bottom:.4rem">'+m.eA+' vs '+m.eB+'</div><div class="mpronos">';
     mp.forEach(p=>{
       const jok=(p['Joker']||'').toLowerCase()==='oui';
       const pts=p['Points']||'';
@@ -454,136 +433,102 @@ function renderPron() {
   c.innerHTML=h;
 }
 
-// ── CONTEXT & PROMPT ─────────────────────────────────────────
-function buildCtx() {
+// ════════════════════════════════════════════════════════════
+// BUILD PROMPT
+// ════════════════════════════════════════════════════════════
+function buildPrompt(){
+  const j=D.jsel;
   const mtype=document.getElementById('mtype').value;
-  const ids=S.dayM.map(m=>getMatchId(m));
-  const dp=S.pronos.filter(p=>ids.includes(getMatchId(p)));
-
-  const matches=S.dayM.map(m=>{
-    const id=nid(m['ID_Match']||m['ID Match']||'');
-    const r=S.res[id]||{};
-    const phase=(m['Phase']||'').toLowerCase();
-    return {
-      id, eA:m['Equipe A']||m['Equipe_A']||'', eB:m['Equipe B']||m['Equipe_B']||'',
-      h:col(m,'Heure'), dt:col(m,'Date'), gr:col(m,'Groupe'),
-      phase:m['Phase']||'',
-      bonus:col(m,'Match Bonus','Match_Bonus').toLowerCase()==='oui',
-      finale:phase!==''&&!phase.includes('poule'),
-      tv:col(m,'TV'),
-      sA:(r.a!==undefined&&r.a!=='')?r.a:col(m,'Score A','Score_A'),
-      sB:(r.b!==undefined&&r.b!=='')?r.b:col(m,'Score B','Score_B'),
-      tab:r.tab||col(m,'Vainqueur TAB','Vainqueur_TAB')
-    };
-  });
-
-  const pronosM={};
-  ids.forEach(id=>{
-    pronosM[id]=dp.filter(p=>getMatchId(p)===id).map(p=>({
-      j:p['Joueur']||'',
-      pA:p['Prono_Equipe_A']||'', pB:p['Prono_Equipe_B']||'',
-      tab:p['Prono_Vainqueur_TAB']||'',
-      jok:(p['Joker']||'').toLowerCase()==='oui',
-      pts:p['Points']||'', ptxt:p['Points_Texte']||'', perf:p['Performance']||''
-    }));
-  });
-
-  const curN=parseInt(S.jsel.replace(/\D/g,''))||0;
+  const curN=parseInt(j.replace(/\D/g,''))||0;
   const nextJ='J'+(curN+1);
-  const nextM=S.cal.filter(m=>jkey(m).toUpperCase()===nextJ.toUpperCase()).map(m=>({
-    eA:m['Equipe A']||m['Equipe_A']||'', eB:m['Equipe B']||m['Equipe_B']||'',
-    h:m['Heure']||'', dt:m['Date']||'', gr:m['Groupe']||'',
-    bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:m['TV']||''
-  }));
 
-  const classD=S.cj.filter(r=>col(r,'Joueur','joueur')).slice(0,30).map(r=>({
-    j:col(r,'Joueur','joueur'),
-    pj:col(r,'Points du Jour','Points_Jour','PtsJour')||'0',
-    pc:col(r,'Points Cumulés','Points Cumules','Points_Cumules')||'0',
-    e1:col(r,'Évolution J-1','Evolution J-1','Evo J-1','Évol J-1')||'=',
-    e2:col(r,'Évolution J-2','Evolution J-2','Evo J-2','Évol J-2')||'='
-  }));
+  // Matchs J+1 depuis Pronostics ou Calendrier
+  const nextPronos=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase());
+  const nextIds=[...new Set(nextPronos.map(p=>p['ID_Match']).filter(Boolean))].sort((a,b)=>parseInt(a)-parseInt(b));
+  const nextMatches=nextIds.map(id=>{
+    const s=D.pronos.find(p=>p['ID_Match']===id&&(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase())||{};
+    const calM=D.cal.find(m=>(m['Equipe A']||'')===(s['Equipe_A']||''))||(D.cal[parseInt(id)-1])||{};
+    return {id,eA:s['Equipe_A']||'',eB:s['Equipe_B']||'',heure:calM['Heure']||'',date:calM['Date']||s['Date']||'',groupe:calM['Groupe']||'',bonus:(calM['Match Bonus']||'').toLowerCase()==='oui',tv:calM['TV']||''};
+  });
 
-  const joueursI=S.joueurs.filter(j=>(j['Joueur']||'').trim()).map(j=>({
-    j:j['Joueur']||'', v:j['Vainqueur']||'', f:j['Finaliste']||'', d:j['Description']||''
-  }));
+  // Jokers
+  const joueursI=D.joueurs.filter(j=>(j['Joueur']||'').trim()).map(j=>({j:j['Joueur']||'',v:j['Vainqueur']||'',f:j['Finaliste']||''}));
 
-  return {mtype,jsel:S.jsel,matches,pronosM,classD,joueursI,nextM,nextJ};
-}
+  let p=mtype==='tendances'?'Génère les tendances avant-match pour la '+j+'.\n\n':'Génère le récap matin pour la '+j+'.\n\n';
 
-function buildPrompt(ctx) {
-  const {mtype,jsel,matches,pronosM,classD,joueursI,nextM,nextJ}=ctx;
-  let p = mtype==='tendances'
-    ? 'Génère les tendances avant-match pour la '+jsel+'.\n\n'
-    : 'Génère le récap matin pour la '+jsel+'.\n\n';
-
-  p+='=== MATCHS DE LA '+jsel+' ===\n';
-  matches.forEach(m=>{
-    p+='\nMatch #'+m.id+' | '+m.dt+' '+m.h+' | '+m.gr+(m.bonus?' ⭐ BONUS':'')+' | 📺 '+(m.tv||'?')+'\n';
+  p+='=== MATCHS DE LA '+j+' ===\n';
+  D.matchesJ.forEach(m=>{
+    const r=D.res[m.id]||{};
+    const sA=(r.a!==undefined&&r.a!=='')?r.a:m.sA;
+    const sB=(r.b!==undefined&&r.b!=='')?r.b:m.sB;
+    p+='\nMatch #'+m.id+' | '+m.date+' '+m.heure+' | '+m.groupe+(m.bonus?' ⭐ BONUS':'')+' | 📺 '+(m.tv||'?')+'\n';
     p+=m.eA+' vs '+m.eB+'\n';
-    if(m.sA!==''&&m.sB!=='') p+='Résultat : '+m.eA+' '+m.sA+' - '+m.sB+' '+m.eB+(m.tab?' (TAB: '+m.tab+')':'')+'\n';
+    if(sA!==''&&sB!=='') p+='Résultat : '+m.eA+' '+sA+' - '+sB+' '+m.eB+(m.tab?' (TAB: '+m.tab+')':'')+'\n';
     else p+='Résultat : non renseigné\n';
-    const pr=pronosM[m.id]||[];
+    const pr=D.pronosJ.filter(px=>px['ID_Match']===m.id);
     if(pr.length){
       p+='Pronostics ('+pr.length+' joueurs) :\n';
-      pr.forEach(r=>{
-        p+='  '+r.j+' : '+r.pA+'-'+r.pB;
-        if(r.tab) p+=' TAB:'+r.tab;
-        if(r.jok) p+=' [JOKER x2]';
-        if(r.pts!=='') p+=' → '+r.pts+' pts';
-        if(r.ptxt) p+=' ('+r.ptxt+')';
-        if(r.perf) p+=' ['+r.perf+']';
+      pr.forEach(px=>{
+        p+='  '+px['Joueur']+' : '+px['Prono_Equipe_A']+'-'+px['Prono_Equipe_B'];
+        if(px['Prono_Vainqueur_TAB']) p+=' TAB:'+px['Prono_Vainqueur_TAB'];
+        if((px['Joker']||'').toLowerCase()==='oui') p+=' [JOKER x2]';
+        if(px['Points']!=='') p+=' → '+px['Points']+' pts';
+        if(px['Points_Texte']) p+=' ('+px['Points_Texte']+')';
+        if(px['Performance']) p+=' ['+px['Performance']+']';
         p+='\n';
       });
-    } else p+='  (aucun prono trouvé pour ce match)\n';
+    }else p+='  (aucun prono)\n';
   });
 
-  p+='\n=== CLASSEMENT APRÈS '+jsel+' ===\n';
-  if(classD.length){
-    classD.forEach((r,i)=>{
-      const e1=parseInt(r.e1)||0, e2=parseInt(r.e2)||0;
+  p+='\n=== CLASSEMENT APRÈS '+j+' ===\n';
+  if(D.cjData.length){
+    D.cjData.forEach((r,i)=>{
+      const e1=parseInt(r.e1)||0,e2=parseInt(r.e2)||0;
       const f=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
       p+=(i+1)+'. '+r.j+' — '+r.pj+' pts ce jour — '+r.pc+' pts total — Evo J-1: '+f(e1)+' | Evo J-2: '+f(e2)+'\n';
     });
-  } else p+='Données non disponibles.\n';
+  }else p+='Données non disponibles (Classement_Jour non lu).\n';
 
   p+='\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n';
-  joueursI.forEach(r=>{
-    if(r.v||r.f) p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';
-  });
+  joueursI.forEach(r=>{if(r.v||r.f)p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';});
 
   p+='\n=== MATCHS DE LA '+nextJ+' ===\n';
-  if(nextM.length) nextM.forEach(m=>{ p+=m.dt+' '+m.h+' — '+m.eA+' vs '+m.eB+' ('+m.gr+')'+(m.bonus?' ⭐ BONUS':'')+(m.tv?' | 📺 '+m.tv:'')+'\n'; });
+  if(nextMatches.length) nextMatches.forEach(m=>{p+=m.date+' '+m.heure+' — '+m.eA+' vs '+m.eB+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' ⭐ BONUS':'')+(m.tv?' | 📺 '+m.tv:'')+'\n';});
   else p+='Aucun match trouvé pour '+nextJ+'.\n';
   return p;
 }
 
-function buildSys(mtype,jsel,nextJ) {
-  if(mtype==='tendances') return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la '+jsel+'.\n\nTON : Amical, passionné, taquin, ambiance groupe de potes. Français naturel et vivant.\n\nPour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Les pronostics : [analyse du consensus, dissidents, scores phares, liens favoris si pertinent]\n\nLongueur : 1000-1500 caractères par match. Pas de HTML ni markdown. Retours à la ligne simples. Envoi WhatsApp.';
-  return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la '+jsel+', envoyé entre 8h et 14h.\nCe récap couvre TOUS les matchs de la '+jsel+', qui peuvent s\'étaler sur 2 jours calendaires.\n\nTON : Amical, passionné, taquin, "communauté de potes". Français vivant, humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance, nb de matchs, faits marquants)\n2. ⚽ LES MATCHS — pour chaque match : résumé sportif (2-3 phrases) PUIS analyse détaillée des pronos : cite CHAQUE joueur avec son score pronostiqué, les points gagnés et sa performance\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs avec noms et points\n4. 📉 FLOPS DU JOUR — 2-3 moins bonnes perfs, humour bienveillant\n5. 💬 LA PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS '+jsel+' — reprendre le classement fourni avec évolutions\n7. ⚽ AU PROGRAMME : '+nextJ+' — liste des matchs avec horaires et dates réelles\n8. Bonne journée !\n\nRÈGLES IMPÉRATIVES :\n- Cite CHAQUE joueur nominativement avec son prono, ses points et sa performance\n- Signale les jokers (JOKER x2)\n- Tu as TOUTES les données dans le prompt : ne dis jamais qu\'elles sont manquantes\n- Ne jamais inventer des points. Pas de HTML.\n200-250 mots par match dont 100 mots min sur les pronos individuels.';
+function buildSys(){
+  const mtype=document.getElementById('mtype').value;
+  const j=D.jsel, nextJ='J'+(parseInt(j.replace(/\D/g,''))+1);
+  if(mtype==='tendances') return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges les TENDANCES AVANT-MATCH de la '+j+'.\n\nTON : Amical, passionné, taquin, groupe de potes. Français vivant.\n\nFormat pour chaque match :\nMATCH #N — EquipeA vs EquipeB | HHhMM | 📺 Chaîne (⭐ BONUS si applicable)\n🔮 Pronostics : [analyse consensus, dissidents, scores phares, liens favoris]\n\n1000-1500 caractères par match. Pas de HTML. Retours ligne simples. Envoi WhatsApp.';
+  return 'Tu es le rédacteur en chef du concours "Pastis Pronos" — Coupe du Monde 2026.\nTu rédiges le RÉCAP MATIN de la '+j+', envoyé entre 8h et 14h.\n\nTON : Amical, passionné, taquin, "communauté de potes". Humour bienveillant. Émojis avec parcimonie.\n\nSTRUCTURE OBLIGATOIRE :\n1. Bonjour + accroche (ambiance, faits marquants)\n2. ⚽ LES MATCHS — pour chaque match :\n   • Résumé sportif (2-3 phrases)\n   • Analyse DÉTAILLÉE des pronos : cite CHAQUE joueur avec son score pronostiqué, ses points et sa performance. Signale les jokers.\n3. 📈 TOPS DU JOUR — 2-3 meilleures perfs (noms + points)\n4. 📉 FLOPS DU JOUR — humour bienveillant\n5. 💬 PHRASE DU JOUR\n6. 📊 CLASSEMENT APRÈS '+j+' — reprendre le classement fourni\n7. ⚽ AU PROGRAMME '+nextJ+' — matchs avec dates et horaires\n8. Bonne journée !\n\nRÈGLES : Cite chaque joueur nominativement. Ne jamais inventer des points. Pas de HTML. 200-250 mots par match dont 100 mots min sur les pronos.';
 }
 
-// ── GENERATE ─────────────────────────────────────────────────
-async function generate() {
+// ════════════════════════════════════════════════════════════
+// GENERATE
+// ════════════════════════════════════════════════════════════
+async function generate(){
   const key=document.getElementById('akey').value.trim();
   if(!key){alert('Renseigne ta clé API Anthropic');return;}
-  const ctx=buildCtx();
-  const miss=ctx.matches.filter(m=>m.sA===''||m.sB==='');
+  const miss=D.matchesJ.filter(m=>{const r=D.res[m.id]||{};return(r.a===''||r.a===undefined)&&m.sA==='';});
   if(miss.length){const go=confirm(miss.length+' match(s) sans résultat :\n'+miss.map(m=>m.eA+' vs '+m.eB).join('\n')+'\n\nContinuer ?');if(!go)return;}
   document.getElementById('gbtn').disabled=true;
   loader(true,'Composition via Claude en cours...');
   document.getElementById('ocont').innerHTML='';
+  const prompt=buildPrompt();
+  const sys=buildSys();
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:buildSys(ctx.mtype,ctx.jsel,ctx.nextJ),messages:[{role:'user',content:buildPrompt(ctx)}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:sys,messages:[{role:'user',content:prompt}]})
     });
-    const d=await r.json();
-    if(!r.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+r.status);
+    const d=await resp.json();
+    if(!resp.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+resp.status);
     const txt=d.content?d.content.map(c=>c.text||'').join(''):'';
     loader(false);
-    document.getElementById('ocont').innerHTML='<textarea id="mail-output" readonly>'+txt+'</textarea>';
+    document.getElementById('ocont').innerHTML='<textarea id="mail-output" readonly>'+txt.replace(/</g,'&lt;')+'</textarea>';
     document.getElementById('gbtn').disabled=false;
   }catch(err){
     loader(false);
@@ -592,44 +537,53 @@ async function generate() {
   }
 }
 
-// ── DEBUG ─────────────────────────────────────────────────────
-function showPrompt() {
-  const ctx=buildCtx();
-  const prompt=buildPrompt(ctx);
+// ════════════════════════════════════════════════════════════
+// DEBUG
+// ════════════════════════════════════════════════════════════
+function showPrompt(){
+  const p=buildPrompt();
   const w=window.open('','_blank','width=800,height=600');
   w.document.write('<html><body style="background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px;white-space:pre-wrap">');
-  w.document.write('<h3 style="color:#f5c842">PROMPT — '+ctx.jsel+'</h3>');
-  w.document.write('<h4 style="color:#888">matchIds: '+JSON.stringify(ctx.matches.map(m=>m.id))+'</h4>');
-  w.document.write('<h4 style="color:#888">pronos par match: '+JSON.stringify(Object.fromEntries(Object.entries(ctx.pronosM).map(([k,v])=>[k,v.length])))+'</h4>');
-  w.document.write('<h4 style="color:#888">classement: '+ctx.classD.length+' joueurs | favoris: '+ctx.joueursI.length+'</h4>');
+  w.document.write('<h3 style="color:#f5c842">PROMPT — '+D.jsel+'</h3>');
+  w.document.write('<h4 style="color:#888">matchIds: '+JSON.stringify(D.matchesJ.map(m=>m.id))+'</h4>');
+  w.document.write('<h4 style="color:#888">pronos par match: '+JSON.stringify(Object.fromEntries(D.matchesJ.map(m=>[m.id,D.pronosJ.filter(p=>p["ID_Match"]===m.id).length])))+'</h4>');
+  w.document.write('<h4 style="color:#888">classement: '+D.cjData.length+' joueurs</h4>');
   w.document.write('<hr style="border-color:#333;margin:10px 0">');
-  w.document.write(prompt.replace(/</g,'&lt;'));
-  w.document.write('</body></html>'); w.document.close();
+  w.document.write(p.replace(/</g,'&lt;'));
+  w.document.write('</body></html>');w.document.close();
 }
 
-// ── UTILS ─────────────────────────────────────────────────────
-function loader(on,txt){
-  document.getElementById('loader').classList.toggle('on',on);
-  if(txt)document.getElementById('ltxt').textContent=txt;
+function debugData(){
+  const w=window.open('','_blank','width=800,height=600');
+  w.document.write('<html><body style="background:#111;color:#eee;font-family:monospace;font-size:12px;padding:20px">');
+  w.document.write('<h3 style="color:#f5c842">DEBUG DONNÉES</h3>');
+  [['Calendrier',D.cal],['Pronostics',D.pronos],['Classement_Jour (brut)',D.cjRaw],['Joueurs',D.joueurs]].forEach(([n,d])=>{
+    if(!d.length){w.document.write('<p style="color:#e05050">'+n+' : VIDE</p>');return;}
+    w.document.write('<h4 style="color:#f5c842;margin-top:1rem">'+n+' ('+d.length+' lignes)</h4>');
+    w.document.write('<pre style="color:#80c090">Clés: '+JSON.stringify(Object.keys(d[0]))+'</pre>');
+    w.document.write('<pre style="color:#aaa">L1: '+JSON.stringify(d[0]).slice(0,400)+'</pre>');
+  });
+  w.document.write('<h4 style="color:#f5c842;margin-top:1rem">Journées trouvées</h4>');
+  w.document.write('<pre style="color:#80c090">'+JSON.stringify(D.journees)+'</pre>');
+  w.document.write('<h4 style="color:#f5c842;margin-top:1rem">matchesJ ('+D.matchesJ.length+')</h4>');
+  w.document.write('<pre style="color:#aaa">'+JSON.stringify(D.matchesJ,null,2).slice(0,800)+'</pre>');
+  w.document.write('</body></html>');w.document.close();
 }
-function dot(cls,lbl){
-  document.getElementById('sdot').className='sdot '+cls;
-  document.getElementById('slbl').textContent=lbl;
-}
-function alert2(id,msg,cls){
-  const el=document.getElementById(id);
-  el.textContent=msg; el.className='alert '+cls+' on';
-}
+
+// ════════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════════
+function loader(on,txt){document.getElementById('loader').classList.toggle('on',on);if(txt)document.getElementById('ltxt').textContent=txt;}
+function dot(cls,lbl){document.getElementById('sdot').className='sdot '+cls;document.getElementById('slbl').textContent=lbl;}
+function alert2(id,msg,cls){const el=document.getElementById(id);el.textContent=msg;el.className='alert '+cls+' on';}
 function copyOut(){
-  const ta=document.getElementById('mail-output'); if(!ta)return;
+  const ta=document.getElementById('mail-output');if(!ta)return;
   navigator.clipboard.writeText(ta.value).then(()=>{
-    const b=document.getElementById('cbtn'); b.textContent='✓ Copié !'; b.classList.add('cf');
+    const b=document.getElementById('cbtn');b.textContent='✓ Copié !';b.classList.add('cf');
     setTimeout(()=>{b.textContent='📋 Copier';b.classList.remove('cf');},2000);
   });
 }
-function clearOut(){
-  document.getElementById('ocont').innerHTML='<div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Sélectionne une journée et génère !</div>';
-}
+function clearOut(){document.getElementById('ocont').innerHTML='<div class="empty" style="padding:4rem 1rem"><span class="ei">🥃</span><div style="font-size:.9rem;color:var(--tx);margin-bottom:.5rem">Prêt à générer</div>Sélectionne une journée et génère !</div>';}
 </script>
 </body>
 </html>
