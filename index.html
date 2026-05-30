@@ -211,22 +211,27 @@ function stab(e, grp, id) {
 }
 
 // ── CSV ───────────────────────────────────────────────────────
-async function fetchCSV(sid, name) {
+async function fetchCSV(sid, name, skipRows) {
   const url = 'https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent(name);
   const r = await fetch(url);
   if (!r.ok) throw new Error('Feuille "'+name+'" inaccessible. Sheet partagé en lecture publique ?');
-  return csv2arr(await r.text());
+  return csv2arr(await r.text(), skipRows||0);
 }
 
-function csv2arr(txt) {
+function csv2arr(txt, skipRows) {
   const lines = txt.split('\n').filter(l => l.trim());
   if (!lines.length) return [];
-  // Normalise les en-têtes : supprime retours à la ligne, espaces multiples, quotes
-  const hdrs = csvRow(lines[0]).map(h => h.trim().replace(/^"|"$/g,'').replace(/[\r\n]+/g,' ').replace(/\s+/g,' '));
-  return lines.slice(1).map(line => {
+  const skip = skipRows||0;
+  const hdrLine = skip; // ligne des en-têtes après skip
+  if (lines.length <= hdrLine) return [];
+  // Normalise les en-têtes
+  const hdrs = csvRow(lines[hdrLine]).map(h => h.trim().replace(/^"|"$/g,'').replace(/[\r\n]+/g,' ').replace(/\s+/g,' '));
+  return lines.slice(hdrLine+1).map((line,idx) => {
     const vals = csvRow(line);
     const o = {};
     hdrs.forEach((h,i) => { o[h] = (vals[i]||'').trim().replace(/^"|"$/g,''); });
+    // Pour Calendrier : injecter un ID synthétique basé sur le n° de ligne
+    if (!o['ID_Match'] && !o['id_match']) o['_rowIdx'] = String(idx+1);
     return o;
   });
 }
@@ -268,8 +273,8 @@ async function loadData() {
   loader(true,'Lecture du Google Sheet...');
   try {
     const [cal, pr, cj, jo] = await Promise.all([
-      fetchCSV(sid,'Calendrier'), fetchCSV(sid,'Pronostics'),
-      fetchCSV(sid,'Classement_Jour'), fetchCSV(sid,'Joueurs')
+      fetchCSV(sid,'Calendrier',0), fetchCSV(sid,'Pronostics',0),
+      fetchCSV(sid,'Classement_Jour',2), fetchCSV(sid,'Joueurs',0)
     ]);
     S.cal=cal; S.pronos=pr; S.cj=cj; S.joueurs=jo;
     buildJsel();
@@ -332,9 +337,14 @@ function nextJ() {
 
 // Trouve l'ID du match dans toutes les variantes de noms de colonnes
 function getMatchId(m) {
+  // Pronostics : colonne ID_Match
+  if (m['ID_Match'] && m['ID_Match'] !== '') return nid(m['ID_Match']);
+  // Calendrier : pas de colonne ID → on utilise _rowIdx injecté à la lecture
+  if (m['_rowIdx'] && m['_rowIdx'] !== '') return nid(m['_rowIdx']);
+  // Autres variantes
   for (const k of Object.keys(m)) {
     const kn = k.toLowerCase().replace(/[\s_-]/g,'');
-    if (kn === 'idmatch' || kn === 'id') {
+    if (kn === 'idmatch') {
       const v = nid(m[k]);
       if (v && v !== '') return v;
     }
@@ -363,7 +373,7 @@ function filterJ() {
   S.dayM=S.cal.filter(m=>jkey(m).toUpperCase()===j.toUpperCase());
   S.dayM.forEach(m=>{
     const id=getMatchId(m);
-    if(!S.res[id]) S.res[id]={a:m['Score A']||'',b:m['Score B']||'',tab:m['Vainqueur TAB']||''};
+    if(!S.res[id]) S.res[id]={a:col(m,'Score A','Score_A'),b:col(m,'Score B','Score_B'),tab:col(m,'Vainqueur TAB','Vainqueur_TAB')};
   });
   const ds=[...new Set(S.dayM.map(m=>m['Date']).filter(Boolean))];
   document.getElementById('jdates').textContent = ds.length?'📅 '+ds.join(' → ')+' • '+S.dayM.length+' match(s)':'';
@@ -376,11 +386,11 @@ function renderM() {
   if(!S.dayM.length){c.innerHTML='<div class="nom">Aucun match pour cette journée</div>';document.getElementById('gbtn').disabled=true;return;}
   c.innerHTML=S.dayM.map(m=>{
     const id=getMatchId(m);
-    const eA=m['Equipe A']||m['Equipe_A']||'';
-    const eB=m['Equipe B']||m['Equipe_B']||'';
-    const h=m['Heure']||'', dt=m['Date']||'', gr=m['Groupe']||'';
-    const bonus=(m['Match Bonus']||'').toLowerCase()==='oui';
-    const phase=(m['Phase']||'').toLowerCase();
+    const eA=col(m,'Equipe A','Equipe_A');
+    const eB=col(m,'Equipe B','Equipe_B');
+    const h=col(m,'Heure'); const dt=col(m,'Date'); const gr=col(m,'Groupe');
+    const bonus=col(m,'Match Bonus','Match_Bonus').toLowerCase()==='oui'||col(m,'Match Bonus','Match_Bonus').toLowerCase()==='true';
+    const phase=col(m,'Phase','phase').toLowerCase();
     const finale=phase!==''&&!phase.includes('poule');
     const r=S.res[id]||{a:'',b:'',tab:''};
     const done=r.a!==''&&r.b!=='';
@@ -456,14 +466,14 @@ function buildCtx() {
     const phase=(m['Phase']||'').toLowerCase();
     return {
       id, eA:m['Equipe A']||m['Equipe_A']||'', eB:m['Equipe B']||m['Equipe_B']||'',
-      h:m['Heure']||'', dt:m['Date']||'', gr:m['Groupe']||'',
+      h:col(m,'Heure'), dt:col(m,'Date'), gr:col(m,'Groupe'),
       phase:m['Phase']||'',
-      bonus:(m['Match Bonus']||'').toLowerCase()==='oui',
+      bonus:col(m,'Match Bonus','Match_Bonus').toLowerCase()==='oui',
       finale:phase!==''&&!phase.includes('poule'),
-      tv:m['TV']||'',
-      sA:(r.a!==undefined&&r.a!=='')?r.a:(m['Score A']||''),
-      sB:(r.b!==undefined&&r.b!=='')?r.b:(m['Score B']||''),
-      tab:r.tab||m['Vainqueur TAB']||''
+      tv:col(m,'TV'),
+      sA:(r.a!==undefined&&r.a!=='')?r.a:col(m,'Score A','Score_A'),
+      sB:(r.b!==undefined&&r.b!=='')?r.b:col(m,'Score B','Score_B'),
+      tab:r.tab||col(m,'Vainqueur TAB','Vainqueur_TAB')
     };
   });
 
