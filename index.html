@@ -204,7 +204,25 @@ function csvRow(line){
   }
   r.push(c); return r;
 }
+// Normalise un en-tête : enlève accents, casse, espaces multiples
+function normHdr(s){
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/\s+/g,' ').trim();
+}
 
+// Récupère un onglet en lignes BRUTES (tableau de tableaux), sans déduire d'en-tête.
+// headers=0 empêche gviz de "manger" une ligne ; le scan de "Joueur" sécurise de toute façon.
+async function fetchCSVRaw(sid, name){
+  const url='https://docs.google.com/spreadsheets/d/'+sid+'/gviz/tq?tqx=out:csv&headers=0&sheet='+encodeURIComponent(name);
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('Feuille "'+name+'" inaccessible (Sheet partagé en lecture publique ?)');
+  const txt=await r.text();
+  const rows=[];
+  for(const line of txt.split('\n')){
+    if(line.trim()!=='') rows.push(csvRow(line).map(c=>c.replace(/^"|"$/g,'').trim()));
+  }
+  return rows;
+}
 // ════════════════════════════════════════════════════════════
 // LOAD DATA
 // ════════════════════════════════════════════════════════════
@@ -217,22 +235,24 @@ async function loadData(){
   if(key) localStorage.setItem('pp_key',key);
   loader(true,'Lecture du Google Sheet...');
   try{
-    const [cal,pronos,cj,jo]=await Promise.all([
+    const [cal,pronos,cjRows,jo]=await Promise.all([
       fetchCSV(sid,'Calendrier'),
       fetchCSV(sid,'Pronostics'),
-      fetchCSV(sid,'Classement_Jour'),
+      fetchCSVRaw(sid,'Classement_Jour'),   // ← brut désormais
       fetchCSV(sid,'Joueurs')
     ]);
-    D.cal=cal; D.pronos=pronos; D.cjRaw=cj; D.joueurs=jo;
+    D.cal=cal; D.pronos=pronos; D.cjRows=cjRows; D.cjRaw=cjRows; D.joueurs=jo;
     buildJsel();
     dot('ok','Connecté');
-    alert2('calert','✓ '+cal.length+' matchs Calendrier • '+pronos.length+' pronos • '+jo.length+' joueurs','aok');
+    alert2('calert','✓ '+cal.length+' matchs Calendrier • '+pronos.length+' pronos • '+jo.length+' joueurs • classement '+(cjRows.length>2?'OK':'?'),'aok');
     loader(false);
   }catch(err){
     loader(false); dot('er','Erreur');
     alert2('calert',err.message,'aerr');
   }
 }
+
+  
 
 // ════════════════════════════════════════════════════════════
 // JOURNEES — construites depuis Pronostics (qui a Journée + ID_Match)
@@ -343,27 +363,50 @@ function filterJ(){
 // ════════════════════════════════════════════════════════════
 function parseCJ(){
   D.cjData=[];
-  if(!D.cjRaw.length) return;
-  // Cherche la ligne d'en-têtes (celle qui contient "Joueur")
-  // Le CSV brut peut avoir des lignes vides avant
-  // On cherche parmi toutes les lignes brutes en re-parsant
-  // Mais on n'a que des objets parsés... 
-  // Solution : chercher dans cjRaw l'objet qui a une clé "Joueur"
-  const hasJoueur=D.cjRaw.filter(r=>r['Joueur']&&r['Joueur'].trim()!=='');
-  if(hasJoueur.length>0){
-    D.cjData=hasJoueur.map(r=>({
-      j:r['Joueur'],
-      pj:r['Points du Jour']||r['Points_Jour']||'0',
-      pc:r['Points Cumulés']||r['Points_Cumules']||'0',
-      e1:r['Évolution J-1']||r['Evolution J-1']||'=',
-      e2:r['Évolution J-2']||r['Evolution J-2']||'='
-    }));
-    return;
+  const rows = D.cjRows||[];
+  if(!rows.length) return;
+
+  // 1. Trouver la ligne d'en-têtes = celle qui contient une cellule "Joueur"
+  let hIdx=-1, joueurCol=-1;
+  for(let i=0;i<rows.length;i++){
+    const jc=rows[i].findIndex(c=>normHdr(c)==='joueur');
+    if(jc!==-1){ hIdx=i; joueurCol=jc; break; }
   }
-  // Fallback : le CSV exporte mal — essayer en cherchant les clés qui ressemblent à des noms
-  // Dans ton cas le CSV donne {"":"", "J1":"1"} → pas utilisable directement
-  // On va re-fetch avec le bon range via l'URL gid
-  D.cjData=[];
+  if(hIdx===-1) return; // en-tête introuvable
+
+  const hdr=rows[hIdx].map(normHdr);
+  const col=(...cands)=>{
+    for(const cand of cands){ const idx=hdr.indexOf(normHdr(cand)); if(idx!==-1) return idx; }
+    return -1;
+  };
+
+  const cPj = col('points du jour');
+  const cPc = col('points cumules');               // accents déjà retirés par normHdr
+  const cRk = col('classement');
+  const cE1 = col('evolution j-1','evolution j1');
+  const cE2 = col('evolution j-2','evolution j2');
+
+  const out=[];
+  for(let i=hIdx+1;i<rows.length;i++){
+    const name=(rows[i][joueurCol]||'').trim();
+    if(!name || normHdr(name)==='joueur') continue; // ignore vides / doublons d'en-tête
+    out.push({
+      j:name,
+      pj: cPj>=0 ? (rows[i][cPj]||'0').trim() : '0',
+      pc: cPc>=0 ? (rows[i][cPc]||'0').trim() : '0',
+      rk: cRk>=0 ? (parseInt(rows[i][cRk])||0) : 0,
+      e1: cE1>=0 ? (rows[i][cE1]||'0').trim() : '0',
+      e2: cE2>=0 ? (rows[i][cE2]||'0').trim() : '0'
+    });
+  }
+
+  // Tri par classement réel (rang asc) ; secours = points cumulés desc
+  out.sort((a,b)=>{
+    if(a.rk&&b.rk&&a.rk!==b.rk) return a.rk-b.rk;
+    return (parseInt(b.pc)||0)-(parseInt(a.pc)||0);
+  });
+
+  D.cjData=out;
 }
 
 // ════════════════════════════════════════════════════════════
