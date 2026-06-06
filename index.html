@@ -235,16 +235,17 @@ async function loadData(){
   if(key) localStorage.setItem('pp_key',key);
   loader(true,'Lecture du Google Sheet...');
   try{
-    const [cal,pronos,cjRows,jo]=await Promise.all([
+    const [cal,pronos,classRows,cjRows,jo]=await Promise.all([
       fetchCSV(sid,'Calendrier'),
       fetchCSV(sid,'Pronostics'),
-      fetchCSVRaw(sid,'Classement_Jour'),   // ← brut désormais
+      fetchCSVRaw(sid,'Classement'),        // ← source de vérité (Total réel, col Z)
+      fetchCSVRaw(sid,'Classement_Jour'),   // ← évolutions J-1 / J-2
       fetchCSV(sid,'Joueurs')
     ]);
-    D.cal=cal; D.pronos=pronos; D.cjRows=cjRows; D.cjRaw=cjRows; D.joueurs=jo;
+    D.cal=cal; D.pronos=pronos; D.classRows=classRows; D.cjRows=cjRows; D.cjRaw=cjRows; D.joueurs=jo;
     buildJsel();
     dot('ok','Connecté');
-    alert2('calert','✓ '+cal.length+' matchs Calendrier • '+pronos.length+' pronos • '+jo.length+' joueurs • classement '+(cjRows.length>2?'OK':'?'),'aok');
+    alert2('calert','✓ '+cal.length+' matchs • '+pronos.length+' pronos • '+jo.length+' joueurs • classement '+(classRows.length>2?'OK':'?'),'aok');
     loader(false);
   }catch(err){
     loader(false); dot('er','Erreur');
@@ -363,49 +364,55 @@ function filterJ(){
 // ════════════════════════════════════════════════════════════
 function parseCJ(){
   D.cjData=[];
-  const rows = D.cjRows||[];
-  if(!rows.length) return;
 
-  // 1. Trouver la ligne d'en-têtes = celle qui contient une cellule "Joueur"
-  let hIdx=-1, joueurCol=-1;
-  for(let i=0;i<rows.length;i++){
-    const jc=rows[i].findIndex(c=>normHdr(c)==='joueur');
-    if(jc!==-1){ hIdx=i; joueurCol=jc; break; }
+  // ── A. ONGLET "Classement" : Joueur + Total (source de vérité) ──
+  const cRows=D.classRows||[];
+  let h=-1,cJ=-1,cTot=-1;
+  for(let i=0;i<cRows.length;i++){
+    const jc=cRows[i].findIndex(c=>normHdr(c)==='joueur');
+    const tc=cRows[i].findIndex(c=>normHdr(c)==='total');
+    if(jc!==-1&&tc!==-1){ h=i; cJ=jc; cTot=tc; break; }
   }
-  if(hIdx===-1) return; // en-tête introuvable
+  if(h===-1) return; // en-tête introuvable
 
-  const hdr=rows[hIdx].map(normHdr);
-  const col=(...cands)=>{
-    for(const cand of cands){ const idx=hdr.indexOf(normHdr(cand)); if(idx!==-1) return idx; }
-    return -1;
-  };
+  // ── B. ONGLET "Classement_Jour" : évolutions J-1 / J-2 (par nom) ──
+  const evo={}; const jRows=D.cjRows||[];
+  let jh=-1,jJ=-1;
+  for(let i=0;i<jRows.length;i++){ const jc=jRows[i].findIndex(c=>normHdr(c)==='joueur'); if(jc!==-1){jh=i;jJ=jc;break;} }
+  if(jh!==-1){
+    const jhdr=jRows[jh].map(normHdr);
+    const find=(...cs)=>{for(const c of cs){const k=jhdr.indexOf(normHdr(c));if(k!==-1)return k;}return -1;};
+    const cE1=find('evolution j-1','evolution j1'), cE2=find('evolution j-2','evolution j2');
+    for(let i=jh+1;i<jRows.length;i++){
+      const nm=(jRows[i][jJ]||'').trim(); if(!nm)continue;
+      evo[normHdr(nm)]={e1:cE1>=0?(jRows[i][cE1]||'0').trim():'0', e2:cE2>=0?(jRows[i][cE2]||'0').trim():'0'};
+    }
+  }
 
-  const cPj = col('points du jour');
-  const cPc = col('points cumules');               // accents déjà retirés par normHdr
-  const cRk = col('classement');
-  const cE1 = col('evolution j-1','evolution j1');
-  const cE2 = col('evolution j-2','evolution j2');
+  // ── C. POINTS DU JOUR : calculés depuis les pronos de la journée sélectionnée ──
+  const ptsJour={};
+  (D.pronosJ||[]).forEach(p=>{
+    const nm=normHdr(p['Joueur']||''); if(!nm)return;
+    const v=parseInt(p['Points']); if(!isNaN(v)) ptsJour[nm]=(ptsJour[nm]||0)+v;
+  });
 
+  // ── D. Fusion ──
   const out=[];
-  for(let i=hIdx+1;i<rows.length;i++){
-    const name=(rows[i][joueurCol]||'').trim();
-    if(!name || normHdr(name)==='joueur') continue; // ignore vides / doublons d'en-tête
+  for(let i=h+1;i<cRows.length;i++){
+    const name=(cRows[i][cJ]||'').trim();
+    if(!name||normHdr(name)==='joueur') continue;
+    const key=normHdr(name);
+    const ev=evo[key]||{e1:'0',e2:'0'};
     out.push({
       j:name,
-      pj: cPj>=0 ? (rows[i][cPj]||'0').trim() : '0',
-      pc: cPc>=0 ? (rows[i][cPc]||'0').trim() : '0',
-      rk: cRk>=0 ? (parseInt(rows[i][cRk])||0) : 0,
-      e1: cE1>=0 ? (rows[i][cE1]||'0').trim() : '0',
-      e2: cE2>=0 ? (rows[i][cE2]||'0').trim() : '0'
+      pj:(ptsJour[key]||0).toString(),
+      pc:(cRows[i][cTot]||'0').toString().trim(),
+      e1:ev.e1, e2:ev.e2
     });
   }
 
-  // Tri par classement réel (rang asc) ; secours = points cumulés desc
-  out.sort((a,b)=>{
-    if(a.rk&&b.rk&&a.rk!==b.rk) return a.rk-b.rk;
-    return (parseInt(b.pc)||0)-(parseInt(a.pc)||0);
-  });
-
+  // Tri par Total décroissant = vrai classement
+  out.sort((a,b)=>(parseInt(b.pc)||0)-(parseInt(a.pc)||0));
   D.cjData=out;
 }
 
