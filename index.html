@@ -259,31 +259,20 @@ async function loadData(){
 // JOURNEES — construites depuis Pronostics (qui a Journée + ID_Match)
 // ════════════════════════════════════════════════════════════
 function buildJsel(){
-  // On lit les journées depuis PRONOSTICS (colonne "Journée")
   const set=new Set();
-  D.pronos.forEach(p=>{
-    const j=(p['Journée']||p['Journee']||'').trim();
-    if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase());
-  });
-  // Fallback : depuis Calendrier
-  if(set.size===0){
-    D.cal.forEach(m=>{
-      const j=(m['Journée']||m['Journee']||'').trim();
-      if(j&&/^J\d+$/i.test(j)) set.add(j.toUpperCase());
-    });
-  }
+  D.cal.forEach(m=>{const j=(m['Journée']||m['Journee']||'').trim();if(j&&/^J\d+$/i.test(j))set.add(j.toUpperCase());});
+  if(set.size===0){D.pronos.forEach(p=>{const j=(p['Journée']||p['Journee']||'').trim();if(j&&/^J\d+$/i.test(j))set.add(j.toUpperCase());});}
   D.journees=Array.from(set).sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
   const sel=document.getElementById('jsel');
   if(!D.journees.length){sel.innerHTML='<option value="">Aucune journée trouvée</option>';return;}
   sel.innerHTML=D.journees.map(j=>'<option value="'+j+'">'+j+'</option>').join('');
-  // Auto-select : dernière journée avec au moins un prono avec des points
+  // Auto-sélection : dernière journée dont au moins un match a déjà un score
   let def=D.journees[0];
   for(let i=D.journees.length-1;i>=0;i--){
     const j=D.journees[i];
-    if(D.pronos.some(p=>(p['Journée']||p['Journee']||'').toUpperCase()===j&&(p['Points']||'')!=='')){def=j;break;}
+    if(D.cal.some(m=>(m['Journée']||m['Journee']||'').toUpperCase()===j&&(m['Score A']||'').trim()!==''&&(m['Score B']||'').trim()!=='')){def=j;break;}
   }
-  sel.value=def;
-  filterJ();
+  sel.value=def; filterJ();
 }
 
 function prevJ(){const sel=document.getElementById('jsel'),i=D.journees.indexOf(sel.value);if(i>0){sel.value=D.journees[i-1];filterJ();}}
@@ -296,65 +285,64 @@ function filterJ(){
   const j=document.getElementById('jsel').value;
   if(!j) return;
   D.jsel=j;
+  const JU=j.toUpperCase();
 
-  // 1. Pronos de cette journée
-  D.pronosJ=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===j.toUpperCase());
-
-  // 2. IDs uniques des matchs de cette journée (depuis Pronostics)
-  const idsSet=new Set(D.pronosJ.map(p=>p['ID_Match']||'').filter(Boolean));
-  const ids=Array.from(idsSet).sort((a,b)=>parseInt(a)-parseInt(b));
-
-  // 3. Pour chaque ID, construire la fiche match
-  // Enrichissement depuis Calendrier : cherche par Equipe_A ou ID si dispo
-  const calMap={};
-  D.cal.forEach((m,idx)=>{
-    // Clé par équipe A (car Calendrier n'a pas toujours ID_Match dans le CSV)
-    const eA=(m['Equipe A']||'').trim();
-    const eB=(m['Equipe B']||'').trim();
-    if(eA) calMap[eA+'|'+eB]=m;
-    // Aussi par index+1 au cas où
-    calMap['#'+(idx+1)]=m;
+  // Index de TOUS les pronos par paire d'équipes normalisée (indépendant du champ Journée)
+  const byTeams={};
+  D.pronos.forEach(p=>{
+    const k=normHdr(p['Equipe_A'])+'|'+normHdr(p['Equipe_B']);
+    (byTeams[k]=byTeams[k]||[]).push(p);
   });
 
-  D.matchesJ=ids.map(id=>{
-    // Trouver un prono de ce match pour avoir Equipe_A, Equipe_B
-    const sample=D.pronos.find(p=>p['ID_Match']===id)||{};
-    const eA=sample['Equipe_A']||'';
-    const eB=sample['Equipe_B']||'';
-    // Chercher dans Calendrier
-    const calM=calMap[eA+'|'+eB]||calMap['#'+id]||{};
-    // Score depuis Calendrier ou résultat saisi
+  // 1. Matchs de la journée = CALENDRIER (source de vérité)
+  let base=D.cal.filter(m=>(m['Journée']||m['Journee']||'').toUpperCase()===JU).map(m=>({
+    eA:(m['Equipe A']||'').trim(), eB:(m['Equipe B']||'').trim(),
+    heure:(m['Heure']||'').trim(), date:(m['Date']||'').trim(),
+    groupe:(m['Groupe']||'').trim(), phase:(m['Phase']||'').trim(),
+    bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:(m['TV']||'').trim(),
+    calA:(m['Score A']||'').trim(), calB:(m['Score B']||'').trim(),
+    calTab:(m['Vainqueur TAB']||'').trim(), calId:(m['ID_Match']||'').trim()
+  }));
+
+  // Filet de sécurité : si le Calendrier ne renvoie rien (ex. col Journée absente du CSV), on retombe sur Pronostics
+  if(!base.length){
+    const pj=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===JU);
+    const ids=[...new Set(pj.map(p=>(p['ID_Match']||'').trim()).filter(Boolean))];
+    base=ids.map(id=>{const s=pj.find(p=>(p['ID_Match']||'').trim()===id)||{};return{eA:(s['Equipe_A']||'').trim(),eB:(s['Equipe_B']||'').trim(),heure:'',date:(s['Date']||'').trim(),groupe:'',phase:(s['Phase']||'').trim(),bonus:false,tv:'',calA:'',calB:'',calTab:'',calId:id};});
+  }
+
+  // 2. Fiches matchs + rattachement des pronos par paire d'équipes
+  D.matchesJ=base.map((m,idx)=>{
+    const key=normHdr(m.eA)+'|'+normHdr(m.eB);
+    const mp=byTeams[key]||[];
+    const id=m.calId || (mp[0]&&(mp[0]['ID_Match']||'').trim()) || ('c'+idx);
     const r=D.res[id]||{};
     return {
-      id,
-      eA, eB,
-      heure:calM['Heure']||'',
-      date:calM['Date']||sample['Date']||'',
-      groupe:calM['Groupe']||'',
-      phase:calM['Phase']||sample['Phase']||'',
-      bonus:(calM['Match Bonus']||'').toLowerCase()==='oui',
-      tv:calM['TV']||'',
-      sA:(r.a!==undefined&&r.a!=='')?r.a:(calM['Score A']||''),
-      sB:(r.b!==undefined&&r.b!=='')?r.b:(calM['Score B']||''),
-      tab:r.tab||calM['Vainqueur TAB']||''
+      id, eA:m.eA, eB:m.eB, key,
+      heure:m.heure, date:m.date, groupe:m.groupe, phase:m.phase, bonus:m.bonus, tv:m.tv,
+      sA:(r.a!==undefined&&r.a!=='')?r.a:m.calA,
+      sB:(r.b!==undefined&&r.b!=='')?r.b:m.calB,
+      tab:r.tab||m.calTab,
+      _pronos:mp
     };
   });
 
-  // 4. Classement_Jour : chercher les colonnes réelles
+  // 3. Tri chronologique réel → soirée (11/06 21h) avant nuit (12/06 04h)
+  D.matchesJ.sort((a,b)=>chronoKey(a.date,a.heure)-chronoKey(b.date,b.heure));
+
+  // 4. pronosJ = union des pronos des matchs
+  D.pronosJ=[]; D.matchesJ.forEach(m=>{D.pronosJ=D.pronosJ.concat(m._pronos);});
+
+  // 5. Pré-remplir res
+  D.matchesJ.forEach(m=>{if(!D.res[m.id])D.res[m.id]={a:m.sA,b:m.sB,tab:m.tab};});
+
+  // 6. Classement
   parseCJ();
 
-  // 5. Pré-remplir res depuis Calendrier
-  D.matchesJ.forEach(m=>{
-    if(!D.res[m.id]) D.res[m.id]={a:m.sA,b:m.sB,tab:m.tab};
-  });
-
-  // Info sous le sélecteur
   const dates=[...new Set(D.matchesJ.map(m=>m.date).filter(Boolean))];
   document.getElementById('jinfo').textContent=dates.length?'📅 '+dates.join(' → ')+' • '+D.matchesJ.length+' match(s) • '+D.pronosJ.length+' pronos':'';
 
-  renderM();
-  renderPron();
-  renderClass();
+  renderM(); renderPron(); renderClass();
   document.getElementById('gbtn').disabled=D.matchesJ.length===0;
 }
 
@@ -470,7 +458,7 @@ function renderPron(){
   if(!D.matchesJ.length){c.innerHTML='<div class="empty"><span class="ei">🔮</span>Sélectionne une journée</div>';return;}
   let h='<div style="font-size:.72rem;color:var(--mu);margin-bottom:.75rem;font-family:\'DM Mono\',monospace">'+D.jsel+' — '+D.pronosJ.length+' pronos sur '+D.matchesJ.length+' matchs</div>';
   D.matchesJ.forEach(m=>{
-    const mp=D.pronosJ.filter(p=>p['ID_Match']===m.id);
+    const mp=m._pronos||[];
     if(!mp.length) return;
     h+='<div style="margin-bottom:1rem"><div style="font-size:.78rem;font-weight:600;color:var(--mu);margin-bottom:.4rem">'+m.eA+' vs '+m.eB+'</div><div class="mpronos">';
     mp.forEach(p=>{
@@ -492,17 +480,18 @@ function buildPrompt(){
   const curN=parseInt(j.replace(/\D/g,''))||0;
   const nextJ='J'+(curN+1);
 
-  // Matchs J+1 depuis Pronostics ou Calendrier
-  const nextPronos=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase());
-  const nextIds=[...new Set(nextPronos.map(p=>p['ID_Match']).filter(Boolean))].sort((a,b)=>parseInt(a)-parseInt(b));
-  const nextMatches=nextIds.map(id=>{
-    const s=D.pronos.find(p=>p['ID_Match']===id&&(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase())||{};
-    const calM=D.cal.find(m=>(m['Equipe A']||'')===(s['Equipe_A']||''))||(D.cal[parseInt(id)-1])||{};
-    return {id,eA:s['Equipe_A']||'',eB:s['Equipe_B']||'',heure:calM['Heure']||'',date:calM['Date']||s['Date']||'',groupe:calM['Groupe']||'',bonus:(calM['Match Bonus']||'').toLowerCase()==='oui',tv:calM['TV']||''};
-  });
+  // Matchs J+1 depuis le CALENDRIER (chronologique)
+  let nextMatches=D.cal.filter(m=>(m['Journée']||m['Journee']||'').toUpperCase()===nextJ.toUpperCase()).map(m=>({
+    eA:(m['Equipe A']||'').trim(),eB:(m['Equipe B']||'').trim(),heure:(m['Heure']||'').trim(),date:(m['Date']||'').trim(),groupe:(m['Groupe']||'').trim(),bonus:(m['Match Bonus']||'').toLowerCase()==='oui',tv:(m['TV']||'').trim()
+  }));
+  if(!nextMatches.length){
+    const np=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase());
+    const nids=[...new Set(np.map(p=>(p['ID_Match']||'').trim()).filter(Boolean))];
+    nextMatches=nids.map(id=>{const s=np.find(p=>(p['ID_Match']||'').trim()===id)||{};return{eA:(s['Equipe_A']||'').trim(),eB:(s['Equipe_B']||'').trim(),heure:'',date:(s['Date']||'').trim(),groupe:'',bonus:false,tv:''};});
+  }
+  nextMatches.sort((a,b)=>chronoKey(a.date,a.heure)-chronoKey(b.date,b.heure));
 
-  // Jokers
-  const joueursI=D.joueurs.filter(j=>(j['Joueur']||'').trim()).map(j=>({j:j['Joueur']||'',v:j['Vainqueur']||'',f:j['Finaliste']||''}));
+  const joueursI=D.joueurs.filter(x=>(x['Joueur']||'').trim()).map(x=>({j:x['Joueur']||'',v:x['Vainqueur']||'',f:x['Finaliste']||''}));
 
   let p=mtype==='tendances'?'Génère les tendances avant-match pour la '+j+'.\n\n':'Génère le récap matin pour la '+j+'.\n\n';
 
@@ -515,7 +504,7 @@ function buildPrompt(){
     p+=m.eA+' vs '+m.eB+'\n';
     if(sA!==''&&sB!=='') p+='Résultat : '+m.eA+' '+sA+' - '+sB+' '+m.eB+(m.tab?' (TAB: '+m.tab+')':'')+'\n';
     else p+='Résultat : non renseigné\n';
-    const pr=D.pronosJ.filter(px=>px['ID_Match']===m.id);
+    const pr=m._pronos||[];
     if(pr.length){
       p+='Pronostics ('+pr.length+' joueurs) :\n';
       pr.forEach(px=>{
@@ -537,7 +526,7 @@ function buildPrompt(){
       const f=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
       p+=(i+1)+'. '+r.j+' — '+r.pj+' pts ce jour — '+r.pc+' pts total — Evo J-1: '+f(e1)+' | Evo J-2: '+f(e2)+'\n';
     });
-  }else p+='Données non disponibles (Classement_Jour non lu).\n';
+  }else p+='Données non disponibles (Classement non lu).\n';
 
   p+='\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n';
   joueursI.forEach(r=>{if(r.v||r.f)p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';});
@@ -625,6 +614,17 @@ function debugData(){
 // ════════════════════════════════════════════════════════════
 // UTILS
 // ════════════════════════════════════════════════════════════
+
+  // Clé temporelle date+heure (gère 11/06/2026 et 2026-06-11) → tri chronologique
+function chronoKey(date,heure){
+  const d=(date||'').trim().split(/[\/\-]/);
+  let Y=2026,Mo=1,Da=1;
+  if(d.length===3){
+    if(d[0].length===4){Y=+d[0];Mo=+d[1];Da=+d[2];} else {Da=+d[0];Mo=+d[1];Y=+d[2];}
+  }
+  const hm=(heure||'0:0').trim().split(':');
+  return new Date(Y,(Mo||1)-1,Da||1,+hm[0]||0,+hm[1]||0).getTime();
+}
 function loader(on,txt){document.getElementById('loader').classList.toggle('on',on);if(txt)document.getElementById('ltxt').textContent=txt;}
 function dot(cls,lbl){document.getElementById('sdot').className='sdot '+cls;document.getElementById('slbl').textContent=lbl;}
 function alert2(id,msg,cls){const el=document.getElementById(id);el.textContent=msg;el.className='alert '+cls+' on';}
