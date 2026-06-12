@@ -481,11 +481,13 @@ function buildPrompt(){
   const curN=parseInt(j.replace(/\D/g,''))||0;
   const nextJ='J'+(curN+1);
   const f=v=>v>0?'+'+v:(''+v);
+  const flags=buildFlags();
+  const fl=nom=>flags[normHdr(nom)]||'';
 
-  // Matchs J+1 depuis le CALENDRIER (avec numéro de match continu)
+  // Matchs J+1 depuis le CALENDRIER (heure nettoyée, drapeaux, repli par équipes)
   let nextMatches=D.cal.filter(m=>(m['Journée']||m['Journee']||'').toUpperCase()===nextJ.toUpperCase()).map(m=>({
     id:(m['ID_Match']||'').trim(), eA:(m['Equipe A']||'').trim(), eB:(m['Equipe B']||'').trim(),
-    heure:(m['Heure']||'').trim(), date:(m['Date']||'').trim(), groupe:(m['Groupe']||'').trim(),
+    heure:fmtHeure(m['Heure']), date:(m['Date']||'').trim(), groupe:(m['Groupe']||'').trim(),
     bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:(m['TV']||'').trim()
   }));
   if(!nextMatches.length){
@@ -508,7 +510,7 @@ function buildPrompt(){
     const sA=(r.a!==undefined&&r.a!=='')?r.a:m.sA;
     const sB=(r.b!==undefined&&r.b!=='')?r.b:m.sB;
     p+='\nMatch #'+m.id+' | '+m.date+' '+m.heure+' | '+m.groupe+(m.bonus?' ⭐ BONUS':'')+' | TV : '+(m.tv||'?')+'\n';
-    p+=m.eA+' vs '+m.eB+'\n';
+    p+=fl(m.eA)+' '+m.eA+' vs '+m.eB+' '+fl(m.eB)+'\n';
     if(sA!==''&&sB!=='') p+='Résultat final : '+m.eA+' '+sA+' - '+sB+' '+m.eB+(m.tab?' (TAB : '+m.tab+')':'')+'\n';
     else p+='Résultat : non renseigné\n';
     const pr=m._pronos||[];
@@ -566,8 +568,7 @@ function buildPrompt(){
   joueursI.forEach(r=>{if(r.v||r.f)p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';});
 
   p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
-  if(nextMatches.length) nextMatches.forEach(m=>{p+='Match #'+(m.id||'?')+' — '+m.eA+' vs '+m.eB+' : '+(m.heure||'?')+(m.tv?', '+m.tv:'')+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' - MATCH BONUS':'')+'\n';});
-  else p+='Aucun match trouvé pour '+nextJ+'.\n';
+if(nextMatches.length) nextMatches.forEach(m=>{p+='Match #'+(m.id||'?')+' — '+fl(m.eA)+' '+m.eA+' vs '+m.eB+' '+fl(m.eB)+' : '+(m.heure||'(heure à confirmer)')+(m.tv?', '+m.tv:'')+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' - MATCH BONUS':'')+'\n';});  else p+='Aucun match trouvé pour '+nextJ+'.\n';
   return p;
 }
 
@@ -726,6 +727,23 @@ function debugData(){
 // UTILS
 // ════════════════════════════════════════════════════════════
 
+  // "21:00:00" → "21h00" ; "3:00" → "03h00"
+function fmtHeure(h){
+  h=(h||'').trim(); if(!h) return '';
+  const m=h.match(/(\d{1,2})[:hH](\d{2})/);
+  if(!m) return h;
+  return m[1].padStart(2,'0')+'h'+m[2];
+}
+// Map nom d'équipe normalisé → emoji drapeau (depuis la feuille Équipes, colonne "#")
+function buildFlags(){
+  const map={};
+  (D.equipes||[]).forEach(e=>{
+    const nom=(e['Équipes']||e['Equipes']||e['Equipe']||'').trim();
+    const dr=(e['#']||'').trim();
+    if(nom&&dr) map[normHdr(nom)]=dr;
+  });
+  return map;
+}
   // Clé temporelle date+heure (gère 11/06/2026 et 2026-06-11) → tri chronologique
 function chronoKey(date,heure){
   const d=(date||'').trim().split(/[\/\-]/);
