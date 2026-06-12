@@ -536,6 +536,18 @@ function buildPrompt(){
       if(!isNaN(pts)) o.day+=pts;
     });
   });
+
+  // ── MOUVEMENTS AU CLASSEMENT (chiffres bruts ; le modèle décide quoi en faire) ──
+  // Convention : Évolution = rang(jour précédent) - rang(actuel) → positif = MONTÉE, négatif = CHUTE.
+  const ev1=D.cjData.map(r=>({j:r.j,e:parseInt(r.e1)||0})).filter(r=>r.e!==0);
+  if(ev1.length){
+    const ordered=[...ev1].sort((a,b)=>b.e-a.e); // des plus grosses montées aux plus grosses chutes
+    p+='\n=== ÉVOLUTIONS DE PLACES DEPUIS LA VEILLE (valeurs EXACTES, positif = places gagnées, négatif = places perdues) ===\n';
+    p+=ordered.map(m=>m.j+' '+f(m.e)).join('\n')+'\n';
+    p+='Ce sont les seules variations de places réelles. NE crée PAS de rubrique "remontées/chutes" : intègre ces mouvements naturellement dans TOPS et FLOPS, en citant en général les 2-3 plus belles montées (en insistant sur la première) et les 2-3 plus grosses chutes, MAIS seulement si la journée le justifie. Si les écarts sont anecdotiques, n\'en parle pas ou à peine. Ne mentionne que des joueurs réellement présents dans cette liste.\n';
+  }
+  // (rien sur J1 : pas de veille, donc aucune ligne — le modèle n\'aura pas de quoi inventer)
+  
   const rankMap={}; D.cjData.forEach((r,i)=>{rankMap[normHdr(r.j)]={rk:i+1,pc:r.pc,e1:parseInt(r.e1)||0,e2:parseInt(r.e2)||0};});
   const order=D.cjData.length?D.cjData.map(r=>r.j):Object.keys(perPlayer);
   order.forEach(nm=>{
@@ -652,7 +664,8 @@ async function generate(){
       body:JSON.stringify({
         model:'claude-opus-4-8',
         max_tokens:8000,
-        thinking:{type:'enabled',budget_tokens:4000}, // ← réflexion : monte à 6000/8000 si tu veux encore plus de rigueur
+        thinking:{type:'adaptive'},
+        output_config:{effort:'high'}, // ← effort maximal pour la rigueur ; passe à 'medium' si tu veux + rapide
         system:sys,
         messages:[{role:'user',content:prompt}]
       })
