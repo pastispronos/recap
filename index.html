@@ -485,9 +485,22 @@ function buildPrompt(){
   const cap=s=>(s||'').toLowerCase().replace(/(^|[\s\-])([a-zàâäéèêëîïôöùûüç])/g,(m,a,b)=>a+b.toUpperCase());
   const flags=buildFlags();
   const fl=nom=>flags[normHdr(nom)]||'';
-  // "11/06/2026" → "jeudi 11 juin"
-  const fmtDate=d=>{const k=chronoKey(d,'12:00');if(!k)return (d||'').trim();const dt=new Date(k);return dt.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});};
-
+  
+// "11/06/2026" → "jeudi 11 juin" (robuste, indépendant du navigateur)
+  const MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const JOURS=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const fmtDate=d=>{
+    const s=(d||'').trim(); if(!s) return '';
+    const m=s.match(/(\d{1,4})[\/\-.](\d{1,2})[\/\-.](\d{1,4})/);
+    if(!m) return s;
+    let Y,Mo,Da;
+    if(m[1].length===4){Y=+m[1];Mo=+m[2];Da=+m[3];} else {Da=+m[1];Mo=+m[2];Y=+m[3];}
+    if(Mo<1||Mo>12) return s;
+    const dt=new Date(Y,Mo-1,Da);
+    if(isNaN(dt.getTime())) return s;
+    return JOURS[dt.getDay()]+' '+Da+' '+MOIS[Mo-1];
+  };
+  
   // Matchs J+1 depuis le CALENDRIER (date + heure nettoyées, drapeaux, repli par équipes)
   let nextMatches=D.cal.filter(m=>(m['Journée']||m['Journee']||'').toUpperCase()===nextJ.toUpperCase()).map(m=>({
     id:(m['ID_Match']||'').trim(), eA:(m['Equipe A']||'').trim(), eB:(m['Equipe B']||'').trim(),
@@ -576,7 +589,11 @@ function buildPrompt(){
   joueursI.forEach(r=>{if(r.v||r.f)p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';});
 
   p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
-if(nextMatches.length) nextMatches.forEach(m=>{p+='Match #'+(m.id||'?')+' — '+fl(m.eA)+' '+m.eA+' vs '+m.eB+' '+fl(m.eB)+' : '+fmtDate(m.date)+(m.heure?' à '+m.heure:' (heure à confirmer)')+(m.tv?', '+m.tv:'')+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' - MATCH BONUS':'')+'\n';});  else p+='Aucun match trouvé pour '+nextJ+'.\n';
+if(nextMatches.length) nextMatches.forEach(m=>{
+    const quand=(fmtDate(m.date)||'(date à confirmer)')+(m.heure?' à '+m.heure:' (heure à confirmer)');
+    p+='Match #'+(m.id||'?')+' — '+fl(m.eA)+' '+m.eA+' vs '+m.eB+' '+fl(m.eB)+' : quand='+quand+(m.tv?' | TV : '+m.tv:'')+(m.groupe?' | '+m.groupe:'')+(m.bonus?' | MATCH BONUS':'')+'\n';
+  });
+  else p+='Aucun match trouvé pour '+nextJ+'.\n';
   return p;
 }
 
@@ -643,7 +660,7 @@ Titre : <b>LE CLASSEMENT</b>. Écris uniquement, dans un <p> : [Insérer le clas
 
 6) LES MATCHS SUIVANTS
 Titre : <b>LES MATCHS DE DEMAIN</b> (soir) ou <b>LES MATCHS D'AUJOURD'HUI ET DE CETTE NUIT</b> (matin).
-Liste chronologique, chaque match : <b>MATCH #[numéro] — [Équipe A] vs [Équipe B]</b> : [heure], [chaînes TV] (ajoute " - MATCH BONUS" si bonus).
+Liste chronologique, chaque match : <b>MATCH #[numéro] — [Équipe A] vs [Équipe B]</b> : [jour et date] à [heure], [chaînes TV] (ajoute " - MATCH BONUS" si bonus). La date et l'heure te sont fournies dans le champ "quand=..." de chaque match : reprends-les EXACTEMENT, sans jamais les omettre ni les inventer.
 Puis une phrase courte qui donne envie de suivre. Termine par : "Les tendances des matchs du jour arrivent ce midi." (matin) ou "Les tendances arrivent demain matin." (soir).
 
 7) SIGNATURE
@@ -764,13 +781,17 @@ function debugData(){
 // UTILS
 // ════════════════════════════════════════════════════════════
 
-  // "21:00:00" → "21h00" ; "3:00" → "03h00"
 function fmtHeure(h){
-  h=(h||'').trim(); if(!h) return '';
+  h=(h||'').toString().trim(); if(!h) return '';
+  // fraction de jour (gviz exporte parfois une heure pure ainsi : "0.875" = 21:00)
+  if(/^0?\.\d+$/.test(h)){const t=Math.round(parseFloat(h)*1440);return String(Math.floor(t/60)).padStart(2,'0')+'h'+String(t%60).padStart(2,'0');}
+  const pm=/pm/i.test(h), am=/am/i.test(h);
   const m=h.match(/(\d{1,2})[:hH](\d{2})/);
   if(!m) return h;
-  return m[1].padStart(2,'0')+'h'+m[2];
+  let hh=+m[1]; if(pm&&hh<12)hh+=12; if(am&&hh===12)hh=0;
+  return String(hh).padStart(2,'0')+'h'+m[2];
 }
+  
 // Map nom d'équipe normalisé → emoji drapeau (feuille Équipes)
 function buildFlags(){
   const map={};
@@ -791,7 +812,7 @@ function chronoKey(date,heure){
   if(d.length===3){
     if(d[0].length===4){Y=+d[0];Mo=+d[1];Da=+d[2];} else {Da=+d[0];Mo=+d[1];Y=+d[2];}
   }
-  const hm=(heure||'0:0').trim().split(':');
+const hm=(heure||'0:0').trim().split(/[:hH]/);
   return new Date(Y,(Mo||1)-1,Da||1,+hm[0]||0,+hm[1]||0).getTime();
 }
 function loader(on,txt){document.getElementById('loader').classList.toggle('on',on);if(txt)document.getElementById('ltxt').textContent=txt;}
