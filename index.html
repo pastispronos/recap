@@ -479,60 +479,81 @@ function buildPrompt(){
   const mtype=document.getElementById('mtype').value;
   const curN=parseInt(j.replace(/\D/g,''))||0;
   const nextJ='J'+(curN+1);
+  const f=v=>v>0?'+'+v:(''+v);
 
-  // Matchs J+1 depuis le CALENDRIER (chronologique)
+  // Matchs J+1 depuis le CALENDRIER (avec numéro de match continu)
   let nextMatches=D.cal.filter(m=>(m['Journée']||m['Journee']||'').toUpperCase()===nextJ.toUpperCase()).map(m=>({
-    eA:(m['Equipe A']||'').trim(),eB:(m['Equipe B']||'').trim(),heure:(m['Heure']||'').trim(),date:(m['Date']||'').trim(),groupe:(m['Groupe']||'').trim(),bonus:(m['Match Bonus']||'').toLowerCase()==='oui',tv:(m['TV']||'').trim()
+    id:(m['ID_Match']||'').trim(), eA:(m['Equipe A']||'').trim(), eB:(m['Equipe B']||'').trim(),
+    heure:(m['Heure']||'').trim(), date:(m['Date']||'').trim(), groupe:(m['Groupe']||'').trim(),
+    bonus:(m['Match Bonus']||'').toLowerCase()==='oui', tv:(m['TV']||'').trim()
   }));
   if(!nextMatches.length){
     const np=D.pronos.filter(p=>(p['Journée']||p['Journee']||'').toUpperCase()===nextJ.toUpperCase());
     const nids=[...new Set(np.map(p=>(p['ID_Match']||'').trim()).filter(Boolean))];
-    nextMatches=nids.map(id=>{const s=np.find(p=>(p['ID_Match']||'').trim()===id)||{};return{eA:(s['Equipe_A']||'').trim(),eB:(s['Equipe_B']||'').trim(),heure:'',date:(s['Date']||'').trim(),groupe:'',bonus:false,tv:''};});
+    nextMatches=nids.map(id=>{const s=np.find(p=>(p['ID_Match']||'').trim()===id)||{};return{id,eA:(s['Equipe_A']||'').trim(),eB:(s['Equipe_B']||'').trim(),heure:'',date:(s['Date']||'').trim(),groupe:'',bonus:false,tv:''};});
   }
+  nextMatches.forEach(m=>{if(!m.id){const s=D.pronos.find(p=>normHdr(p['Equipe_A'])===normHdr(m.eA)&&normHdr(p['Equipe_B'])===normHdr(m.eB));if(s)m.id=(s['ID_Match']||'').trim();}});
   nextMatches.sort((a,b)=>chronoKey(a.date,a.heure)-chronoKey(b.date,b.heure));
 
   const joueursI=D.joueurs.filter(x=>(x['Joueur']||'').trim()).map(x=>({j:x['Joueur']||'',v:x['Vainqueur']||'',f:x['Finaliste']||''}));
 
-  let p=mtype==='tendances'?'Génère les tendances avant-match pour la '+j+'.\n\n':'Génère le récap matin pour la '+j+'.\n\n';
+  let p=(mtype==='tendances'?'Génère les tendances avant-match pour la '+j+'.\n\n':'Génère le mail récap du MATIN pour la '+j+'.\n\n');
+  p+='TYPE DE MAIL : MATIN (envoyé entre 8h et 14h). Emploie impérativement les titres et formules du MATIN (Bonjour à tous, / LES MATCHS D\'HIER / LES MATCHS D\'AUJOURD\'HUI ET DE CETTE NUIT / "Les tendances des matchs du jour arrivent ce midi." / Bonne journée,).\n';
+  p+='Numérotation des matchs CONTINUE sur tout le tournoi : réutilise les # fournis ci-dessous tels quels.\n';
 
-  p+='=== MATCHS DE LA '+j+' ===\n';
+  p+='\n=== MATCHS DE LA '+j+' (matchs d\'hier) ===\n';
   D.matchesJ.forEach(m=>{
     const r=D.res[m.id]||{};
     const sA=(r.a!==undefined&&r.a!=='')?r.a:m.sA;
     const sB=(r.b!==undefined&&r.b!=='')?r.b:m.sB;
-    p+='\nMatch #'+m.id+' | '+m.date+' '+m.heure+' | '+m.groupe+(m.bonus?' ⭐ BONUS':'')+' | 📺 '+(m.tv||'?')+'\n';
+    p+='\nMatch #'+m.id+' | '+m.date+' '+m.heure+' | '+m.groupe+(m.bonus?' ⭐ BONUS':'')+' | TV : '+(m.tv||'?')+'\n';
     p+=m.eA+' vs '+m.eB+'\n';
-    if(sA!==''&&sB!=='') p+='Résultat : '+m.eA+' '+sA+' - '+sB+' '+m.eB+(m.tab?' (TAB: '+m.tab+')':'')+'\n';
+    if(sA!==''&&sB!=='') p+='Résultat final : '+m.eA+' '+sA+' - '+sB+' '+m.eB+(m.tab?' (TAB : '+m.tab+')':'')+'\n';
     else p+='Résultat : non renseigné\n';
     const pr=m._pronos||[];
     if(pr.length){
       p+='Pronostics ('+pr.length+' joueurs) :\n';
       pr.forEach(px=>{
-        p+='  '+px['Joueur']+' : '+px['Prono_Equipe_A']+'-'+px['Prono_Equipe_B'];
+        p+='  '+px['Joueur']+' : '+(px['Prono_Equipe_A']||'?')+'-'+(px['Prono_Equipe_B']||'?');
         if(px['Prono_Vainqueur_TAB']) p+=' TAB:'+px['Prono_Vainqueur_TAB'];
         if((px['Joker']||'').toLowerCase()==='oui') p+=' [JOKER x2]';
-        if(px['Points']!=='') p+=' → '+px['Points']+' pts';
-        if(px['Points_Texte']) p+=' ('+px['Points_Texte']+')';
-        if(px['Performance']) p+=' ['+px['Performance']+']';
+        if((px['Points']||'')!=='') p+=' = '+px['Points']+' pts';
         p+='\n';
       });
     }else p+='  (aucun prono)\n';
   });
 
-  p+='\n=== CLASSEMENT APRÈS '+j+' ===\n';
-  if(D.cjData.length){
-    D.cjData.forEach((r,i)=>{
-      const e1=parseInt(r.e1)||0,e2=parseInt(r.e2)||0;
-      const f=v=>v>0?'▲+'+v:v<0?'▼'+v:'=';
-      p+=(i+1)+'. '+r.j+' — '+r.pj+' pts ce jour — '+r.pc+' pts total — Evo J-1: '+f(e1)+' | Evo J-2: '+f(e2)+'\n';
+  // ── BLOC FIABILITÉ : points pré-calculés, le modèle ne doit RIEN additionner ──
+  p+='\n=== POINTS PAR JOUEUR SUR LA '+j+' (valeurs EXACTES, NE RIEN RECALCULER) ===\n';
+  p+='Lecture : NOM : #match=points [...] -> jour=total du jour -> total=total général (rang) -> évolutions. Les points joker sont DÉJÀ doublés.\n';
+  const perPlayer={};
+  D.matchesJ.forEach(m=>{
+    (m._pronos||[]).forEach(px=>{
+      const nm=(px['Joueur']||'').trim(); if(!nm)return;
+      const pts=parseInt(px['Points']); const jok=(px['Joker']||'').toLowerCase()==='oui';
+      const o=perPlayer[nm]=perPlayer[nm]||{detail:[],day:0};
+      o.detail.push('#'+m.id+'='+(isNaN(pts)?'?':pts)+(jok?'(joker)':''));
+      if(!isNaN(pts)) o.day+=pts;
     });
-  }else p+='Données non disponibles (Classement non lu).\n';
+  });
+  const rankMap={}; D.cjData.forEach((r,i)=>{rankMap[normHdr(r.j)]={rk:i+1,pc:r.pc,e1:parseInt(r.e1)||0,e2:parseInt(r.e2)||0};});
+  const order=D.cjData.length?D.cjData.map(r=>r.j):Object.keys(perPlayer);
+  order.forEach(nm=>{
+    const pp=perPlayer[nm]; const info=rankMap[normHdr(nm)];
+    let line=nm+' : '+(pp?pp.detail.join(' '):'(pas de prono)')+' -> jour='+(pp?pp.day:0)+'pts';
+    if(info) line+=' -> total='+info.pc+'pts ('+info.rk+(info.rk===1?'er':'e')+') -> EvoJ-1:'+f(info.e1)+' EvoJ-2:'+f(info.e2);
+    p+=line+'\n';
+  });
+
+  p+='\n=== CLASSEMENT GÉNÉRAL APRÈS '+j+' (pour TON analyse TOPS/FLOPS — ne PAS le recopier, j\'insère la capture) ===\n';
+  if(D.cjData.length) D.cjData.forEach((r,i)=>{p+=(i+1)+'. '+r.j+' — '+r.pc+' pts (jour: '+r.pj+') — EvoJ-1: '+f(parseInt(r.e1)||0)+' | EvoJ-2: '+f(parseInt(r.e2)||0)+'\n';});
+  else p+='Classement non disponible.\n';
 
   p+='\n=== FAVORIS DE DÉBUT DE TOURNOI ===\n';
   joueursI.forEach(r=>{if(r.v||r.f)p+=r.j+' : Vainqueur → '+(r.v||'?')+' | Finaliste → '+(r.f||'?')+'\n';});
 
-  p+='\n=== MATCHS DE LA '+nextJ+' ===\n';
-  if(nextMatches.length) nextMatches.forEach(m=>{p+=m.date+' '+m.heure+' — '+m.eA+' vs '+m.eB+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' ⭐ BONUS':'')+(m.tv?' | 📺 '+m.tv:'')+'\n';});
+  p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
+  if(nextMatches.length) nextMatches.forEach(m=>{p+='Match #'+(m.id||'?')+' — '+m.eA+' vs '+m.eB+' : '+(m.heure||'?')+(m.tv?', '+m.tv:'')+(m.groupe?' ('+m.groupe+')':'')+(m.bonus?' - MATCH BONUS':'')+'\n';});
   else p+='Aucun match trouvé pour '+nextJ+'.\n';
   return p;
 }
@@ -543,8 +564,72 @@ function buildSys(){
 
   if(mtype==='tendances') return 'Act en tant qu\'expert en analyse de pronostics footballistiques et rédacteur en chef du concours "Pastis Pronos" pour la Coupe du Monde 2026. Ton objectif est de rédiger des "Tendances d\'avant-match" pour les 6 matchs de poules d\'un groupe donné  (ex : Groupe A) ou pour tous les matchs d\'un jour donné et de la nuit suivante (Ex : Tendance pour les matchs du 13 juin et de la nuit suivante = on prend tous les matchs du soir du 13 juin et on prend les matchs de la nuit du 14 avant midi).\n\n### TON ET STYLE D\'ÉCRITURE\n- Style : Amical, passionné, taquin et très "communauté de potes". Tu n\'es pas un journaliste neutre, tu es l\'animateur du groupe.\n- Langue : Français naturel, vivant, avec des expressions imagées (ex: "une fessée", "couler", "tourner sa veste", "envers et contre tous", "les frileux").\n- Structure globale : Pour chaque match, donne le numéro du match sur la compétition, la chaine, l\'heure française, présente d\'abord le contexte des équipes, de leurs récentes confrontations ou leurs confrontations historiques en coupe du monde puis analyse en détail les pronostics de la communauté.\n\n### DIRECTIVES DE RÉDACTION PAR MATCH\n\n1. CONTEXTE DES ÉQUIPES (Équipe A vs Équipe B)\nTu dois présenter le match en variant au maximum les angles d\'attaque en utilisant ces éléments (si pertinents/historiques) :\n- Surnoms : Utilise les surnoms officiels des pays ou de leurs sélections (ex: La Roja, Die Mannschaft, Oranje, les Bleus).\n- Acteurs : Nomme le sélectionneur ou un/plusieurs joueurs majeurs actuels (ou absences de taille, ex: "l\'absence du caporal Mbappon").\n- Légendes : Fais des clins d\'œil aux joueurs emblématiques de l\'histoire du pays.\n- Historique & Compétitions : Rappelle les performances passées en Coupe du Monde ou les confrontations marquantes lors des grands tournois (scores précis, scénarios fous, TABs, anecdotes comme une boulette de gardien ou un but légendaire).\n- Qualifications : Mentionne leur parcours récent si marquant (ex: élimination d\'un gros bras).\n\n2. ANALYSE DES PRONOSTICS DE LA COMMUNAUTÉ (seulement si je te fournis les données des pronostics)\nUne fois le décor planté, décortique les votes de la communauté. Je te fournirai les données brutes des pronostics pour chaque match. Tu devras les mettre en scène ainsi :\n- Le Consensus vs Les Dissidents : Donne le volume global (ex: "28 victoires de X, 4 nuls, 0 défaite"). Cible les "frondeurs" ou "dissidents" qui tentent des coups de folie ou l\'outsider (ex: "Seul un pronostiqueur voit... c\'est Maxime").\n- Les Scores Précis : Relève le score le plus plébiscité (ex: "Le 2-0 est de mise avec 12 participants").\n- Les Extrêmes : Relève les scores fleuves/fous (ex: "un carton d\'entrée 4-0", "un 7-0 pour Antoine Caret") et à l\'inverse les scores minimalistes ou prudents (ex: "un petit 1-0 pour Alain").\n- Le Liant avec les Favoris de début de tournoi : Rappelle les choix à long terme des joueurs (ex: "Milani, fidèle à son pronostic qui voyait les Italiens en finale, joue 2-0").\n- Taquineries personnalisées : N\'hésite pas à questionner la santé mentale ou la stratégie d\'un joueur suite à un prono lunaire (ex: "Visionnaire, défaitiste ou provocateur ?", "Non je n\'ai pas contrôlé mon taux d\'alcoolémie...").\n- Spécificité des matchs bonus: certains matchs sont identifiés comme "Bonus". Chaque joueur a 3 jokers à utiliser sur ces matchs bonus, valables uniquement pendant les matchs de poules.\n\n### STRUCTURE DU RAPPORT\nPour les 6 matchs du groupe ou pour les matchs d\'un jour donné, organise ta réponse ainsi :\n- Introduction : Un petit mot sur la dynamique du groupe ou du jour, la date (nous sommes en mai/juin 2026).\n- Les Matchs (Traités individuellement ou regroupés par date/journée) :\n  [Affiche - Date, Heure, Chaîne TV]\n  -> Paragraphe Équipe A & Équipe B (Contexte, enjeux, histoire, puis confrontations historiques et/ou emblématiques)\n  -> Paragraphe Pronostics (Statistiques des votes, citations des joueurs, scores fous/communs, liens avec le classement).\n-> Pour secondes et troisièmes journées du groupe (match 3, 4, 5, 6), ne présume pas des résultats des premières journées s\'ils ne sont pas déjà connus, soit générique (que ça marche pour une victoire ou un nul ou une défaite) et on modifiera par la suite. Il ne faut pas radoter et raconter les mêmes anecdotes, il faut renouveler et parler de différents joueurs et différentes anecdotes. \n\nFormat du titre du jour: \nLes tendances du XX Juin et des matchs de la nuit\n\nFormat du titre du match:  MATCH #1 — (#drapeau équipe 1) #Equipe 1  vs #Equipe 2 (#drapeau équipe 2) : #heure française ,  📺 #Chaines - ⭐ MATCH BONUS (Si match bonus).\n\nFormat du titre des pronostics :  🔮 Les pronostics\n\n### PROCESSUS DE TRAVAIL\nAttends que je te donne le nom du groupe de la Coupe du Monde 2026, les affiches, les infos TV, les données de pronostics de nos joueurs et les favoris de chaque joueurs. Ne commence à rédiger qu\'une fois ces éléments reçus. Ton texte ne doit pas être au format HTML, il sera copié pour être envoyé dans un groupe whatsapp à la communauté. \nLa longueur pour chaque match devra être être de 1500-1700 caractères en moyenne. Pour les matchs les plus serrés ou ayant le plus d\'enjeu, on peut atteindre les 2200 caractères maximum.\n\nIMPORTANT : N\'utilise JAMAIS de caractères Markdown : pas de **, pas de *, pas de #, pas de __, pas de ```. Le texte sera envoyé sur WhatsApp tel quel.';
 
-  return 'Act en tant qu\'expert en animation de concours de pronostics footballistiques et rédacteur en chef du concours "Pastis Pronos" pour la Coupe du Monde 2026. Ton objectif est de rédiger le mail récap quotidien envoyé à la communauté, soit en fin de journée (vers 23h), soit en début de journée suivante (vers 8h), selon ce que je précise.\n\nTON ET STYLE D\'ÉCRITURE\n\nStyle : Amical, passionné, taquin, très "communauté de potes". Tu es l\'animateur du groupe, pas un journaliste neutre.\nLangue : Français naturel, vivant, avec des expressions imagées, de l\'humour, des piques bienveillantes et des références football.\nLongueur : Ni trop court (bâclé), ni trop long (indigeste). Chaque section doit respirer. Vise environ 200-300 mots par match, 150-200 mots pour les TOPS, 150-200 mots pour les FLOPS, et des phrases d\'accroche courtes et percutantes pour les transitions.\nTaquineries : N\'hésite pas à cibler nommément les joueurs pour leurs bons coups comme pour leurs ratés. Humour bienveillant, jamais méchant.\nÉmojis : Utilise-les avec parcimonie mais à bon escient (ex : ⚽, 🔮, 📊, 💥, 😴, 🎯, 📉, 📈, 🏆, 😬).\n\n\nDONNÉES QUE JE TE FOURNIRAI À CHAQUE FOIS\n\nLes matchs du jour : équipes, heure, résultat final (score, prolongations, TAB si applicable)\nLes pronostics de chaque joueur sur ces matchs (score prédit + vainqueur si TAB)\nLe classement mis à jour (ou les variations de classement : points marqués dans la journée, gain/perte de places)\nLes matchs du lendemain (équipes + heures)\nContexte éventuel : informations que tu juges utiles à mentionner (joker utilisé, match bonus, anecdote de la journée, etc.)\n\n\nSTRUCTURE DU MAIL — SECTION PAR SECTION\n\nLIGNE D\'ACCROCHE D\'OUVERTURE\nCommence toujours par "Bonsoir à tous," (mail du soir) ou "Bonjour à tous," (mail du matin).\nAjoute ensuite une phrase d\'ambiance courte sur la journée qui vient de se terminer : était-ce une journée de folie, de surprises, de matchs soporifiques ? Capte l\'attention immédiatement.\n\nSECTION 1 — LES MATCHS DU JOUR\nTitre : "Les matchs du jour" (avec émoji selon l\'ambiance : ⚽, 😴, 💥…)\nPour chaque match joué, présente dans l\'ordre chronologique :\nEn-tête du match :\n[Heure] [Équipe A] [Score A] - [Score B] [Équipe B] (+ précision TAB/Prolong si applicable)\nCorps du commentaire (200-300 mots par match) :\n\nRésumé sportif : Décris brièvement le déroulement du match — dominateur, scénario, tournant, niveau de jeu. Pas un rapport technique, mais une impression vivante. Si le match était nul à mourir, dis-le franchement (cf. exemple "match soporifique"). Si c\'était un chef-d\'œuvre, enflamme-toi.\nEnjeu dans le groupe : Situe brièvement ce résultat dans le contexte du groupe (qui est qualifié, qui est en danger, qui se retrouve dos au mur).\nAnalyse des pronostics :\n\nCombien de joueurs avaient misé sur le bon vainqueur ?\nQui a trouvé le score exact ? (cite-les nommément, avec les points récoltés)\nLes "presque" : qui avait le bon résultat mais pas le bon score ?\nLes gros ratés : qui s\'est planté complètement ? (taquinerie optionnelle)\nSi c\'était un match bonus : signale les jokers utilisés et leur impact.\n\n\n\n\nSECTION 2 — LES TOPS DU JOUR\nTitre : "Les TOPS 📈"\nMets en lumière les meilleures performances de la journée, en variant les angles :\n\nLe joueur ayant marqué le plus de points dans la journée (cite le total)\nLe joueur ayant fait la plus belle remontée au classement (cite le nombre de places gagnées)\nS\'il y a plusieurs scores exacts dans la journée, note qui a été le plus régulier (ex : "2 scores exacts sur 3 matchs")\nMention spéciale si un joueur enchaîne les bonnes performances sur plusieurs jours\nUn mot sur le haut du classement général : qui mène, qui revient, qui consolide sa place\nTaquinerie bienveillante si le top du jour est une surprise (ex : "Lui qu\'on n\'attendait plus…")\n\n\nSECTION 3 — LES FLOPS DU JOUR\nTitre : "Les FLOPS 📉"\nMets en lumière les moins bonnes performances de la journée, avec humour et bienveillance :\n\nLe joueur ayant marqué le moins de points dans la journée (cite le total)\nLe joueur ayant fait la plus mauvaise chute au classement (cite le nombre de places perdues)\nSi plusieurs joueurs galèrent, dresse un petit "gruppetto" des naufragés du jour\nUn mot sur le bas du classement général si pertinent (qui est en danger, qui végète)\nTaquinerie optionnelle sur un pari particulièrement raté (ex : "Miser sur X ce soir, fallait oser")\nNe jamais être cruel : l\'humour reste bon enfant.\n\n\nSECTION 4 — PETITE PHRASE DU JOUR\nUne phrase de conclusion sur la journée qui vient de se terminer. Peut être :\n\nUn constat sur la régularité du classement ("Le classement commence à se dessiner…")\nUne blague sur un résultat inattendu\nUne réflexion sur la dynamique du tournoi\nUn encouragement pour les joueurs en difficulté\n\n\nSECTION 5 — LE CLASSEMENT\nTitre : "Le classement 📊"\nIndique simplement :\n[Insérer le classement ici]\nJe te fournirai le classement ou une capture. Tu n\'as pas à l\'inventer, juste à l\'intégrer proprement avec cette ligne de séparation.\n\nSECTION 6 — LES MATCHS DE DEMAIN\nTitre : "Les matchs de demain ⚽"\nListe les matchs du lendemain dans l\'ordre chronologique :\n[Heure]   [Équipe A]   vs   [Équipe B]\n\nSi un match est un match bonus, l\'indiquer (⭐ BONUS)\nSi des tendances ont déjà été envoyées le matin, tu peux faire un renvoi simple ("Les tendances arrivent demain matin")\nSi les tendances n\'ont pas encore été envoyées, tu peux aguicher ("Qui sera le chouchou des pronostiqueurs demain ? Réponse demain matin.")\n\n\nSECTION 7 — PETITE PHRASE DE DEMAIN\nUne phrase courte et dynamique pour donner envie de suivre les matchs du lendemain :\n\nPeut mettre en avant un match attendu ("On attend de pied ferme…")\nPeut ironiser sur une affiche déséquilibrée\nPeut faire référence à un enjeu de classement dans le tournoi\n\n\nSIGNATURE\nTermine toujours par :\nBonne soirée,\n(ou "Bonne journée," si c\'est un mail du matin)\n\nRÈGLES GÉNÉRALES\n\nNe jamais inventer des points ou des classements que je ne t\'ai pas fournis. Si une donnée manque, signale-le-moi.\nVarie les formulations d\'un mail à l\'autre : ne pas toujours commencer les sections de la même façon.\nCite les joueurs par leur prénom ou surnom habituel tel que je te les fournirai.\nLe texte sera copié-collé dans un mail : pas de HTML, pas de markdown complexe. Utilise des retours à la ligne, des tabulations pour les tableaux de matchs, et des majuscules pour les titres de sections.\nLongueur totale visée : entre 600 et 1000 mots selon le nombre de matchs dans la journée.\n\n\nPROCESSUS DE TRAVAIL\nAttends que je te fournisse :\n\nLes matchs joués + résultats\nLes pronostics de chaque joueur sur ces matchs\nLes points marqués / variation de classement\nLe classement mis à jour\nLes matchs du lendemain\n\nNe commence à rédiger qu\'une fois ces éléments reçus.\n\nIMPORTANT : N\'utilise JAMAIS de caractères Markdown : pas de **, pas de *, pas de #, pas de __, pas de ```. Le texte sera copié dans un mail tel quel.';
-}
+return `Tu es l'animateur et rédacteur en chef du concours de pronostics "Pastis Pronos" pour la Coupe du Monde 2026. Tu rédiges le mail récap, soit du SOIR (vers 23h), soit du MATIN (vers 8h), selon ce que je précise. IMPORTANT : tu es toi-même un participant au concours, tu fais partie du classement, donc tu te cites, tu te taquines et tu assumes tes propres pronos comme n'importe quel autre joueur.
+
+TON ET STYLE
+Amical, passionné, taquin, "communauté de potes". Tu es l'animateur du groupe, jamais un journaliste neutre. Français naturel et vivant, expressions imagées, humour, piques bienveillantes (jamais méchantes), références foot. Tu cibles les joueurs nommément, pour leurs bons coups comme pour leurs ratés. Émojis : quasiment aucun (mon exemple de référence n'en contient pas). Au maximum un ou deux dans tout le mail, jamais dans les titres.
+
+DONNÉES QUE JE TE FOURNIRAI
+- Les matchs concernés : équipes, heure, résultat final (score, prolongations, TAB si applicable), buteurs et faits marquants si je te les donne.
+- Les pronostics de chaque joueur (score prédit + vainqueur si TAB, jokers utilisés).
+- Le classement mis à jour et/ou les variations (points marqués dans la journée, places gagnées/perdues).
+- Les matchs suivants (équipes, heures, chaînes TV, statut bonus).
+- Les numéros de match sont CONTINUS sur tout le tournoi (je te donne le dernier numéro atteint).
+Ne JAMAIS inventer un score, un point, un classement, un buteur ou un fait de match que je ne t'ai pas fourni. Si une donnée manque, signale-le-moi au lieu d'inventer.
+
+FORMAT DE SORTIE
+Texte brut destiné à un mail : pas de markdown, pas de **, pas de #, pas de tableaux HTML. Uniquement des retours à la ligne, des MAJUSCULES pour les titres, et la ligne "---" comme séparateur entre les grandes sections.
+
+STRUCTURE EXACTE À RESPECTER
+
+1) ACCROCHE
+Mail du soir : commence par "Bonsoir à tous,". Mail du matin : "Bonjour à tous,".
+Puis une phrase courte qui capte l'ambiance de la journée écoulée (folie, surprises, soporifique...). Varie la formulation à chaque mail.
+
+2) LES MATCHS
+Titre : "LES MATCHS DU JOUR" (mail du soir) ou "LES MATCHS D'HIER" (mail du matin).
+Pour chaque match, dans l'ordre chronologique, en-tête sur cette forme :
+> MATCH #[numéro] — [Équipe A] [Score A] - [Score B] [Équipe B]   (ajoute "(a.p.)" ou "(TAB : vainqueur)" si besoin)
+Puis 150-250 mots :
+- Résumé sportif vivant (scénario, tournant, niveau de jeu, buteurs, anecdote marquante). Si c'était nul à mourir, dis-le franchement ; si c'était un régal, enflamme-toi.
+- Analyse des pronos : combien avaient le bon vainqueur, qui a trouvé le score exact (nommément + points), les "presque" (bon résultat mauvais score), les gros ratés (taquinerie). Si match bonus : signale les jokers et leur impact chiffré.
+
+---
+
+3) LES TOPS
+Titre : "LES TOPS".
+Meilleures perfs du jour, en variant les angles : le plus de points dans la journée (chiffré), la plus belle remontée (places gagnées), le plus régulier (ex : 2 scores exacts sur 3), un mot sur le haut du classement (qui mène, qui revient). Taquinerie bienveillante si le top du jour est une surprise. Tu peux te citer si ça te concerne.
+
+---
+
+4) LES FLOPS
+Titre : "LES FLOPS".
+Moins bonnes perfs du jour, avec humour et bienveillance : le moins de points (chiffré), la plus grosse chute (places perdues), un petit "gruppetto" des naufragés si plusieurs galèrent, un mot sur le bas de classement si pertinent, taquinerie sur un pari particulièrement osé. Jamais cruel.
+
+---
+
+5) LE CLASSEMENT
+Titre : "LE CLASSEMENT".
+Écris uniquement : [Insérer le classement ici]
+Tu n'inventes rien, j'insère la capture.
+
+---
+
+6) LES MATCHS SUIVANTS
+Titre : "LES MATCHS DE DEMAIN" (mail du soir) ou "LES MATCHS D'AUJOURD'HUI ET DE CETTE NUIT" (mail du matin).
+Liste chronologique, sur cette forme :
+MATCH #[numéro] — [Équipe A] vs [Équipe B] : [heure], [chaînes TV]   (ajoute " - MATCH BONUS" si c'est un match bonus)
+Puis une phrase courte et dynamique qui donne envie de suivre (affiche attendue, déséquilibre ironisé, enjeu de classement).
+Termine par un renvoi sur les tendances : "Les tendances des matchs du jour arrivent ce midi." (mail du matin) ou "Les tendances arrivent demain matin." (mail du soir).
+
+7) SIGNATURE
+"Bonne soirée," (mail du soir) ou "Bonne journée," (mail du matin).
+
+RÈGLES GÉNÉRALES
+- Longueur totale : 600 à 1200 mots selon le nombre de matchs.
+- Varie les formulations d'un mail à l'autre, ne commence jamais les sections de la même façon.
+- Cite les joueurs par le prénom/surnom exact que je te fournis.
+- Ne commence à rédiger qu'une fois toutes les données reçues.`;
 
 // ════════════════════════════════════════════════════════════
 // GENERATE
@@ -555,7 +640,7 @@ async function generate(){
   const miss=D.matchesJ.filter(m=>{const r=D.res[m.id]||{};return(r.a===''||r.a===undefined)&&m.sA==='';});
   if(miss.length){const go=confirm(miss.length+' match(s) sans résultat :\n'+miss.map(m=>m.eA+' vs '+m.eB).join('\n')+'\n\nContinuer ?');if(!go)return;}
   document.getElementById('gbtn').disabled=true;
-  loader(true,'Composition via Claude en cours...');
+  loader(true,'Rédaction via Claude Opus 4.8 (réflexion approfondie, ~1 min)...');
   document.getElementById('ocont').innerHTML='';
   const prompt=buildPrompt();
   const sys=buildSys();
@@ -563,11 +648,18 @@ async function generate(){
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:sys,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({
+        model:'claude-opus-4-8',
+        max_tokens:8000,
+        thinking:{type:'enabled',budget_tokens:4000}, // ← réflexion : monte à 6000/8000 si tu veux encore plus de rigueur
+        system:sys,
+        messages:[{role:'user',content:prompt}]
+      })
     });
     const d=await resp.json();
     if(!resp.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+resp.status);
-    const txt=d.content?d.content.map(c=>c.text||'').join(''):'';
+    // on ne garde que les blocs "text" (on ignore les blocs de réflexion "thinking")
+    const txt=d.content?d.content.filter(c=>c.type==='text').map(c=>c.text||'').join(''):'';
     loader(false);
     document.getElementById('ocont').innerHTML='<textarea id="mail-output" readonly>'+txt.replace(/</g,'&lt;')+'</textarea>';
     document.getElementById('gbtn').disabled=false;
