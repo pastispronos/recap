@@ -670,46 +670,59 @@ async function generate(){
   loader(true,'Rédaction via Opus 4.8 + recherche web (buteurs, résumés)... ~1-2 min');
   document.getElementById('ocont').innerHTML='';
   const sys=buildSys();
-  // Historique de conversation : on boucle tant que le modèle veut chercher sur le web
   let messages=[{role:'user',content:buildPrompt()}];
   try{
     let html='', guard=0;
-    while(guard++<6){
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({
-          model:'claude-opus-4-8',
-          max_tokens:10000,
-          thinking:{type:'adaptive'},
-          output_config:{effort:'high'},
-          system:sys,
-          tools:[{type:'web_search_20250305',name:'web_search',max_uses:5}],
-          messages:messages
-        })
-      });
+    while(guard++<8){
+      // Timeout manuel : on coupe proprement à 4 min au lieu de laisser le navigateur planter
+      const ctrl=new AbortController();
+      const to=setTimeout(()=>ctrl.abort(),240000);
+      let resp;
+      try{
+        resp=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          signal:ctrl.signal,
+          headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+          body:JSON.stringify({
+            model:'claude-opus-4-8',
+            max_tokens:10000,
+            output_config:{effort:'high'},
+            system:sys,
+            tools:[{type:'web_search_20250305',name:'web_search',max_uses:5}],
+            messages:messages
+          })
+        });
+      }finally{ clearTimeout(to); }
+
       const d=await resp.json();
       if(!resp.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+resp.status);
+
       // On rejoue la réponse de l'assistant dans l'historique
       messages.push({role:'assistant',content:d.content});
-      // Si le modèle réclame une recherche, l'API web_search est exécutée côté serveur Anthropic
-      // et le résultat revient directement : on reboucle seulement si stop_reason l'exige.
-      if(d.stop_reason==='tool_use'){
-        // Les server-tools (web_search) sont résolus automatiquement ; rien à renvoyer côté client.
-        // Ce cas ne se produit normalement pas pour web_search, mais on sécurise.
+
+      // Récupère le texte produit jusqu'ici
+      const chunk=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text||'').join('');
+      if(chunk) html=chunk;
+
+      // pause_turn = la recherche web n'est pas finie → on relance avec l'historique tel quel
+      if(d.stop_reason==='pause_turn'){
+        loader(true,'Recherche web en cours... (tour '+guard+')');
         continue;
       }
-      html=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text||'').join('');
+      // end_turn (ou autre) = terminé
       break;
     }
+
     html=html.replace(/```html|```/g,'').trim();
+    if(!html) throw new Error('Réponse vide (la recherche a peut-être expiré). Réessaie.');
     D.lastHtml=html;
     loader(false);
     document.getElementById('ocont').innerHTML='<div id="mail-output" style="background:#fff;color:#1a1a1a;border:1px solid var(--bd);border-radius:6px;padding:1.4rem;min-height:400px;font-family:Arial,sans-serif;font-size:.9rem;line-height:1.55;overflow:auto">'+html+'</div>';
     document.getElementById('gbtn').disabled=false;
   }catch(err){
     loader(false);
-    document.getElementById('ocont').innerHTML='<div class="alert aerr on">Erreur : '+err.message+'</div>';
+    const msg=err.name==='AbortError'?'La génération a dépassé 4 min (recherche web trop longue). Réessaie, ou réduis max_uses.':err.message;
+    document.getElementById('ocont').innerHTML='<div class="alert aerr on">Erreur : '+msg+'</div>';
     document.getElementById('gbtn').disabled=false;
   }
 }
