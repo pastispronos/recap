@@ -353,11 +353,15 @@ function parseCJ(){
   if(h===-1) return;
   const hdr=rows[h].map(normHdr);
   const col=(...cs)=>{for(const c of cs){const k=hdr.indexOf(normHdr(c));if(k!==-1)return k;}return -1;};
-  const cPj=col('points du jour');
-  const cPc=col('points cumules');                  // 1re occurrence = total courant (col D)
-  const cRk=col('classement');                      // 1re occurrence = rang courant (col E)
-  const cE1=col('evolution j-1','evolution j1');
-  const cE2=col('evolution j-2','evolution j2');
+  const startsW=(...cs)=>{for(const c of cs){const k=hdr.findIndex(x=>x.replace(/\s+/g,'').startsWith(c.replace(/\s+/g,'')));if(k!==-1)return k;}return -1;};
+  const exactW=(...cs)=>{for(const c of cs){const k=hdr.indexOf(normHdr(c));if(k!==-1)return k;}return -1;};
+  const cPj=startsW('points du jour');
+  // "Points Cumulés" courant = 1re colonne qui commence par "points cumul" SANS "j-" derrière
+  let cPc=hdr.findIndex(x=>x.replace(/\s+/g,'').startsWith('pointscumul')&&!/j-?\d/.test(x));
+  if(cPc===-1) cPc=startsW('points cumul');
+  const cRk=hdr.findIndex(x=>x.replace(/\s+/g,'')==='classement'); // exact, pas "classement j-1"
+  const cE1=exactW('evolution j-1','evolution j1');
+  const cE2=exactW('evolution j-2','evolution j2');
   const out=[];
   for(let i=h+1;i<rows.length;i++){
     const name=(rows[i][cJoueur]||'').trim();
@@ -485,9 +489,16 @@ const fmtDate=d=>{
   nextMatches.forEach(m=>{ if(m.id&&dh[m.id]){ if(dh[m.id].date) m.date=dh[m.id].date; if(dh[m.id].heure) m.heure=fmtHeure(dh[m.id].heure); } });
   nextMatches.sort((a,b)=>chronoKey(a.date,a.heure)-chronoKey(b.date,b.heure));
 
+// Favoris : col B = Vainqueur, col C = Finaliste (lecture par position, robuste aux en-têtes)
   const favMap={};
-  D.joueurs.filter(x=>(x['Joueur']||'').trim()).forEach(x=>{favMap[normHdr(x['Joueur'])]={v:(x['Vainqueur']||'').trim(),f:(x['Finaliste']||'').trim()};});
-
+  D.joueurs.forEach(x=>{
+    const nom=(x['Joueur']||Object.values(x)[0]||'').trim(); if(!nom) return;
+    const vals=Object.values(x);
+    const v=(x['Vainqueur']!==undefined?x['Vainqueur']:vals[1]||'').toString().trim();
+    const fi=(x['Finaliste']!==undefined?x['Finaliste']:vals[2]||'').toString().trim();
+    favMap[normHdr(nom)]={v,f:fi};
+  });
+  
   let p=(mtype==='tendances'?'Génère les tendances avant-match pour la '+j+'.\n\n':'Génère le mail récap du MATIN pour la '+j+'.\n\n');
   p+='TYPE DE MAIL : MATIN. Titres/formules du MATIN (Bonjour à tous, / LES MATCHS D\'HIER / LES MATCHS D\'AUJOURD\'HUI ET DE CETTE NUIT / "Les tendances des matchs du jour arrivent ce midi." / Bonne journée,).\n';
   p+='Numérotation des matchs CONTINUE : réutilise les # fournis tels quels.\n';
@@ -549,9 +560,12 @@ const fmtDate=d=>{
   else p+='(classement indisponible)\n';
 
   // ── FAVORIS ──
-  p+='\n=== FAVORIS DÉBUT DE TOURNOI ===\n';
-  D.joueurs.filter(x=>(x['Joueur']||'').trim()).forEach(x=>{const v=(x['Vainqueur']||'').trim(),fi=(x['Finaliste']||'').trim();if(v||fi)p+=cap(x['Joueur'])+' : Vainqueur → '+(v||'?')+' | Finaliste → '+(fi||'?')+'\n';});
-
+p+='\n=== FAVORIS DÉBUT DE TOURNOI (Vainqueur / Finaliste de chaque joueur) ===\n';
+  Object.keys(favMap).forEach(k=>{const fav=favMap[k];if(fav.v||fav.f){
+    const nm=(D.joueurs.find(x=>normHdr(x['Joueur']||Object.values(x)[0])===k)||{});
+    const disp=cap((nm['Joueur']||Object.values(nm)[0]||k));
+    p+=disp+' : Vainqueur → '+(fav.v||'?')+' | Finaliste → '+(fav.f||'?')+'\n';
+  }});
   // ── MATCHS J+1 ──
   p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
   if(nextMatches.length) nextMatches.forEach(m=>{
