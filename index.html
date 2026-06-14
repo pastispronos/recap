@@ -650,7 +650,7 @@ async function generate(){
         resp=await fetch('https://api.anthropic.com/v1/messages',{
           method:'POST', signal:ctrl.signal,
           headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-          body:JSON.stringify({model:'claude-opus-4-6',max_tokens:10000,output_config:{effort:'high'},system:sys,tools:[{type:'web_search_20250305',name:'web_search',max_uses:4}],messages:messages})
+          body:JSON.stringify({model:'claude-opus-4-8',max_tokens:10000,output_config:{effort:'high'},system:sys,tools:[{type:'web_search_20250305',name:'web_search',max_uses:3}],messages:messages})
         });
       }finally{ clearTimeout(to); }
 const d=await resp.json();
