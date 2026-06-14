@@ -641,6 +641,7 @@ async function generate(){
   let messages=[{role:'user',content:buildPrompt()}];
   try{
     let html='', guard=0;
+    let inTok=0,outTok=0,cacheTok=0,webReq=0;   // compteurs de coût
     while(guard++<8){
       const ctrl=new AbortController();
       const to=setTimeout(()=>ctrl.abort(),240000);
@@ -649,13 +650,18 @@ async function generate(){
         resp=await fetch('https://api.anthropic.com/v1/messages',{
           method:'POST', signal:ctrl.signal,
           headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-          body:JSON.stringify({model:'claude-opus-4-8',max_tokens:10000,output_config:{effort:'high'},system:sys,tools:[{type:'web_search_20250305',name:'web_search',max_uses:5}],messages:messages})
+          body:JSON.stringify({model:'claude-opus-4-6',max_tokens:10000,output_config:{effort:'high'},system:sys,tools:[{type:'web_search_20250305',name:'web_search',max_uses:4}],messages:messages})
         });
       }finally{ clearTimeout(to); }
-      const d=await resp.json();
+const d=await resp.json();
       if(!resp.ok) throw new Error(d.error&&d.error.message?d.error.message:'Erreur API '+resp.status);
-      messages.push({role:'assistant',content:d.content});
-      const chunk=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text||'').join('');
+      if(d.usage){
+        inTok+=(d.usage.input_tokens||0);
+        outTok+=(d.usage.output_tokens||0);
+        cacheTok+=(d.usage.cache_read_input_tokens||0)+(d.usage.cache_creation_input_tokens||0);
+        if(d.usage.server_tool_use) webReq+=(d.usage.server_tool_use.web_search_requests||0);
+      }
+      messages.push({role:'assistant',content:d.content});      const chunk=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text||'').join('');
       if(chunk) html=chunk;
       if(d.stop_reason==='pause_turn'){ loader(true,'Recherche web en cours... (tour '+guard+')'); continue; }
       break;
@@ -665,9 +671,15 @@ async function generate(){
     const gi=html.search(/bonjour à tous|bonsoir à tous/i);
     if(gi>0){ const before=html.slice(0,gi); const tag=before.match(/<p[^>]*>\s*$/i); html=html.slice(gi-(tag?tag[0].length:0)); }
     if(!html) throw new Error('Réponse vide (la recherche a peut-être expiré). Réessaie.');
-    D.lastHtml=html;
+D.lastHtml=html;
     loader(false);
-    document.getElementById('ocont').innerHTML='<div id="mail-output" style="background:#fff;color:#1a1a1a;border:1px solid var(--bd);border-radius:6px;padding:1.4rem;min-height:400px;font-family:Arial,sans-serif;font-size:.9rem;line-height:1.55;overflow:auto">'+html+'</div>';
+    const cost=(inTok/1e6*5)+(outTok/1e6*25)+(webReq*0.01);
+    const costLine='💸 Coût de cette génération : ~'+cost.toFixed(3)+' $  ('
+      +inTok.toLocaleString('fr-FR')+' tok in × 5$/M  +  '
+      +outTok.toLocaleString('fr-FR')+' tok out × 25$/M  +  '
+      +webReq+' recherche'+(webReq>1?'s':'')+' web × 0,01$)';
+    document.getElementById('ocont').innerHTML='<div id="mail-output" style="background:#fff;color:#1a1a1a;border:1px solid var(--bd);border-radius:6px;padding:1.4rem;min-height:400px;font-family:Arial,sans-serif;font-size:.9rem;line-height:1.55;overflow:auto">'+html+'</div>'
+      +'<div style="margin-top:.6rem;padding:.5rem .7rem;background:var(--s2);border:1px solid var(--bd);border-radius:5px;font-size:.72rem;font-family:\'DM Mono\',monospace;color:var(--mu)">'+costLine+'</div>';
     document.getElementById('gbtn').disabled=false;
   }catch(err){
     loader(false);
