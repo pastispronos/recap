@@ -556,6 +556,27 @@ const fmtDate=d=>{
   p+='\n=== FAVORIS DÉBUT DE TOURNOI (Vainqueur / Finaliste de chaque joueur) ===\n';
   (D.favList||[]).forEach(x=>{ if(x.v||x.f) p+=cap(x.j)+' : Vainqueur → '+(x.v||'?')+' | Finaliste → '+(x.f||'?')+'\n'; });
 
+  // ── JOKERS (cumul tournoi, calculé depuis Pronostics — robuste, ne touche pas à la feuille Classement) ──
+  // Reproduit ta formule col AI : used = COUNTIFS(Joker="Oui"; Points>=0) ; bonus = SUMIFS(Points où Joker="Oui")/2
+  const jokerMap={};
+  D.pronos.forEach(px=>{
+    if((px['Joker']||'').toLowerCase()!=='oui') return;
+    const raw=(px['Points']||'').toString().trim(); if(raw==='') return;   // joker sans points enregistrés → non compté (comme Points>=0)
+    const pts=parseInt(raw); if(isNaN(pts)||pts<0) return;
+    const nm=(px['Joueur']||'').trim(); if(!nm) return;
+    const o=jokerMap[normHdr(nm)]=jokerMap[normHdr(nm)]||{used:0,pts:0};
+    o.used++; o.pts+=pts;
+  });
+  p+='\n=== JOKERS (cumul tournoi, 3 max par joueur ; "bonus" = points SUPPLÉMENTAIRES gagnés grâce au doublement) ===\n';
+  const jOrder=D.cjData.length?D.cjData.map(r=>r.j):Object.keys(jokerMap);
+  jOrder.forEach(nm=>{
+    const o=jokerMap[normHdr(nm)]||{used:0,pts:0};
+    const used=Math.min(3,o.used);
+    const rest=Math.max(0,3-used);
+    const bonus=Math.round(o.pts/2);
+    p+=cap(nm)+' : '+used+'/3 utilisés'+(bonus>0?' (+'+bonus+' pts bonus)':'')+', '+rest+' restant'+(rest>1?'s':'')+'\n';
+  });
+  
   // ── MATCHS J+1 ──
   p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
   if(nextMatches.length) nextMatches.forEach(m=>{
