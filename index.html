@@ -560,6 +560,7 @@ const fmtDate=d=>{
   // Reproduit ta formule col AI : used = COUNTIFS(Joker="Oui"; Points>=0) ; bonus = SUMIFS(Points où Joker="Oui")/2
   const jokerMap={};
   D.pronos.forEach(px=>{
+    if(normHdr(px['Phase'])!=='poules') return;   // jokers valables UNIQUEMENT en Poules
     if((px['Joker']||'').toLowerCase()!=='oui') return;
     const raw=(px['Points']||'').toString().trim(); if(raw==='') return;   // joker sans points enregistrés → non compté (comme Points>=0)
     const pts=parseInt(raw); if(isNaN(pts)||pts<0) return;
@@ -576,6 +577,36 @@ const fmtDate=d=>{
     const bonus=Math.round(o.pts/2);
     p+=cap(nm)+' : '+used+'/3 utilisés'+(bonus>0?' (+'+bonus+' pts bonus)':'')+', '+rest+' restant'+(rest>1?'s':'')+'\n';
   });
+
+  // ── POINTS PAR PHASE FINALE (hors Poules) — n'apparaît QUE pour les phases réellement jouées ──
+  const PHASE_ORDER=['seiziemes','huitiemes','quarts','demies','demis','petite finale','finale'];
+  const phaseByPlayer={};   // { normJoueur: { normPhase: cumulPts } }
+  const phasesSeen={};      // { normPhase: libelléTelQueDansLaFeuille }
+  D.pronos.forEach(px=>{
+    const ph=(px['Phase']||'').trim(); if(!ph) return;
+    if(normHdr(ph)==='poules') return;                       // on ne garde QUE les phases finales
+    const raw=(px['Points']||'').toString().trim(); if(raw==='') return;   // pas de points saisis → pas de donnée → on ignore
+    const pts=parseInt(raw); if(isNaN(pts)) return;
+    const nm=(px['Joueur']||'').trim(); if(!nm) return;
+    const nph=normHdr(ph); phasesSeen[nph]=ph;
+    const o=phaseByPlayer[normHdr(nm)]=phaseByPlayer[normHdr(nm)]||{};
+    o[nph]=(o[nph]||0)+pts;
+  });
+  const phaseKeys=Object.keys(phasesSeen).sort((a,b)=>{
+    let ia=PHASE_ORDER.indexOf(a),ib=PHASE_ORDER.indexOf(b);
+    if(ia===-1)ia=99; if(ib===-1)ib=99; return ia-ib;
+  });
+  if(phaseKeys.length){                                       // aucune phase finale jouée → section absente
+    p+='\n=== POINTS PAR PHASE FINALE (hors Poules ; cumul tournoi, uniquement les phases jouées) ===\n';
+    const phOrder=D.cjData.length?D.cjData.map(r=>r.j):Object.keys(phaseByPlayer);
+    const seen={};
+    phOrder.forEach(nm=>{
+      const k=normHdr(nm); if(seen[k]) return; seen[k]=1;
+      const o=phaseByPlayer[k]; if(!o) return;                // joueur sans aucun point en phase finale → sauté
+      const parts=phaseKeys.filter(ph=>o[ph]!==undefined).map(ph=>phasesSeen[ph]+': '+o[ph]+'pts');
+      if(parts.length) p+=cap(nm)+' : '+parts.join(' | ')+'\n';
+    });
+  }
   
   // ── MATCHS J+1 ──
   p+='\n=== MATCHS DE LA '+nextJ+' (aujourd\'hui et cette nuit) ===\n';
